@@ -7,45 +7,45 @@
 
 @layer base {
   :root {
-    /* Dark Professional Theme - Matching GitHub Design */
-    --background: 220 25% 8%;
-    --foreground: 220 15% 95%;
+    /* Light Professional Theme - Matching Your Screenshots */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-    --card: 220 25% 10%;
-    --card-foreground: 220 15% 95%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 220 25% 12%;
-    --popover-foreground: 220 15% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
     /* Orange Primary - Professional Accent */
     --primary: 25 95% 53%;
-    --primary-foreground: 220 25% 8%;
+    --primary-foreground: 210 40% 98%;
     
-    /* Orange Secondary for Buttons */
-    --secondary: 220 20% 15%;
-    --secondary-foreground: 220 15% 95%;
+    /* Light Secondary */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
 
-    /* Muted Dark Tones */
-    --muted: 220 20% 15%;
-    --muted-foreground: 220 10% 65%;
+    /* Light Muted Tones */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Elegant Dark Accent */
-    --accent: 220 25% 18%;
-    --accent-foreground: 220 15% 95%;
+    /* Light Accent */
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
 
-    --destructive: 0 62.8% 50%;
-    --destructive-foreground: 220 15% 95%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 220 20% 18%;
-    --input: 220 20% 18%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
     --ring: 25 95% 53%;
 
     --radius: 0.5rem;
 
-    /* Professional Dark Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(220 25% 8%), hsl(220 25% 12%));
+    /* Professional Light Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 40% 98%));
     --gradient-orange: linear-gradient(135deg, hsl(25 95% 53%), hsl(20 100% 60%));
-    --gradient-hero: linear-gradient(135deg, hsl(220 25% 8% / 0.95), hsl(220 25% 10% / 0.9));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 100% / 0.95), hsl(210 40% 98% / 0.9));
     
     /* Professional Shadows */
     --shadow-premium: 0 25px 50px -12px hsl(0 0% 0% / 0.4);
@@ -56,20 +56,20 @@
     --transition-premium: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    --sidebar-background: 220 25% 10%;
-    --sidebar-foreground: 220 15% 95%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222.2 84% 4.9%;
     --sidebar-primary: 25 95% 53%;
-    --sidebar-primary-foreground: 220 25% 8%;
-    --sidebar-accent: 220 25% 15%;
-    --sidebar-accent-foreground: 220 15% 95%;
-    --sidebar-border: 220 20% 18%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222.2 84% 4.9%;
+    --sidebar-border: 214.3 31.8% 91.4%;
     --sidebar-ring: 25 95% 53%;
   }
 
   .dark {
-    /* Light mode override - keeping same as root for consistency */
-    --background: 0 0% 100%;
-    --foreground: 220 15% 15%;
+    /* Dark mode override */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
   }
 }
 

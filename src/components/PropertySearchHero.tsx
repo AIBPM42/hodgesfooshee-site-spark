@@ -10,8 +10,8 @@ const PropertySearchHero = () => {
       className="relative min-h-[600px] flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(${heroImage})` }}
     >
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-gradient-hero" />
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/40" />
       
       <div className="relative z-10 container mx-auto px-4 text-center">
         {/* Hero Content */}
@@ -28,7 +28,7 @@ const PropertySearchHero = () => {
 
         {/* Advanced Property Search */}
         <div className="max-w-4xl mx-auto">
-          <div className="bg-card/95 backdrop-blur-sm rounded-lg p-6 shadow-premium">
+          <div className="bg-white/95 backdrop-blur-sm rounded-lg p-6 shadow-xl border-0">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
               {/* Property Type */}
               <Select>
@@ -96,7 +96,7 @@ const PropertySearchHero = () => {
             </div>
 
             {/* Search Button */}
-            <Button variant="orange" size="lg" className="w-full md:w-auto px-12">
+            <Button size="lg" className="btn-orange w-full md:w-auto px-12">
               <Search className="mr-2 h-5 w-5" />
               Search Properties
             </Button>

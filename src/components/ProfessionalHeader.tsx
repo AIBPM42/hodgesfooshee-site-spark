@@ -11,52 +11,54 @@ const ProfessionalHeader = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <div className="h-8 w-8 bg-primary rounded flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">H&F</span>
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="text-2xl font-bold">
+              <span className="text-gradient-orange font-display">Hodges</span>
+              <span className="text-foreground font-display"> & </span>
+              <span className="text-gradient-orange font-display">Fooshee</span>
             </div>
-            <div>
-              <h1 className="font-display text-lg font-semibold text-foreground">
-                Hodges & Fooshee
-              </h1>
-              <p className="text-xs text-muted-foreground -mt-1">Realty</p>
+            <div className="hidden sm:block text-sm text-muted-foreground ml-2">
+              Realty
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
-            <Link to="/featured" className="text-foreground hover:text-primary transition-smooth font-medium">
+            <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Home
+            </Link>
+            <Link to="/featured" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Featured Listings
             </Link>
-            <Link to="/search" className="text-foreground hover:text-primary transition-smooth font-medium">
+            <Link to="/search" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Property Search
             </Link>
-            <Link to="/communities" className="text-foreground hover:text-primary transition-smooth font-medium">
+            <Link to="/communities" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Communities
             </Link>
-            <Link to="/services" className="text-foreground hover:text-primary transition-smooth font-medium">
+            <Link to="/services" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Our Services
             </Link>
-            <Link to="/insights" className="text-foreground hover:text-primary transition-smooth font-medium">
+            <Link to="/insights" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Market Insights
             </Link>
-            <Link to="/about" className="text-foreground hover:text-primary transition-smooth font-medium">
+            <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               About
             </Link>
-            <Link to="/contact" className="text-foreground hover:text-primary transition-smooth font-medium">
+            <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Contact
             </Link>
           </nav>
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="icon" className="hidden md:inline-flex">
+            <Button variant="ghost" size="sm" className="hidden md:inline-flex">
               <Search className="h-4 w-4" />
             </Button>
-            <Button variant="orange-outline" size="sm" className="hidden md:inline-flex">
+            <Button variant="ghost" size="sm" className="hidden md:inline-flex">
               Login
             </Button>
-            <Button variant="orange" size="sm" className="hidden md:inline-flex">
+            <Button size="sm" className="btn-orange hidden md:inline-flex">
               Register
             </Button>
             
