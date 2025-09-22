@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base styles */
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
 :root{
   --hf-orange: 22 90% 54%;   /* #F26A21 */
   --hf-green:  105 49% 50%;  /* #6FBF44 */
@@ -51,6 +62,19 @@
   --glass-bg: color-mix(in oklab, rgba(255,255,255,0.08) 100%, transparent);
   --glass-border: rgba(255,255,255,0.16);
   --glass-blur: 18px;
+  
+  /* Sidebar variables */
+  --sidebar-background: 0 0% 8%;
+  --sidebar-foreground: 0 0% 95%;
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: 0 0% 18%;
+  --sidebar-ring: var(--ring);
+  
+  /* Border radius */
+  --radius: 0.5rem;
 }
 
 .glass{
