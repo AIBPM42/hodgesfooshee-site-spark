@@ -7,12 +7,14 @@ export default {
     extend: {
       colors: {
         hf: {
-          black: "#0B0B0B",
-          orange: "#F05A28",
-          purple: "#6A4C9C",
-          green:  "#6BB544",
-          red:    "#D94F4F",
-          cream:  "#F7F4EE",
+          orange:  '#F04F23', // logo orange
+          purple:  '#6F3FA0', // logo purple
+          green:   '#7BB542', // logo green
+          yellow:  '#F0B323', // logo yellow
+          black:   '#121212',
+          ink:     '#0B0B0B',
+          smoke:   '#0F0F0F',
+          glass:   'rgba(12,12,12,0.35)'
         },
       },
       boxShadow: {
