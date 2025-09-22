@@ -1,17 +1,57 @@
 import { Button } from "@/components/ui/button";
 import { Search, TrendingUp, Award, Users } from "lucide-react";
 import heroImage from "@/assets/hero-home.jpg";
+import { useState, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const HeroSection = () => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    // Preload hero image
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => setImageError(true);
+    img.src = heroImage;
+  }, []);
+
+  if (!imageLoaded && !imageError) {
+    return (
+      <section className="relative min-h-[80vh] flex items-center bg-gradient-hero">
+        <div className="absolute inset-0">
+          <Skeleton className="w-full h-full" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent"></div>
+        </div>
+        <div className="relative z-10 container mx-auto px-4">
+          <div className="max-w-3xl">
+            <Skeleton className="h-20 w-3/4 mb-6" />
+            <Skeleton className="h-6 w-full mb-4" />
+            <Skeleton className="h-6 w-2/3 mb-8" />
+            <div className="flex gap-4 mb-12">
+              <Skeleton className="h-12 w-40" />
+              <Skeleton className="h-12 w-40" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="relative min-h-[80vh] flex items-center">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
-        <img 
-          src={heroImage} 
-          alt="Luxury home exterior with professional landscaping" 
-          className="w-full h-full object-cover"
-        />
+        {imageError ? (
+          <div className="w-full h-full bg-gradient-hero" />
+        ) : (
+          <img 
+            src={heroImage} 
+            alt="Luxury home exterior with professional landscaping" 
+            className="w-full h-full object-cover"
+            loading="eager"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent"></div>
       </div>
       
