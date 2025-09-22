@@ -1,58 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Search, TrendingUp, Award, Users } from "lucide-react";
 import heroImage from "@/assets/hero-home.jpg";
-import { useState, useEffect } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 const HeroSection = () => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
-
-  useEffect(() => {
-    // Preload hero image
-    const img = new Image();
-    img.onload = () => setImageLoaded(true);
-    img.onerror = () => setImageError(true);
-    img.src = heroImage;
-  }, []);
-
-  if (!imageLoaded && !imageError) {
-    return (
-      <section className="relative min-h-[80vh] flex items-center bg-gradient-hero">
-        <div className="absolute inset-0">
-          <Skeleton className="w-full h-full" />
-          <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent"></div>
-        </div>
-        <div className="relative z-10 container mx-auto px-4">
-          <div className="max-w-3xl">
-            <Skeleton className="h-20 w-3/4 mb-6" />
-            <Skeleton className="h-6 w-full mb-4" />
-            <Skeleton className="h-6 w-2/3 mb-8" />
-            <div className="flex gap-4 mb-12">
-              <Skeleton className="h-12 w-40" />
-              <Skeleton className="h-12 w-40" />
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="relative min-h-[80vh] flex items-center">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
-        {imageError ? (
-          <div className="w-full h-full bg-gradient-hero" />
-        ) : (
-          <img 
-            src={heroImage} 
-            alt="Luxury home exterior with professional landscaping" 
-            className="w-full h-full object-cover"
-            loading="eager"
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent"></div>
+        <img 
+          src={heroImage} 
+          alt="Luxury home exterior with professional landscaping" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-hero"></div>
       </div>
       
       {/* Content */}
@@ -80,28 +40,28 @@ const HeroSection = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
             <div className="text-center">
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
-               <TrendingUp className="h-8 w-8 text-luxury-gold mx-auto" />
-             </div>
-             <div className="text-2xl font-bold text-white">$2.5B+</div>
-             <div className="text-white/80 text-sm">Sales Volume</div>
-           </div>
-           <div className="text-center">
-             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
-               <Users className="h-8 w-8 text-luxury-gold mx-auto" />
-             </div>
-             <div className="text-2xl font-bold text-white">1,200+</div>
-             <div className="text-white/80 text-sm">Happy Clients</div>
-           </div>
-           <div className="text-center">
-             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
-               <Award className="h-8 w-8 text-luxury-gold mx-auto" />
-             </div>
-             <div className="text-2xl font-bold text-white">25+</div>
-             <div className="text-white/80 text-sm">Years Experience</div>
-           </div>
-           <div className="text-center">
-             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
-               <Search className="h-8 w-8 text-luxury-gold mx-auto" />
+                <TrendingUp className="h-8 w-8 text-luxury-gold mx-auto" />
+              </div>
+              <div className="text-2xl font-bold text-white">$2.5B+</div>
+              <div className="text-white/80 text-sm">Sales Volume</div>
+            </div>
+            <div className="text-center">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
+                <Users className="h-8 w-8 text-luxury-gold mx-auto" />
+              </div>
+              <div className="text-2xl font-bold text-white">1,200+</div>
+              <div className="text-white/80 text-sm">Happy Clients</div>
+            </div>
+            <div className="text-center">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
+                <Award className="h-8 w-8 text-luxury-gold mx-auto" />
+              </div>
+              <div className="text-2xl font-bold text-white">25+</div>
+              <div className="text-white/80 text-sm">Years Experience</div>
+            </div>
+            <div className="text-center">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
+                <Search className="h-8 w-8 text-luxury-gold mx-auto" />
               </div>
               <div className="text-2xl font-bold text-white">500+</div>
               <div className="text-white/80 text-sm">Properties Sold</div>

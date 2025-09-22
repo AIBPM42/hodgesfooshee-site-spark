@@ -14,45 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      audit_logs: {
-        Row: {
-          created_at: string | null
-          id: string
-          ip_address: unknown | null
-          metadata: Json | null
-          operation: string
-          record_id: string | null
-          session_id: string | null
-          table_name: string
-          user_agent: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          ip_address?: unknown | null
-          metadata?: Json | null
-          operation: string
-          record_id?: string | null
-          session_id?: string | null
-          table_name: string
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          ip_address?: unknown | null
-          metadata?: Json | null
-          operation?: string
-          record_id?: string | null
-          session_id?: string | null
-          table_name?: string
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       authors: {
         Row: {
           avatar_url: string | null
@@ -191,30 +152,6 @@ export type Database = {
           order_index?: number | null
           section?: string
           url?: string
-        }
-        Relationships: []
-      }
-      leads: {
-        Row: {
-          created_at: string | null
-          email: string | null
-          id: string
-          name: string | null
-          phone: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          email?: string | null
-          id?: string
-          name?: string | null
-          phone?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string | null
-          id?: string
-          name?: string | null
-          phone?: string | null
         }
         Relationships: []
       }
@@ -400,33 +337,6 @@ export type Database = {
           },
         ]
       }
-      rate_limits: {
-        Row: {
-          action: string
-          count: number | null
-          created_at: string | null
-          id: string
-          identifier: string
-          window_start: string | null
-        }
-        Insert: {
-          action: string
-          count?: number | null
-          created_at?: string | null
-          id?: string
-          identifier: string
-          window_start?: string | null
-        }
-        Update: {
-          action?: string
-          count?: number | null
-          created_at?: string | null
-          id?: string
-          identifier?: string
-          window_start?: string | null
-        }
-        Relationships: []
-      }
       theme_tokens: {
         Row: {
           key: string
@@ -442,30 +352,6 @@ export type Database = {
           key?: string
           updated_at?: string | null
           value?: string
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          created_at: string | null
-          created_by: string | null
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          created_by?: string | null
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          created_by?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
         }
         Relationships: []
       }
@@ -530,40 +416,6 @@ export type Database = {
       }
     }
     Functions: {
-      check_rate_limit: {
-        Args: {
-          p_action: string
-          p_identifier: string
-          p_max_requests: number
-          p_window_minutes: number
-        }
-        Returns: boolean
-      }
-      has_any_role: {
-        Args: {
-          _roles: Database["public"]["Enums"]["app_role"][]
-          _user_id: string
-        }
-        Returns: boolean
-      }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
-      log_data_access: {
-        Args: {
-          p_ip_address?: unknown
-          p_metadata?: Json
-          p_operation: string
-          p_record_id?: string
-          p_table_name: string
-          p_user_agent?: string
-        }
-        Returns: undefined
-      }
       populate_cities_from_mls: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -606,7 +458,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "agent" | "viewer"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -733,8 +585,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "agent", "viewer"],
-    },
+    Enums: {},
   },
 } as const
