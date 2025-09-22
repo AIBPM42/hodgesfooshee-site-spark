@@ -2,6 +2,7 @@ import ProfessionalHeader from "@/components/ProfessionalHeader";
 import PropertySearchHero from "@/components/PropertySearchHero";
 import FeaturedProperties from "@/components/FeaturedProperties";
 import NashvilleInsiderAccess from "@/components/NashvilleInsiderAccess";
+import LatestMarketInsights from "@/components/LatestMarketInsights";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -9,8 +10,8 @@ const Index = () => {
     <div className="min-h-screen">
       <ProfessionalHeader />
       <PropertySearchHero />
-      <FeaturedProperties />
       <NashvilleInsiderAccess />
+      <LatestMarketInsights />
       <Footer />
     </div>
   );
