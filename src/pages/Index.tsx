@@ -1,16 +1,23 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
+import PropertySearch from "@/components/PropertySearch";
+import MarketStats from "@/components/MarketStats";
 import ServicesSection from "@/components/ServicesSection";
+import InsiderAccess from "@/components/InsiderAccess";
+import BlogSection from "@/components/BlogSection";
 import Footer from "@/components/Footer";
 
-// Phase 2-4: Full Site Recovery with Progressive Integration
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main>
         <HeroSection />
+        <PropertySearch />
+        <MarketStats />
         <ServicesSection />
+        <InsiderAccess />
+        <BlogSection />
       </main>
       <Footer />
     </div>
