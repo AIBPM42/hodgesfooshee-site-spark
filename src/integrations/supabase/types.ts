@@ -534,8 +534,8 @@ export type Database = {
         Args: {
           p_action: string
           p_identifier: string
-          p_max_requests?: number
-          p_window_minutes?: number
+          p_max_requests: number
+          p_window_minutes: number
         }
         Returns: boolean
       }
