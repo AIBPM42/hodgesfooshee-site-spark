@@ -12,6 +12,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti CDN Fallback -->
+    <script>
+      window.__confetti_loaded = false;
+      if (typeof window !== 'undefined' && !window.confetti) {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js';
+        script.onload = () => { window.__confetti_loaded = true; };
+        document.head.appendChild(script);
+      }
+    </script>
 
     <meta property="og:title" content="Hodges & Fooshee Realty - Luxury Real Estate Specialists" />
     <meta property="og:description" content="Premium real estate services with 25+ years of experience. Find your dream home with our award-winning team." />

@@ -1,10 +1,13 @@
+import { useState } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
 import Footer from "@/components/Footer";
+import { LeadModal } from "@/components/LeadModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, Quote } from "lucide-react";
+import { confettiCannon } from "@/lib/confetti";
 
 const testimonials = [
   {
@@ -28,6 +31,8 @@ const testimonials = [
 ];
 
 const Index = () => {
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
+  
   return (
     <div className="min-h-screen">
       <Header />
@@ -81,17 +86,39 @@ const Index = () => {
             Let our experienced team guide you through every step of your real estate journey.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="luxury" size="lg" className="text-lg px-8 py-3">
+            <Button 
+              variant="luxury" 
+              size="lg" 
+              className="text-lg px-8 py-3"
+              onClick={confettiCannon}
+            >
               Browse Properties
             </Button>
-            <Button variant="hero" size="lg" className="text-lg px-8 py-3">
+            <Button 
+              variant="hero" 
+              size="lg" 
+              className="text-lg px-8 py-3"
+              onClick={confettiCannon}
+            >
               Schedule Consultation
+            </Button>
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-3 bg-black text-white hover:bg-black/80 font-semibold"
+              onClick={() => setLeadModalOpen(true)}
+            >
+              Get Instant Access
             </Button>
           </div>
         </div>
       </section>
       
       <Footer />
+      
+      <LeadModal 
+        open={leadModalOpen} 
+        onClose={() => setLeadModalOpen(false)} 
+      />
     </div>
   );
 };
