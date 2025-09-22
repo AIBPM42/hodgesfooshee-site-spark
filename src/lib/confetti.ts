@@ -2,11 +2,11 @@ import confetti from 'canvas-confetti';
 
 // Hodges & Fooshee brand colors
 const HF_COLORS = [
-  '#F04F23', // HF Orange
-  '#6F3FA0', // HF Purple  
-  '#7BB542', // HF Green
-  '#F0B323', // HF Yellow
-  '#121212'  // HF Black
+  '#f26522', // HF Orange
+  '#6f2dbd', // HF Purple  
+  '#7bb440', // HF Green
+  '#c0392b', // HF Red
+  '#000000'  // Black
 ];
 
 export const confettiCannon = () => {
