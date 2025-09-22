@@ -18,6 +18,8 @@ const buttonVariants = cva(
         luxury: "bg-gradient-luxury text-luxury-gold-foreground hover:shadow-luxury font-semibold shadow-card",
         hero: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-premium border border-primary/20 backdrop-blur-sm",
         premium: "bg-background text-foreground border border-border hover:bg-accent hover:text-accent-foreground shadow-card",
+        orange: "bg-orange text-orange-foreground hover:bg-orange-hover font-semibold transition-smooth",
+        "orange-outline": "border-2 border-orange text-orange hover:bg-orange hover:text-orange-foreground transition-smooth",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -47,9 +47,10 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        luxury: {
-          gold: "hsl(var(--luxury-gold))",
-          "gold-foreground": "hsl(var(--luxury-gold-foreground))",
+        orange: {
+          DEFAULT: "hsl(25 95% 53%)",
+          foreground: "hsl(220 25% 8%)",
+          hover: "hsl(20 100% 60%)",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -64,12 +65,12 @@ export default {
       },
       backgroundImage: {
         "gradient-primary": "var(--gradient-primary)",
-        "gradient-luxury": "var(--gradient-luxury)",
+        "gradient-orange": "var(--gradient-orange)",
         "gradient-hero": "var(--gradient-hero)",
       },
       boxShadow: {
         premium: "var(--shadow-premium)",
-        luxury: "var(--shadow-luxury)",
+        orange: "var(--shadow-orange)",
         card: "var(--shadow-card)",
       },
       transitionTimingFunction: {
