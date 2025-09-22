@@ -56,12 +56,12 @@ const Index = () => {
             {testimonials.map((testimonial, index) => (
               <Card key={index} className="hover:shadow-card transition-smooth">
                 <CardContent className="p-8">
-                  <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-luxury-gold fill-current" />
-                    ))}
-                  </div>
-                  <Quote className="h-8 w-8 text-luxury-gold mb-4" />
+                   <div className="flex items-center mb-4">
+                     {[...Array(testimonial.rating)].map((_, i) => (
+                       <Star key={i} className="h-5 w-5 text-luxury-gold fill-current" />
+                     ))}
+                   </div>
+                   <Quote className="h-8 w-8 text-luxury-gold mb-4" />
                   <p className="text-muted-foreground mb-6 leading-relaxed">
                     "{testimonial.content}"
                   </p>
@@ -77,7 +77,7 @@ const Index = () => {
       </section>
       
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-primary text-primary-foreground">
+      <section className="py-20 bg-gradient-to-r from-primary to-secondary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
             Ready to Find Your Dream Home?

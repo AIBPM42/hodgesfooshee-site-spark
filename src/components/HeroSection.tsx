@@ -12,7 +12,7 @@ const HeroSection = () => {
           alt="Luxury home exterior with professional landscaping" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-hero"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent"></div>
       </div>
       
       {/* Content */}
@@ -40,28 +40,28 @@ const HeroSection = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
             <div className="text-center">
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
-                <TrendingUp className="h-8 w-8 text-luxury-gold mx-auto" />
-              </div>
-              <div className="text-2xl font-bold text-white">$2.5B+</div>
-              <div className="text-white/80 text-sm">Sales Volume</div>
-            </div>
-            <div className="text-center">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
-                <Users className="h-8 w-8 text-luxury-gold mx-auto" />
-              </div>
-              <div className="text-2xl font-bold text-white">1,200+</div>
-              <div className="text-white/80 text-sm">Happy Clients</div>
-            </div>
-            <div className="text-center">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
-                <Award className="h-8 w-8 text-luxury-gold mx-auto" />
-              </div>
-              <div className="text-2xl font-bold text-white">25+</div>
-              <div className="text-white/80 text-sm">Years Experience</div>
-            </div>
-            <div className="text-center">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
-                <Search className="h-8 w-8 text-luxury-gold mx-auto" />
+               <TrendingUp className="h-8 w-8 text-luxury-gold mx-auto" />
+             </div>
+             <div className="text-2xl font-bold text-white">$2.5B+</div>
+             <div className="text-white/80 text-sm">Sales Volume</div>
+           </div>
+           <div className="text-center">
+             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
+               <Users className="h-8 w-8 text-luxury-gold mx-auto" />
+             </div>
+             <div className="text-2xl font-bold text-white">1,200+</div>
+             <div className="text-white/80 text-sm">Happy Clients</div>
+           </div>
+           <div className="text-center">
+             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
+               <Award className="h-8 w-8 text-luxury-gold mx-auto" />
+             </div>
+             <div className="text-2xl font-bold text-white">25+</div>
+             <div className="text-white/80 text-sm">Years Experience</div>
+           </div>
+           <div className="text-center">
+             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-2">
+               <Search className="h-8 w-8 text-luxury-gold mx-auto" />
               </div>
               <div className="text-2xl font-bold text-white">500+</div>
               <div className="text-white/80 text-sm">Properties Sold</div>

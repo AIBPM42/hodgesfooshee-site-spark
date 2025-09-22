@@ -116,3 +116,8 @@ body {
   font-size: 0.75rem;
   color: hsl(var(--accent-foreground));
 }
+
+/* Utility classes for missing Tailwind classes */
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
