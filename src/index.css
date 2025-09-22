@@ -20,25 +20,25 @@ body {
   --hf-red:    10 62% 46%;   /* #C23B22 */
   --hf-black:  0 0% 4%;      /* #0B0B0F */
 
-  --background: var(--hf-black);
-  --foreground: 0 0% 100%;
-  --card: 0 0% 6%;
-  --card-foreground: 0 0% 100%;
-  --popover: 0 0% 8%;
-  --popover-foreground: 0 0% 100%;
+  --background: 0 0% 100%;   /* White background */
+  --foreground: 0 0% 9%;
+  --card: 0 0% 98%;          /* Light card background */
+  --card-foreground: 0 0% 9%;    /* Dark text on light cards */
+  --popover: 0 0% 100%;          /* White popover */
+  --popover-foreground: 0 0% 9%; /* Dark text */
 
   --primary: var(--hf-orange);
   --primary-foreground: 0 0% 100%;
   --secondary: var(--hf-purple);
   --secondary-foreground: 0 0% 100%;
-  --muted: 220 8% 22%;
-  --muted-foreground: 0 0% 82%;
+  --muted: 0 0% 96%;             /* Light muted background */
+  --muted-foreground: 0 0% 45%;  /* Medium gray text */
   --accent: var(--hf-green);
   --accent-foreground: 0 0% 0%;
   --destructive: var(--hf-red);
   --destructive-foreground: 0 0% 100%;
-  --border: 0 0% 18%;
-  --input: 0 0% 18%;
+  --border: 0 0% 88%;            /* Light border */
+  --input: 0 0% 96%;             /* Light input background */
   --ring: var(--hf-orange);
 
   /* Security-focused design tokens */
