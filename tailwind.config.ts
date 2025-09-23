@@ -52,17 +52,22 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Hodges brand palette
+        brand: {
+          50: '#eef8ff',
+          100: '#d8f0ff',
+          200: '#b7e3ff',
+          500: '#11a0d9',
+          600: '#0a80b1',   // primary
+          700: '#096a93',   // hover
+          900: '#063f57',   // deep accents
+        },
+        surface: '#f6f9fc',
         // Glass morphism colors
         glass: {
           DEFAULT: "hsl(var(--glass))",
           light: "hsl(var(--glass-light))",
           dark: "hsl(var(--glass-dark))",
-        },
-        // Premium brand colors
-        brand: {
-          DEFAULT: "hsl(var(--brand-primary))",
-          secondary: "hsl(var(--brand-secondary))",
-          accent: "hsl(var(--brand-accent))",
         },
       },
       backgroundImage: {
@@ -71,9 +76,10 @@ export default {
         "gradient-accent": "var(--gradient-accent)",
         "gradient-glass": "var(--gradient-glass)",
         "gradient-hero": "var(--gradient-hero)",
+        "glass-gradient": "radial-gradient(1200px 600px at 10% -10%, rgba(17,160,217,.22), transparent 60%), radial-gradient(1000px 500px at 110% 10%, rgba(9,106,147,.15), transparent 60%)",
       },
       boxShadow: {
-        glass: "var(--shadow-glass)",
+        glass: "0 8px 24px rgba(0,0,0,.08)",
         premium: "var(--shadow-premium)",
         soft: "var(--shadow-soft)",
       },
