@@ -1,8 +1,11 @@
 import SearchHub from "@/components/SearchHub";
+import ProfessionalHeader from "@/components/ProfessionalHeader";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-hero">
+      <ProfessionalHeader />
+      
       {/* Hero Section with SearchHub */}
       <section className="relative py-20 px-4">
         <div className="container mx-auto max-w-6xl text-center">
