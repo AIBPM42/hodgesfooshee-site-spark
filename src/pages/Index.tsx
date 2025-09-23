@@ -1,18 +1,22 @@
-import ProfessionalHeader from "@/components/ProfessionalHeader";
-import PropertySearchHero from "@/components/PropertySearchHero";
-import FeaturedProperties from "@/components/FeaturedProperties";
-import NashvilleInsiderAccess from "@/components/NashvilleInsiderAccess";
-import LatestMarketInsights from "@/components/LatestMarketInsights";
-import Footer from "@/components/Footer";
+import SearchHub from "@/components/SearchHub";
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
-      <ProfessionalHeader />
-      <PropertySearchHero />
-      <NashvilleInsiderAccess />
-      <LatestMarketInsights />
-      <Footer />
+    <div className="min-h-screen bg-gradient-hero">
+      {/* Hero Section with SearchHub */}
+      <section className="relative py-20 px-4">
+        <div className="container mx-auto max-w-6xl text-center">
+          <h1 className="text-5xl md:text-7xl font-display font-bold text-gradient mb-6">
+            Find Your Perfect Home
+          </h1>
+          <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+            Search Nashville's premier MLS database with real-time listings, open houses, and market insights
+          </p>
+          
+          {/* SearchHub Component - No Results, Just Navigation */}
+          <SearchHub />
+        </div>
+      </section>
     </div>
   );
 };
