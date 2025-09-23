@@ -155,7 +155,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .result-card {
-  @apply glass-light rounded-lg p-6 hover:glass transition-all duration-300 hover:shadow-soft;
+  @apply glass-light rounded-lg p-6 transition-all duration-300 hover:shadow-soft;
+}
+
+.result-card:hover {
+  @apply backdrop-blur-md bg-glass border border-white/20;
+  box-shadow: var(--shadow-glass);
 }
 
 /* Animation Classes */
