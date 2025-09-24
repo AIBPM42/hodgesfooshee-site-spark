@@ -1,4 +1,4 @@
-import SearchHub from "@/components/SearchHub";
+import SmartSearchBar from "@/components/SmartSearchBar";
 import ProfessionalHeader from "@/components/ProfessionalHeader";
 import FeaturedProperties from "@/components/FeaturedProperties";
 import ServicesSection from "@/components/ServicesSection";
@@ -6,11 +6,16 @@ import LatestMarketInsights from "@/components/LatestMarketInsights";
 import Footer from "@/components/Footer";
 
 const Index = () => {
+  function handleSearch(params: Record<string,string>) {
+    const qs = new URLSearchParams({ page: "1", page_size: "12", ...params }).toString();
+    window.location.href = `/mls?${qs}`;
+  }
+
   return (
     <div className="min-h-screen bg-glass-gradient">
       <ProfessionalHeader />
       
-      {/* Hero Section with SearchHub */}
+      {/* Hero Section with SmartSearchBar */}
       <section className="relative py-20 px-4" style={{
         backgroundImage: 'url("/hodges-hero-bg.jpg")',
         backgroundSize: 'cover',
@@ -26,8 +31,8 @@ const Index = () => {
             Discover exceptional properties across Middle Tennessee with Nashville's most trusted real estate experts
           </p>
           
-          {/* SearchHub Component */}
-          <SearchHub />
+          {/* SmartSearchBar Component */}
+          <SmartSearchBar onGo={handleSearch} />
           
           {/* Stats Section */}
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
