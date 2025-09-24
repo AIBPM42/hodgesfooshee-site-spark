@@ -111,9 +111,16 @@ serve(async (req) => {
     }
 
     const tokenData = await tokenResponse.json()
-    console.log('Received token response from Realtyna')
+    console.log('Received token response from Realtyna:', JSON.stringify(tokenData, null, 2))
     
-    const expiresAt = new Date(Date.now() + (tokenData.expires_in * 1000))
+    // Validate expires_in and provide default (1 hour) if invalid
+    let expiresInSeconds = tokenData.expires_in
+    if (!expiresInSeconds || isNaN(Number(expiresInSeconds))) {
+      console.log('Invalid or missing expires_in, using default of 3600 seconds (1 hour)')
+      expiresInSeconds = 3600 // Default to 1 hour
+    }
+    
+    const expiresAt = new Date(Date.now() + (Number(expiresInSeconds) * 1000))
     
     // Store the new token
     const { data: newToken, error: insertError } = await supabase
