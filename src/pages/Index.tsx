@@ -1,5 +1,9 @@
 import SearchHub from "@/components/SearchHub";
 import ProfessionalHeader from "@/components/ProfessionalHeader";
+import FeaturedProperties from "@/components/FeaturedProperties";
+import ServicesSection from "@/components/ServicesSection";
+import LatestMarketInsights from "@/components/LatestMarketInsights";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
@@ -46,6 +50,18 @@ const Index = () => {
           </div>
         </div>
       </section>
+      
+      {/* Featured Properties */}
+      <FeaturedProperties />
+      
+      {/* Services Section */}
+      <ServicesSection />
+      
+      {/* Latest Market Insights */}
+      <LatestMarketInsights />
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

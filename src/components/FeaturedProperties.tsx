@@ -58,7 +58,7 @@ const featuredProperties = [
 
 const FeaturedProperties = () => {
   return (
-    <section className="py-20 bg-background">
+    <section className="py-20 bg-surface">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6">
@@ -81,10 +81,10 @@ const FeaturedProperties = () => {
                 />
                 <Badge 
                   className={`absolute top-3 left-3 ${
-                    property.badge === 'FEATURED' ? 'bg-primary' :
-                    property.badge === 'EXCLUSIVE' ? 'bg-orange' :
-                    property.badge === 'COMING SOON' ? 'bg-accent' :
-                    'bg-secondary'
+                    property.badge === 'FEATURED' ? 'bg-brand-600' :
+                    property.badge === 'EXCLUSIVE' ? 'bg-brand-700' :
+                    property.badge === 'COMING SOON' ? 'bg-brand-500' :
+                    'bg-brand-200 text-brand-700'
                   }`}
                 >
                   {property.badge}
@@ -107,7 +107,7 @@ const FeaturedProperties = () => {
                     <MapPin className="h-4 w-4 mr-1" />
                     {property.address}
                   </div>
-                  <div className="text-2xl font-bold text-primary">
+                  <div className="text-2xl font-bold text-brand-600">
                     ${property.price.toLocaleString()}
                   </div>
                 </div>
@@ -128,7 +128,7 @@ const FeaturedProperties = () => {
                 </div>
 
                 <Link to={`/property/${property.id}`}>
-                  <Button variant="orange" className="w-full">
+                  <Button className="btn-brand w-full">
                     View Details
                   </Button>
                 </Link>
@@ -139,7 +139,7 @@ const FeaturedProperties = () => {
 
         <div className="text-center">
           <Link to="/listings">
-            <Button variant="orange-outline" size="lg">
+            <Button className="btn-ghost" size="lg">
               View All Properties
             </Button>
           </Link>
