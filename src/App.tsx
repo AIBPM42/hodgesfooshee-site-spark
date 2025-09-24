@@ -12,6 +12,7 @@ import AgentResults from "./pages/AgentResults";
 import OfficeResults from "./pages/OfficeResults";
 import PropertyDetail from "./pages/PropertyDetail";
 import NotFound from "./pages/NotFound";
+import MLS from "./pages/MLS";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,6 +32,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/mls" element={<MLS />} />
             <Route path="/search/properties" element={<PropertySearchResults />} />
             <Route path="/search/open-houses" element={<OpenHouseResults />} />
             <Route path="/search/zip" element={<ZipSearchResults />} />
