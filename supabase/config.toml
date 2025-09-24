@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.manage-oauth-tokens]
 verify_jwt = false
+
+[functions.realtyna-connect]
+verify_jwt = false
+
+[functions.realtyna-callback]
+verify_jwt = false
