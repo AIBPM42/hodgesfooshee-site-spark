@@ -236,6 +236,27 @@ export type Database = {
         }
         Relationships: []
       }
+      ingest_state: {
+        Row: {
+          last_cursor: string | null
+          last_item_ts: string | null
+          last_run_at: string | null
+          source: string
+        }
+        Insert: {
+          last_cursor?: string | null
+          last_item_ts?: string | null
+          last_run_at?: string | null
+          source: string
+        }
+        Update: {
+          last_cursor?: string | null
+          last_item_ts?: string | null
+          last_run_at?: string | null
+          source?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           created_at: string | null
@@ -502,6 +523,42 @@ export type Database = {
           id?: string
           identifier?: string
           window_start?: string | null
+        }
+        Relationships: []
+      }
+      realtyna_tokens: {
+        Row: {
+          access_token: string
+          created_at: string | null
+          expires_at: string
+          id: string
+          principal_id: string | null
+          principal_type: string
+          refresh_token: string | null
+          scope: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_token: string
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          principal_id?: string | null
+          principal_type: string
+          refresh_token?: string | null
+          scope?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_token?: string
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          principal_id?: string | null
+          principal_type?: string
+          refresh_token?: string | null
+          scope?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
