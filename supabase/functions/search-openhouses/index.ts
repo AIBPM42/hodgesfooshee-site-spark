@@ -1,21 +1,33 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
+
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+)
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
+  const startTime = Date.now()
+
   try {
     const url = new URL(req.url)
     const searchParams = url.searchParams
     
-    const apiKey = Deno.env.get('REALTY_API_KEY')
-    const apiBase = 'https://api.realtyfeed.com/reso/odata'
+    // Get OAuth token for Realtyna Smart plan
+    console.log('Requesting OAuth token for open house search')
+    const tokenResponse = await supabase.functions.invoke('manage-oauth-tokens')
     
-    if (!apiKey) {
-      throw new Error('API key not configured')
+    if (!tokenResponse.data?.access_token) {
+      throw new Error('Failed to get OAuth token')
     }
+    
+    const accessToken = tokenResponse.data.access_token
+    const apiBase = 'https://api.realtyfeed.com/reso/odata'
 
     // Build open house query
     const filter = []
@@ -41,7 +53,7 @@ serve(async (req) => {
 
     const response = await fetch(`${apiBase}/OpenHouse?${queryParams}`, {
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${accessToken}`,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }
@@ -52,6 +64,24 @@ serve(async (req) => {
     }
 
     const data = await response.json()
+    const responseTime = Date.now() - startTime
+    
+    // Log API usage for monitoring
+    supabase.from('api_usage_logs').insert({
+      provider: 'realtyna',
+      endpoint: '/reso/odata/OpenHouse',
+      method: 'GET',
+      status_code: response.status,
+      response_time_ms: responseTime,
+      metadata: { 
+        search_params: Object.fromEntries(searchParams.entries()),
+        results_count: data.value?.length || 0 
+      }
+    }).then(result => {
+      if (result.error) console.error('Failed to log usage:', result.error)
+    })
+    
+    console.log(`Open house search completed in ${responseTime}ms, found ${data.value?.length || 0} results`)
     
     const openHouses = data.value?.map((oh: any) => ({
       id: oh.ListingId,
@@ -80,9 +110,25 @@ serve(async (req) => {
       },
     )
   } catch (error) {
+    const responseTime = Date.now() - startTime
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
     console.error('Search open houses error:', error)
+    
+    // Log error for monitoring
+    supabase.from('api_usage_logs').insert({
+      provider: 'realtyna',
+      endpoint: '/reso/odata/OpenHouse',
+      method: 'GET',
+      status_code: 500,
+      response_time_ms: responseTime,
+      error_message: errorMessage,
+      metadata: { error_type: 'openhouse_search_error' }
+    }).then(result => {
+      if (result.error) console.error('Failed to log error:', result.error)
+    })
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

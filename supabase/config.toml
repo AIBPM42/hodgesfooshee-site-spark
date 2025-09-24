@@ -1,1 +1,10 @@
 project_id = "xhqwmtzawqfffepcqxwf"
+
+[functions.search-properties]
+verify_jwt = false
+
+[functions.search-openhouses] 
+verify_jwt = false
+
+[functions.manage-oauth-tokens]
+verify_jwt = false

@@ -24,6 +24,7 @@ interface Property {
 
 const PropertySearchResults: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const [authStatus, setAuthStatus] = React.useState<'loading' | 'ready' | 'error'>('loading');
   
   const { data: propertiesData, isLoading, error } = useQuery({
     queryKey: ['properties', searchParams.toString()],
@@ -34,11 +35,26 @@ const PropertySearchResults: React.FC = () => {
           'Content-Type': 'application/json'
         }
       });
-      if (!response.ok) throw new Error('Failed to fetch properties');
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error:', response.status, errorText);
+        throw new Error(`API Error: ${response.status} - ${errorText}`);
+      }
       const data = await response.json();
+      setAuthStatus('ready');
       return data;
     },
+    retry: (failureCount, error) => {
+      // Retry up to 2 times for OAuth token errors
+      const errorMessage = error?.message || '';
+      if (errorMessage.includes('OAuth') && failureCount < 2) return true;
+      return false;
+    }
   });
+
+  React.useEffect(() => {
+    if (error) setAuthStatus('error');
+  }, [error]);
 
   const properties = propertiesData?.properties || [];
 
