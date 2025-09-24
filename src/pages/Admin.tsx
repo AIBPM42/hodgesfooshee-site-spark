@@ -54,7 +54,7 @@ const Admin = () => {
       }
       
       // Invalidate queries to refresh the connection status
-      queryClient.invalidateQueries({ queryKey: ['realtyna-token'] });
+      queryClient.invalidateQueries({ queryKey: ['realtyna-tokens'] });
       toast.success('Successfully connected to Realtyna');
     } catch (error) {
       console.error('Connection error:', error);
