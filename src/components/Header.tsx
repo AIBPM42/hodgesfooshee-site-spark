@@ -50,6 +50,9 @@ const Header = () => {
             <Link to="/contact" className="text-foreground hover:text-luxury-gold transition-smooth font-medium">
               Contact
             </Link>
+            <Link to="/admin" className="text-foreground hover:text-luxury-gold transition-smooth font-medium">
+              Admin
+            </Link>
           </nav>
           
           <div className="flex items-center space-x-4">
