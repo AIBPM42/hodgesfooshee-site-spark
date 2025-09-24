@@ -42,25 +42,71 @@ serve(async (req) => {
 
     // No valid token found, get a new one
     console.log('No valid token found, requesting new token from Realtyna')
+    console.log(`Using client ID: ${clientId?.substring(0, 8)}...`)
     
-    const tokenResponse = await fetch('https://api.realtyfeed.com/oauth/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/json'
-      },
-      body: new URLSearchParams({
-        grant_type: 'client_credentials',
-        client_id: clientId,
-        client_secret: clientSecret,
-        scope: 'api:read'
-      })
-    })
+    // Try multiple potential token endpoints
+    const tokenEndpoints = [
+      'https://api.realtyfeed.com/oauth/token',
+      'https://api.realtyfeed.com/token',
+      'https://api.realtyfeed.com/oauth2/token',
+      'https://api.realtyfeed.com/auth/token'
+    ];
+    
+    let tokenResponse: Response | null = null;
+    let lastError = '';
+    
+    for (const endpoint of tokenEndpoints) {
+      console.log(`Trying token endpoint: ${endpoint}`)
+      
+      try {
+        tokenResponse = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json'
+          },
+          body: new URLSearchParams({
+            grant_type: 'client_credentials',
+            client_id: clientId,
+            client_secret: clientSecret,
+            scope: 'api:read'
+          })
+        })
+        
+        console.log(`Response status for ${endpoint}: ${tokenResponse.status}`)
+        
+        if (tokenResponse.ok) {
+          console.log(`Success with endpoint: ${endpoint}`)
+          break;
+        } else {
+          const errorText = await tokenResponse.text()
+          console.log(`Failed with ${endpoint}: ${tokenResponse.status} - ${errorText}`)
+          lastError = `${tokenResponse.status}: ${errorText}`;
+          tokenResponse = null; // Reset for next iteration
+        }
+      } catch (fetchError) {
+        console.error(`Network error with ${endpoint}:`, fetchError)
+        lastError = fetchError instanceof Error ? fetchError.message : 'Network error';
+      }
+    }
 
-    if (!tokenResponse.ok) {
-      const errorText = await tokenResponse.text()
-      console.error('Token request failed:', tokenResponse.status, errorText)
-      throw new Error(`OAuth token request failed: ${tokenResponse.status}`)
+    if (!tokenResponse || !tokenResponse.ok) {
+      console.error('All token endpoints failed. Last error:', lastError)
+      
+      // Log to audit table for debugging
+      const logResult = await supabase.from('api_usage_logs').insert({
+        endpoint: 'oauth/token',
+        method: 'POST',
+        status_code: tokenResponse?.status || 0,
+        error_message: lastError,
+        provider: 'realtyna'
+      })
+      
+      if (logResult.error) {
+        console.error('Failed to log error:', logResult.error)
+      }
+      
+      throw new Error(`OAuth token request failed: ${lastError}`)
     }
 
     const tokenData = await tokenResponse.json()
