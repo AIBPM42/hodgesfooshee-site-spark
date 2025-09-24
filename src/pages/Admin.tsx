@@ -144,7 +144,7 @@ const Admin = () => {
                       Connecting...
                     </>
                   ) : tokenIsValid ? (
-                    "Refresh Connection"
+                    "Reconnect to Realtyna"
                   ) : (
                     "Connect to Realtyna"
                   )}
@@ -157,10 +157,10 @@ const Admin = () => {
         {/* Data Sync Status */}
         <Card>
           <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <RefreshCw className="h-5 w-5" />
-            Data Sync Status
-          </CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <RefreshCw className="h-5 w-5" />
+              Data Sync Status
+            </CardTitle>
             <CardDescription>
               Sync listings from RealTracs covering Middle Tennessee metro area
             </CardDescription>
