@@ -46,11 +46,20 @@ const Admin = () => {
   const connectRealtyna = async () => {
     setIsConnecting(true);
     try {
-      // Directly redirect to the OAuth function - it will handle the redirect
-      window.location.href = 'https://xhqwmtzawqfffepcqxwf.functions.supabase.co/realtyna-connect';
+      // Call the manage-oauth-tokens function to get a client credentials token
+      const response = await supabase.functions.invoke('manage-oauth-tokens');
+      
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+      
+      // Invalidate queries to refresh the connection status
+      queryClient.invalidateQueries({ queryKey: ['realtyna-token'] });
+      toast.success('Successfully connected to Realtyna');
     } catch (error) {
       console.error('Connection error:', error);
-      toast.error('Failed to connect to Realtyna');
+      toast.error('Failed to connect to Realtyna: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    } finally {
       setIsConnecting(false);
     }
   };
