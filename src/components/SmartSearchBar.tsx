@@ -66,9 +66,12 @@ export default function SmartSearchBar({
   }
 
   return (
-    <div className={`w-full rounded-3xl backdrop-blur-xl shadow-2xl p-4 md:p-6 border
-      ${variant === "compact" ? "bg-white/80 border-gray-200" : "bg-white/20 border-white/20"}`}>
-      <div className="flex flex-col gap-3">
+    <div
+      className={`w-full rounded-3xl border backdrop-blur-xl p-6 shadow-[0_8px_40px_rgba(0,0,0,0.25)]
+      ${variant === "compact" ? "bg-white/80 border-gray-200" : "bg-white/10 border-white/20"} relative`}
+    >
+      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/30 via-white/5 to-transparent pointer-events-none" />
+      <div className="relative flex flex-col gap-3">
         <input
           value={smart}
           onChange={e=>setSmart(e.target.value)}
