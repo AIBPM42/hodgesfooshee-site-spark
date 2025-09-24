@@ -14,13 +14,13 @@ const Admin = () => {
 
   // Check token status
   const { data: tokenStatus, isLoading: tokenLoading } = useQuery({
-    queryKey: ['realtyna-tokens'],
+    queryKey: ['oauth-tokens'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('realtyna_tokens')
+        .from('oauth_tokens')
         .select('*')
-        .eq('principal_type', 'app')
-        .order('updated_at', { ascending: false })
+        .eq('provider', 'realtyna')
+        .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
       
@@ -54,7 +54,7 @@ const Admin = () => {
       }
       
       // Invalidate queries to refresh the connection status
-      queryClient.invalidateQueries({ queryKey: ['realtyna-tokens'] });
+      queryClient.invalidateQueries({ queryKey: ['oauth-tokens'] });
       toast.success('Successfully connected to Realtyna');
     } catch (error) {
       console.error('Connection error:', error);
