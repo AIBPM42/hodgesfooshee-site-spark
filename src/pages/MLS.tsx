@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 type Media = { url: string; order_index: number };
 type Address = { street?: string; city?: string; county?: string; state?: string; postal_code?: string };
@@ -25,6 +27,7 @@ function useQueryParams() {
 }
 
 export default function MLS() {
+  const navigate = useNavigate();
   const qp = useQueryParams();
   const [q, setQ] = useState(qp.get("q"));
   const [minPrice, setMinPrice] = useState(qp.get("min_price",""));
@@ -77,9 +80,35 @@ export default function MLS() {
 
   const totalPages = Math.max(1, Math.ceil((count || 0) / pageSize));
 
+  const clearFilters = () => {
+    setQ(""); setMinPrice(""); setMaxPrice(""); setBeds(""); setBaths(""); setCounty(""); setCity(""); setType("");
+    setPage(1);
+  };
+
+  const hasActiveFilters = q || minPrice || maxPrice || beds || baths || county || city || type;
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-4">Live MLS Listings</h1>
+      {/* Breadcrumb Navigation */}
+      <div className="mb-4">
+        <button 
+          onClick={() => navigate("/")} 
+          className="text-primary hover:text-primary/80 text-sm"
+        >
+          Home
+        </button>
+        <span className="text-muted-foreground mx-2">•</span>
+        <span className="text-sm text-muted-foreground">MLS Search</span>
+      </div>
+      
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-semibold">Live MLS Listings</h1>
+        {hasActiveFilters && (
+          <Button variant="outline" onClick={clearFilters} size="sm">
+            Clear All Filters
+          </Button>
+        )}
+      </div>
 
       <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4">
         <input placeholder="Search city/county/type" value={q} onChange={e=>setQ(e.target.value)} className="border rounded px-3 py-2" />
@@ -105,7 +134,45 @@ export default function MLS() {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="text-gray-600">No listings match your filters.</div>
+        <div className="text-center py-12 space-y-6">
+          <div className="text-lg font-medium text-muted-foreground">No listings found</div>
+          <div className="text-sm text-muted-foreground max-w-md mx-auto">
+            We couldn't find any listings matching your current filters. Try adjusting your search criteria or browse all available properties.
+          </div>
+          
+          {/* Debug info - show active filters */}
+          {hasActiveFilters && (
+            <div className="text-xs text-muted-foreground bg-muted p-3 rounded-lg max-w-md mx-auto">
+              <div className="font-medium mb-1">Current filters:</div>
+              {q && <div>Search: "{q}"</div>}
+              {city && <div>City: "{city}"</div>}
+              {county && <div>County: "{county}"</div>}
+              {minPrice && <div>Min Price: ${minPrice}</div>}
+              {maxPrice && <div>Max Price: ${maxPrice}</div>}
+              {beds && <div>Beds: {beds}+</div>}
+              {baths && <div>Baths: {baths}+</div>}
+              {type && <div>Type: "{type}"</div>}
+            </div>
+          )}
+          
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button onClick={() => navigate("/")} variant="default">
+              Back to Home
+            </Button>
+            <Button onClick={() => navigate("/")} variant="outline">
+              Browse Market Insights
+            </Button>
+            {hasActiveFilters && (
+              <Button onClick={clearFilters} variant="outline">
+                Clear Filters
+              </Button>
+            )}
+          </div>
+          
+          <div className="text-xs text-muted-foreground">
+            Try searching for "Nashville", "Davidson", or "Williamson" to see available listings.
+          </div>
+        </div>
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

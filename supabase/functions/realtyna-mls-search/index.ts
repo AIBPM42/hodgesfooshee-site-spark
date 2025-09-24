@@ -36,9 +36,9 @@ serve(async (req) => {
     .in("status", ["Active","ComingSoon"])
     .order("updated_at", { ascending: false });
 
-  if (county) query = query.eq("county", county);
-  if (city) query = query.eq("city", city);
-  if (type) query = query.eq("property_type", type);
+  if (county) query = query.ilike("county", `%${county}%`);
+  if (city) query = query.ilike("city", `%${city}%`);
+  if (type) query = query.ilike("property_type", `%${type}%`);
 
   if (q) {
     query = query.or(`city.ilike.%${q}%,county.ilike.%${q}%,property_type.ilike.%${q}%,address.ilike.%${q}%`);
