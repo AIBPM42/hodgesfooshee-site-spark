@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.sync_realtyna]
 verify_jwt = false
+
+[functions.realtyna-mls-search]
+verify_jwt = false
