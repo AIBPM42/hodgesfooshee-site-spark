@@ -31,10 +31,15 @@ serve(async (req) => {
     .select("id, mls_id, status, price, property_type, beds, baths, sqft, address, city, county, state, zip, photos, updated_at", { count: "exact" })
     .gte("price", min)
     .lte("price", max)
-    .gte("beds", beds)
-    .gte("baths", baths)
     .in("status", ["Active","ComingSoon"])
     .order("updated_at", { ascending: false });
+
+  // Make search much more forgiving - only filter if values are provided
+  if (beds > 0) query = query.gte("beds", beds);
+  if (baths > 0) query = query.gte("baths", baths);
+  
+  if (county) query = query.ilike("county", `%${county}%`);
+  if (city) query = query.ilike("city", `%${city}%`);
 
   // Enhanced property type matching
   if (type) {
@@ -82,8 +87,32 @@ serve(async (req) => {
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
 
+  console.log("🔍 Database Query Parameters:", {
+    min_price: min,
+    max_price: max,
+    beds,
+    baths,
+    county,
+    city,
+    type,
+    free_search: q,
+    page,
+    pageSize
+  });
+
   const { data, error, count } = await query.range(from, to);
-  if (error) return new Response(error.message, { status: 400 });
+  
+  console.log("📊 Query Results:", {
+    found: data?.length || 0,
+    total: count,
+    error: error?.message,
+    sample: data?.[0] || null
+  });
+
+  if (error) {
+    console.error("❌ Database Error:", error);
+    return new Response(error.message, { status: 400, headers: corsHeaders });
+  }
 
   return new Response(JSON.stringify({ items: data, page, pageSize, count }), { 
     headers: { 

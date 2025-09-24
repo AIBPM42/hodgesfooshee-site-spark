@@ -98,6 +98,11 @@ export default function SmartSearchBar({
       type: type || parsed.type
     };
     Object.entries(vals).forEach(([k,v]) => { if (v) p[k] = v; });
+    
+    // Debug logging
+    console.log("🔍 Search Parameters:", p);
+    console.log("📝 Parsed from smart search:", parsed);
+    
     onGo(p);
   }
 
