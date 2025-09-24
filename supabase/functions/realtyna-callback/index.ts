@@ -39,30 +39,98 @@ serve(async (req) => {
     const clientSecret = Deno.env.get("REALTYNA_CLIENT_SECRET")!;
     const redirectUri = `https://xhqwmtzawqfffepcqxwf.functions.supabase.co/realtyna-callback`;
     
-    // {needs-verification} - Token endpoint (assuming standard OAuth pattern)
-    const tokenEndpoint = `${base}/oauth/token`;
+    console.log(`OAuth callback - Base: ${base}, ClientID: ${clientId?.substring(0, 8)}..., Code: ${code?.substring(0, 10)}...`);
     
-    console.log(`Exchanging code for token at: ${tokenEndpoint}`);
+    // Try multiple potential token endpoints
+    const tokenEndpoints = [
+      `${base}/oauth/token`,
+      `${base}/token`,
+      `${base}/oauth2/token`,
+      `${base}/auth/token`
+    ];
     
-    const tokenRes = await fetch(tokenEndpoint, {
-      method: "POST",
-      headers: { 
-        "content-type": "application/x-www-form-urlencoded",
-        "accept": "application/json"
-      },
-      body: new URLSearchParams({
+    let tokenRes: Response | null = null;
+    let lastError = '';
+    
+    for (const tokenEndpoint of tokenEndpoints) {
+      console.log(`Attempting token exchange at: ${tokenEndpoint}`);
+      
+      // Try with Basic Auth (common OAuth pattern)
+      const basicAuth = btoa(`${clientId}:${clientSecret}`);
+      
+      const requestBody = new URLSearchParams({
         grant_type: "authorization_code",
         code,
-        client_id: clientId,
-        client_secret: clientSecret,
         redirect_uri: redirectUri
-      })
-    });
+      });
+      
+      console.log(`Request body: ${requestBody.toString()}`);
+      
+      try {
+        tokenRes = await fetch(tokenEndpoint, {
+          method: "POST",
+          headers: { 
+            "content-type": "application/x-www-form-urlencoded",
+            "accept": "application/json",
+            "authorization": `Basic ${basicAuth}`
+          },
+          body: requestBody
+        });
+        
+        console.log(`Response status: ${tokenRes.status}`);
+        
+        if (tokenRes.ok) {
+          console.log(`Success with endpoint: ${tokenEndpoint}`);
+          break;
+        } else {
+          const errorText = await tokenRes.text();
+          console.log(`Failed with ${tokenEndpoint}: ${tokenRes.status} - ${errorText}`);
+          lastError = errorText;
+          
+          // If this failed, try with client credentials in body instead
+          if (tokenRes.status === 401 || tokenRes.status === 400) {
+            console.log(`Retrying ${tokenEndpoint} with client credentials in body...`);
+            
+            const bodyWithCredentials = new URLSearchParams({
+              grant_type: "authorization_code",
+              code,
+              client_id: clientId,
+              client_secret: clientSecret,
+              redirect_uri: redirectUri
+            });
+            
+            tokenRes = await fetch(tokenEndpoint, {
+              method: "POST",
+              headers: { 
+                "content-type": "application/x-www-form-urlencoded",
+                "accept": "application/json"
+              },
+              body: bodyWithCredentials
+            });
+            
+            console.log(`Retry response status: ${tokenRes.status}`);
+            
+            if (tokenRes.ok) {
+              console.log(`Success with credentials in body: ${tokenEndpoint}`);
+              break;
+            } else {
+              const retryError = await tokenRes.text();
+              console.log(`Retry failed: ${tokenRes.status} - ${retryError}`);
+              lastError = retryError;
+            }
+          }
+        }
+        
+        tokenRes = null; // Reset for next iteration
+      } catch (fetchError) {
+        console.error(`Network error with ${tokenEndpoint}:`, fetchError);
+        lastError = fetchError instanceof Error ? fetchError.message : 'Network error';
+      }
+    }
     
-    if (!tokenRes.ok) {
-      const errorText = await tokenRes.text();
-      console.error('Token exchange failed:', tokenRes.status, errorText);
-      return new Response(`Token exchange failed: ${errorText}`, { 
+    if (!tokenRes || !tokenRes.ok) {
+      console.error('All token endpoints failed. Last error:', lastError);
+      return new Response(`Token exchange failed: ${lastError || 'All endpoints failed'}`, { 
         status: 502, 
         headers: corsHeaders 
       });
