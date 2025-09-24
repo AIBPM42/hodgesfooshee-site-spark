@@ -64,7 +64,11 @@ serve(async (req) => {
     query = query.ilike("property_type", `%${typeFilter}%`);
   }
 
-  if (q) {
+  // Smart free text search - only use when we don't have specific filters already
+  // If we have city, beds, or baths extracted, skip free-text search to avoid over-filtering
+  const hasSpecificFilters = city || beds > 0 || baths > 0 || type;
+  
+  if (q && q.trim() && !hasSpecificFilters) {
     // Enhanced free-text search with property type synonyms
     const searchTerms = [
       `city.ilike.%${q}%`,
