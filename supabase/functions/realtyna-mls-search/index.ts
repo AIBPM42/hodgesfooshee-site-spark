@@ -36,12 +36,47 @@ serve(async (req) => {
     .in("status", ["Active","ComingSoon"])
     .order("updated_at", { ascending: false });
 
-  if (county) query = query.ilike("county", `%${county}%`);
-  if (city) query = query.ilike("city", `%${city}%`);
-  if (type) query = query.ilike("property_type", `%${type}%`);
+  // Enhanced property type matching
+  if (type) {
+    // Map common property type synonyms to actual database values
+    const typeMapping: Record<string, string[]> = {
+      "Residential": ["house", "residential", "single family", "single-family", "sfh"],
+      "Condo": ["condo", "condominium", "condos"],
+      "Townhouse": ["townhouse", "townhome", "townhomes"],
+      "Land": ["land", "lot", "vacant"],
+      "Multi-Family": ["multifamily", "multi-family", "duplex", "apartment"]
+    };
+    
+    let typeFilter = type;
+    // Find if the input type matches any of our synonyms
+    for (const [dbType, synonyms] of Object.entries(typeMapping)) {
+      if (synonyms.some(synonym => synonym.toLowerCase() === type.toLowerCase())) {
+        typeFilter = dbType;
+        break;
+      }
+    }
+    
+    query = query.ilike("property_type", `%${typeFilter}%`);
+  }
 
   if (q) {
-    query = query.or(`city.ilike.%${q}%,county.ilike.%${q}%,property_type.ilike.%${q}%,address.ilike.%${q}%`);
+    // Enhanced free-text search with property type synonyms
+    const searchTerms = [
+      `city.ilike.%${q}%`,
+      `county.ilike.%${q}%`,
+      `property_type.ilike.%${q}%`,
+      `address.ilike.%${q}%`
+    ];
+    
+    // Add property type synonym searches for common terms
+    if (q.toLowerCase().includes('house') || q.toLowerCase().includes('residential')) {
+      searchTerms.push(`property_type.ilike.%Residential%`);
+    }
+    if (q.toLowerCase().includes('condo')) {
+      searchTerms.push(`property_type.ilike.%Condo%`);
+    }
+    
+    query = query.or(searchTerms.join(','));
   }
 
   const from = (page - 1) * pageSize;

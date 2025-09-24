@@ -12,18 +12,54 @@ function toNumber(v: string) {
 function parseSmart(input: string) {
   const tokens = input.toLowerCase().split(/\s+/).filter(Boolean);
   let city = "", county = "", type = "", beds = "", baths = "", min_price = "", max_price = "";
-  const typeWords = ["house","condo","townhome","townhouse","land","multifamily","sfh","duplex"];
-  for (const t of tokens) {
+  const typeWords = ["house","condo","townhome","townhouse","land","multifamily","sfh","duplex","residential","single"];
+  
+  // Handle price ranges like "400k-800k"
+  const priceRangeMatch = input.match(/(\d+(?:\.\d+)?[km]?)\s*-\s*(\d+(?:\.\d+)?[km]?)/i);
+  if (priceRangeMatch) {
+    min_price = toNumber(priceRangeMatch[1]);
+    max_price = toNumber(priceRangeMatch[2]);
+  }
+  
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+    const nextToken = tokens[i + 1];
+    
+    // Handle "3 bed", "2 bath", "3 bedroom", "2 bathroom"
+    if (/^\d+$/.test(t) && nextToken) {
+      if (/^(bed|bedroom|bd|bds)s?$/i.test(nextToken)) {
+        beds = t;
+        i++; // skip next token since we consumed it
+        continue;
+      }
+      if (/^(bath|bathroom|ba)s?$/i.test(nextToken)) {
+        baths = t;
+        i++; // skip next token since we consumed it
+        continue;
+      }
+    }
+    
+    // Handle compact forms like "3bd", "2ba"
     if (/^\d+bd$/.test(t) || /^\d+bds$/.test(t) || /^\d+bed/.test(t)) beds = t.replace(/\D/g, "");
     else if (/^\d+ba$/.test(t) || /^\d+bath/.test(t)) baths = t.replace(/\D/g, "");
-    else if (/^\d+k$/.test(t) || /^\d+m$/.test(t) || /^\d{3,}$/.test(t)) {
+    // Handle standalone prices (only if we haven't found a range)
+    else if (!min_price && !max_price && (/^\d+k$/.test(t) || /^\d+m$/.test(t) || /^\d{3,}$/.test(t))) {
       const n = toNumber(t);
       if (!min_price) min_price = n; else max_price = n;
     } else if (typeWords.includes(t)) {
-      type = t === "sfh" ? "Single Family" : t.charAt(0).toUpperCase() + t.slice(1);
-    } else if (!city) city = t.charAt(0).toUpperCase() + t.slice(1);
-    else if (!county) county = t.charAt(0).toUpperCase() + t.slice(1);
+      // Enhanced property type mapping
+      if (t === "sfh" || t === "single") type = "Single Family";
+      else if (t === "house" || t === "residential") type = "Residential";
+      else type = t.charAt(0).toUpperCase() + t.slice(1);
+    } else if (!city && !/^\d/.test(t) && !typeWords.includes(t)) {
+      // Only assign to city if it's not a number or type word
+      city = t.charAt(0).toUpperCase() + t.slice(1);
+    } else if (!county && !/^\d/.test(t) && !typeWords.includes(t) && city) {
+      // Only assign to county if we already have a city
+      county = t.charAt(0).toUpperCase() + t.slice(1);
+    }
   }
+  
   if (min_price && max_price && Number(min_price) > Number(max_price)) [min_price, max_price] = [max_price, min_price];
   return { city, county, type, beds, baths, min_price, max_price };
 }
@@ -110,8 +146,18 @@ export default function SmartSearchBar({
             {parsed.baths && ` • ${parsed.baths} ba`} 
             {parsed.min_price && ` • $${Number(parsed.min_price).toLocaleString()}+`}
             {parsed.max_price && ` – $${Number(parsed.max_price).toLocaleString()}`}
+            {parsed.type && ` • ${parsed.type}`}
           </div>
         </div>
+        
+        {/* Debug info when there's input but no matches */}
+        {smart && !parsed.city && !parsed.beds && !parsed.baths && !parsed.min_price && !parsed.type && (
+          <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-sm text-yellow-800">
+              💡 <strong>Search tip:</strong> Try "Nashville 3 bed 2 bath 400k-800k house" or use the individual fields below.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
