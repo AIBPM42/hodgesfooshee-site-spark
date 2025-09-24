@@ -66,40 +66,50 @@ export default function SmartSearchBar({
   }
 
   return (
-    <div
-      className={`w-full rounded-3xl border backdrop-blur-xl p-6 shadow-[0_8px_40px_rgba(0,0,0,0.25)]
-      ${variant === "compact" ? "bg-white/80 border-gray-200" : "bg-white/10 border-white/20"} relative`}
-    >
-      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/30 via-white/5 to-transparent pointer-events-none" />
-      <div className="relative flex flex-col gap-3">
+    <div className="w-full rounded-3xl border border-gray-300 bg-white/95 p-4 md:p-6 shadow-lg">
+      <div className="flex flex-col gap-3">
+        {/* main free-text */}
         <input
           value={smart}
           onChange={e=>setSmart(e.target.value)}
+          onKeyDown={(e)=>{ if(e.key==='Enter') go(); }}
           placeholder="Try: Franklin 3bd 2ba 400k-800k house"
-          className={`w-full rounded-2xl px-4 py-3 outline-none ${variant==='compact' ? 'bg-white' : 'bg-white/70 focus:bg-white'}`}
+          className="w-full rounded-2xl px-4 py-3 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none"
         />
+
+        {/* structured row */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-          <input value={minPrice} onChange={e=>setMinPrice(e.target.value)} placeholder="Min $" className="rounded-xl px-3 py-2 bg-white/70 focus:bg-white outline-none" />
-          <input value={maxPrice} onChange={e=>setMaxPrice(e.target.value)} placeholder="Max $" className="rounded-xl px-3 py-2 bg-white/70 focus:bg-white outline-none" />
-          <input value={beds} onChange={e=>setBeds(e.target.value)} placeholder="Beds" className="rounded-xl px-3 py-2 bg-white/70 focus:bg-white outline-none" />
-          <input value={baths} onChange={e=>setBaths(e.target.value)} placeholder="Baths" className="rounded-xl px-3 py-2 bg-white/70 focus:bg-white outline-none" />
-          <input value={city} onChange={e=>setCity(e.target.value)} placeholder="City" className="rounded-xl px-3 py-2 bg-white/70 focus:bg-white outline-none" />
-          <input value={county} onChange={e=>setCounty(e.target.value)} placeholder="County" className="rounded-xl px-3 py-2 bg-white/70 focus:bg-white outline-none" />
+          <input value={minPrice} onChange={e=>setMinPrice(e.target.value)} placeholder="Min $" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
+          <input value={maxPrice} onChange={e=>setMaxPrice(e.target.value)} placeholder="Max $" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
+          <input value={beds} onChange={e=>setBeds(e.target.value)} placeholder="Beds" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
+          <input value={baths} onChange={e=>setBaths(e.target.value)} placeholder="Baths" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
+          <input value={city} onChange={e=>setCity(e.target.value)} placeholder="City" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
+          <input value={county} onChange={e=>setCounty(e.target.value)} placeholder="County" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
         </div>
 
-        <button onClick={()=>setAdvancedOpen(v=>!v)} className="text-sm underline self-start">
+        {/* advanced toggle (keep functional, no visual flare) */}
+        <button onClick={()=>setAdvancedOpen(v=>!v)} className="text-sm underline self-start text-gray-800">
           {advancedOpen ? "Hide Advanced" : "Advanced Filters"}
         </button>
         {advancedOpen && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <input value={type} onChange={e=>setType(e.target.value)} placeholder="Property Type (e.g., Single Family, Condo)" className="rounded-xl px-3 py-2 bg-white/70 focus:bg-white outline-none" />
+            <input value={type} onChange={e=>setType(e.target.value)} placeholder="Property Type (e.g., Single Family, Condo)" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
           </div>
         )}
 
         <div className="flex items-center gap-3">
-          <button onClick={go} className="px-5 py-3 rounded-2xl bg-orange-500 text-white font-semibold">Search Properties</button>
-          <div className="text-xs opacity-80">
-            Parsed: {parsed.city || "-"} {parsed.county || "-"} {parsed.beds ? `${parsed.beds}bd` : "-"} {parsed.baths ? `${parsed.baths}ba` : "-"} {parsed.min_price || "-"} {parsed.max_price ? `– ${parsed.max_price}`:""}
+          <button
+            onClick={go}
+            className="px-5 py-3 rounded-2xl bg-orange-500 text-white font-semibold hover:brightness-110 focus:outline-none"
+          >
+            Search Properties
+          </button>
+          <div className="text-xs text-gray-700">
+            {parsed.city && `Searching in ${parsed.city}`} 
+            {parsed.beds && ` • ${parsed.beds} bd`} 
+            {parsed.baths && ` • ${parsed.baths} ba`} 
+            {parsed.min_price && ` • $${Number(parsed.min_price).toLocaleString()}+`}
+            {parsed.max_price && ` – $${Number(parsed.max_price).toLocaleString()}`}
           </div>
         </div>
       </div>
