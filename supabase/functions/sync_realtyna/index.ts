@@ -59,7 +59,7 @@ serve(async (req) => {
       });
     }
 
-    // Build Smart Package API URL
+    // Build Smart Package API URL with Middle Tennessee geographic coverage
     const base = Deno.env.get("REALTYNA_BASE") || "https://api.realtyfeed.com";
     // {needs-verification} - Smart Package listings endpoint
     const url = new URL("/api/v1/smart/listings", base);
@@ -69,6 +69,16 @@ serve(async (req) => {
     }
     url.searchParams.set("status", "Active,ComingSoon");
     url.searchParams.set("limit", "100"); // Reasonable batch size
+    
+    // Add geographic parameters for Middle Tennessee RealTracs coverage
+    // Davidson County (Nashville metro core)
+    url.searchParams.set("counties", "Davidson,Williamson,Rutherford,Sumner,Wilson,Cheatham,Robertson,Maury");
+    // Alternative: MLS-specific parameter if counties don't work
+    url.searchParams.set("mls", "RealTracs");
+    // State filter to ensure Tennessee focus
+    url.searchParams.set("state", "TN");
+    // Geographic bounds for Middle Tennessee metro area
+    url.searchParams.set("bounds", "35.8,-87.1,36.8,-86.0"); // Rough Nashville metro bounds
     
     console.log(`[${rid}] Calling API: ${url.toString()}`);
 
