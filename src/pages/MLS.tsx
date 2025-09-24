@@ -111,18 +111,26 @@ export default function MLS() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4">
-        <input placeholder="Search city/county/type" value={q} onChange={e=>setQ(e.target.value)} className="border rounded px-3 py-2" />
-        <input placeholder="Min $" value={minPrice} onChange={e=>setMinPrice(e.target.value)} className="border rounded px-3 py-2" />
-        <input placeholder="Max $" value={maxPrice} onChange={e=>setMaxPrice(e.target.value)} className="border rounded px-3 py-2" />
-        <input placeholder="Beds" value={beds} onChange={e=>setBeds(e.target.value)} className="border rounded px-3 py-2" />
-        <input placeholder="Baths" value={baths} onChange={e=>setBaths(e.target.value)} className="border rounded px-3 py-2" />
-        <input placeholder="County" value={county} onChange={e=>setCounty(e.target.value)} className="border rounded px-3 py-2" />
+        <input placeholder="Search city/county/type" value={q} onChange={e=>setQ(e.target.value)} className="border border-border rounded px-3 py-2 bg-background text-foreground" />
+        <input placeholder="Min $" value={minPrice} onChange={e=>setMinPrice(e.target.value)} className="border border-border rounded px-3 py-2 bg-background text-foreground" />
+        <input placeholder="Max $" value={maxPrice} onChange={e=>setMaxPrice(e.target.value)} className="border border-border rounded px-3 py-2 bg-background text-foreground" />
+        <input placeholder="Beds" value={beds} onChange={e=>setBeds(e.target.value)} className="border border-border rounded px-3 py-2 bg-background text-foreground" />
+        <input placeholder="Baths" value={baths} onChange={e=>setBaths(e.target.value)} className="border border-border rounded px-3 py-2 bg-background text-foreground" />
+        <input placeholder="County" value={county} onChange={e=>setCounty(e.target.value)} className="border border-border rounded px-3 py-2 bg-background text-foreground" />
         <div className="col-span-2 md:col-span-1">
-          <input placeholder="City" value={city} onChange={e=>setCity(e.target.value)} className="border rounded px-3 py-2 w-full" />
+          <input placeholder="City" value={city} onChange={e=>setCity(e.target.value)} className="border border-border rounded px-3 py-2 w-full bg-background text-foreground" />
         </div>
         <div className="col-span-2 md:col-span-1">
-          <input placeholder="Type" value={type} onChange={e=>setType(e.target.value)} className="border rounded px-3 py-2 w-full" />
+          <input placeholder="Type" value={type} onChange={e=>setType(e.target.value)} className="border border-border rounded px-3 py-2 w-full bg-background text-foreground" />
         </div>
+      </div>
+
+      {/* Helper text to avoid confusion */}
+      <div className="mb-4 p-3 bg-muted/50 rounded-lg">
+        <p className="text-sm text-muted-foreground">
+          💡 <strong>Tip:</strong> You can search in the first field OR use individual filters below. 
+          For "nashville 3 bed 2 bath", put "3" in Beds field and "Nashville" in City field.
+        </p>
       </div>
 
       {err && <div className="text-red-600 mb-3">{err}</div>}
@@ -179,14 +187,14 @@ export default function MLS() {
             {items.map(l => {
               const photo = l.photos?.[0];
               return (
-                <div key={l.id} className="rounded-2xl overflow-hidden bg-white shadow">
+                <div key={l.id} className="rounded-2xl overflow-hidden bg-white shadow-md border border-border">
                   <div className="h-40 bg-gray-200">{photo ? <img src={photo} alt="" className="w-full h-40 object-cover" /> : null}</div>
-                  <div className="p-3">
-                    <div className="text-lg font-semibold">${(l.price||0).toLocaleString()}</div>
-                    <div className="text-sm text-gray-700">{l.beds} bd • {l.baths} ba • {l.sqft?.toLocaleString?.() || "-"} sqft</div>
-                    <div className="text-sm text-gray-600">{l.city || ""}{l.city && ", "}{l.county || ""}</div>
+                  <div className="p-4">
+                    <div className="text-xl font-bold text-foreground mb-2">${(l.price||0).toLocaleString()}</div>
+                    <div className="text-sm text-muted-foreground mb-1">{l.beds} bd • {l.baths} ba • {l.sqft?.toLocaleString?.() || "-"} sqft</div>
+                    <div className="text-sm text-muted-foreground mb-3">{l.city || ""}{l.city && ", "}{l.county || ""}</div>
                     <div className="mt-2">
-                      <a href={`/listing/${l.mls_id}`} className="text-blue-600 underline">View</a>
+                      <a href={`/property/${l.mls_id}`} className="text-primary hover:text-primary/80 font-medium underline">View Details</a>
                     </div>
                   </div>
                 </div>
