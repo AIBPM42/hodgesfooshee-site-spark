@@ -46,17 +46,8 @@ const Admin = () => {
   const connectRealtyna = async () => {
     setIsConnecting(true);
     try {
-      // Call the realtyna-connect function
-      const response = await fetch('https://xhqwmtzawqfffepcqxwf.functions.supabase.co/realtyna-connect');
-      
-      if (response.status === 302) {
-        const redirectUrl = response.headers.get('Location');
-        if (redirectUrl) {
-          window.location.href = redirectUrl;
-        }
-      } else {
-        throw new Error('Failed to initiate OAuth flow');
-      }
+      // Directly redirect to the OAuth function - it will handle the redirect
+      window.location.href = 'https://xhqwmtzawqfffepcqxwf.functions.supabase.co/realtyna-connect';
     } catch (error) {
       console.error('Connection error:', error);
       toast.error('Failed to connect to Realtyna');
