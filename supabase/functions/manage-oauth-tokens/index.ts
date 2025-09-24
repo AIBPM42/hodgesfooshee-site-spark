@@ -46,6 +46,7 @@ serve(async (req) => {
     
     // Try multiple potential token endpoints
     const tokenEndpoints = [
+      'https://api.realtyfeed.com/v1/auth/token', // Correct endpoint from docs
       'https://api.realtyfeed.com/oauth/token',
       'https://api.realtyfeed.com/token',
       'https://api.realtyfeed.com/oauth2/token',
