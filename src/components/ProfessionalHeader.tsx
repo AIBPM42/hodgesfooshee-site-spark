@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const ProfessionalHeader: React.FC = () => {
   return (
@@ -18,14 +19,15 @@ const ProfessionalHeader: React.FC = () => {
           
           {/* Navigation Menu */}
           <nav className="hidden lg:flex items-center space-x-8">
-            <a href="#" className="text-white hover:text-brand-200 transition-colors">Home</a>
-            <a href="#" className="text-white hover:text-brand-200 transition-colors">Featured Listings</a>
-            <a href="#" className="text-white hover:text-brand-200 transition-colors">Property Search</a>
-            <a href="#" className="text-white hover:text-brand-200 transition-colors">Communities</a>
-            <a href="#" className="text-white hover:text-brand-200 transition-colors">Our Services</a>
-            <a href="#" className="text-white hover:text-brand-200 transition-colors">Market Insights</a>
-            <a href="#" className="text-white hover:text-brand-200 transition-colors">About</a>
-            <a href="#" className="text-white hover:text-brand-200 transition-colors">Contact</a>
+            <Link to="/" className="text-white hover:text-brand-200 transition-colors">Home</Link>
+            <Link to="/listings" className="text-white hover:text-brand-200 transition-colors">Featured Listings</Link>
+            <Link to="/property-search" className="text-white hover:text-brand-200 transition-colors">Property Search</Link>
+            <Link to="/communities" className="text-white hover:text-brand-200 transition-colors">Communities</Link>
+            <Link to="/services" className="text-white hover:text-brand-200 transition-colors">Our Services</Link>
+            <Link to="/market-insights" className="text-white hover:text-brand-200 transition-colors">Market Insights</Link>
+            <Link to="/about" className="text-white hover:text-brand-200 transition-colors">About</Link>
+            <Link to="/contact" className="text-white hover:text-brand-200 transition-colors">Contact</Link>
+            <Link to="/admin" className="text-white hover:text-brand-200 transition-colors bg-orange-500/20 px-3 py-1 rounded-md font-semibold">Admin</Link>
           </nav>
           
           {/* Auth Buttons */}
