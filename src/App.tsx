@@ -14,6 +14,7 @@ import PropertyDetail from "./pages/PropertyDetail";
 import NotFound from "./pages/NotFound";
 import MLS from "./pages/MLS";
 import Admin from "./pages/Admin";
+import RealtynaSelftest from "./pages/RealtynaSelftest";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/mls" element={<MLS />} />
+            <Route path="/realtyna-test" element={<RealtynaSelftest />} />
             <Route path="/search/properties" element={<PropertySearchResults />} />
             <Route path="/search/open-houses" element={<OpenHouseResults />} />
             <Route path="/search/zip" element={<ZipSearchResults />} />
