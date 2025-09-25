@@ -49,8 +49,8 @@ serve(async (req) => {
 
     console.log(`[${rid}] Token found, testing API call...`);
     
-    // Simple API test
-    const testUrl = "https://api.realtyfeed.com/api/v1/smart/listings?limit=1&status=Active";
+    // Simple API test - use same endpoint as working functions
+    const testUrl = "https://api.realtyfeed.com/reso/odata/Property?$top=1&$filter=StandardStatus eq 'Active'";
     
     const headers = {
       'Authorization': `Bearer ${token.access_token}`,
