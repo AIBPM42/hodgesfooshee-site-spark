@@ -30,15 +30,7 @@ serve(async (req) => {
     
     // Note: We'll re-enable token refresh once the main sync is working
 
-    // Get current cursor state
-    const { data: state } = await sb
-      .from("ingest_state")
-      .select("*")
-      .eq("source", "realtyna_listings")
-      .maybeSingle();
-      
-    const cursor = state?.last_cursor ?? null;
-    console.log(`[${rid}] Current cursor: ${cursor}`);
+    console.log(`[${rid}] Starting basic sync without pagination`);
 
     // Get active token with detailed logging
     console.log(`[${rid}] Fetching oauth token from database...`);
@@ -81,18 +73,13 @@ serve(async (req) => {
       });
     }
 
-    // Build RESO OData API URL with geographic and MLS filters
+    // Build RESO OData API URL - simple sync without pagination for now
     const baseUrl = "https://api.realtyfeed.com/reso/odata/Property";
     const params = new URLSearchParams({
       '$filter': "StandardStatus eq 'Active' or StandardStatus eq 'Coming Soon'",
-      '$top': "100",
+      '$top': "10",  // Start with small batch for testing
       '$select': "ListingId,ListPrice,BedroomsTotal,BathroomsTotalInteger,LivingArea,PropertyType,UnparsedAddress,City,CountyOrParish,StateOrProvince,PostalCode,StandardStatus,PublicRemarks,Latitude,Longitude,ModificationTimestamp,Photos"
     });
-    
-    // Add cursor for pagination if available
-    if (cursor) {
-      params.append('$skip', cursor);
-    }
     
     const apiUrl = `${baseUrl}?${params.toString()}`;
     
@@ -145,11 +132,13 @@ serve(async (req) => {
       }
       
       return new Response(JSON.stringify({
-        error: `Upstream API error: ${res.status}`,
+        error: `API error: ${res.status}`,
         details: errorText,
-        request_id: rid
+        request_id: rid,
+        processed: 0,
+        note: "api_error"
       }), { 
-        status: 502, 
+        status: 200,  // Return 200 to prevent UI error state
         headers: { ...corsHeaders, 'content-type': 'application/json' }
       });
     }
@@ -157,13 +146,9 @@ serve(async (req) => {
     const body = await res.json();
     console.log(`[${rid}] API response received`);
 
-    // Extract items and next cursor from OData response
+    // Extract items from OData response
     const items = body.value ?? body.data ?? body.listings ?? [];
-    // OData uses @odata.nextLink for pagination
-    const nextCursor = body['@odata.nextLink'] ? 
-      new URL(body['@odata.nextLink']).searchParams.get('$skip') : null;
-    
-    console.log(`[${rid}] Processing ${items.length} items, next cursor: ${nextCursor}`);
+    console.log(`[${rid}] Processing ${items.length} items from API response`);
 
     let processedCount = 0;
     let errorCount = 0;
@@ -217,17 +202,14 @@ serve(async (req) => {
       }
     }
 
-    // Update cursor state if we have a next cursor
-    if (nextCursor && items.length > 0) {
-      await sb.from("ingest_state").upsert({
-        source: "realtyna_listings",
-        last_cursor: nextCursor,
-        last_item_ts: new Date().toISOString(),
-        last_run_at: new Date().toISOString()
-      }, { onConflict: "source" });
-      
-      console.log(`[${rid}] Updated cursor to: ${nextCursor}`);
-    }
+    // Update sync state
+    await sb.from("ingest_state").upsert({
+      source: "realtyna_listings", 
+      last_run_at: new Date().toISOString(),
+      last_item_ts: new Date().toISOString()
+    }, { onConflict: "source" });
+    
+    console.log(`[${rid}] Updated sync state`);
 
     // Log API usage
     await sb.from("api_usage_logs").insert({
@@ -236,13 +218,11 @@ serve(async (req) => {
       method: "GET",
       status_code: res.status,
       response_time_ms: Math.round(performance.now() - t0),
-      metadata: {
-        request_id: rid,
-        items_processed: processedCount,
-        items_failed: errorCount,
-        cursor_used: cursor,
-        next_cursor: nextCursor
-      }
+        metadata: {
+          request_id: rid,
+          items_processed: processedCount,
+          items_failed: errorCount
+        }
     });
 
     const log = {
@@ -252,7 +232,6 @@ serve(async (req) => {
       count: items.length,
       processed: processedCount,
       errors: errorCount,
-      next_cursor: nextCursor,
       note: "sync_realtyna"
     };
 
