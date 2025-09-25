@@ -239,18 +239,21 @@ export type Database = {
       ingest_state: {
         Row: {
           last_cursor: string | null
+          last_error: string | null
           last_item_ts: string | null
           last_run_at: string | null
           source: string
         }
         Insert: {
           last_cursor?: string | null
+          last_error?: string | null
           last_item_ts?: string | null
           last_run_at?: string | null
           source: string
         }
         Update: {
           last_cursor?: string | null
+          last_error?: string | null
           last_item_ts?: string | null
           last_run_at?: string | null
           source?: string

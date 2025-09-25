@@ -129,11 +129,11 @@ const Admin = () => {
         </div>
 
         {/* Error Banner */}
-        {ingestState?.last_error && (
+        {(ingestState as any)?.last_error && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              <strong>Sync Error:</strong> {ingestState.last_error}
+              <strong>Sync Error:</strong> {(ingestState as any).last_error}
               <br />
               <span className="text-sm">Last attempt: {new Date(ingestState.last_run_at).toLocaleString()}</span>
             </AlertDescription>
