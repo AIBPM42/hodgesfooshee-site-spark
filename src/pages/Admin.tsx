@@ -36,7 +36,7 @@ const Admin = () => {
       const { data, error } = await supabase
         .from('ingest_state')
         .select('*')
-        .eq('key', 'realtyna_listings')
+        .eq('key', 'property_sync')
         .maybeSingle();
       
       if (error) throw error;
