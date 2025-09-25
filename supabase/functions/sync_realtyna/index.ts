@@ -81,6 +81,7 @@ serve(async (req) => {
     url.searchParams.set("bounds", "35.8,-87.1,36.8,-86.0"); // Rough Nashville metro bounds
     
     console.log(`[${rid}] Calling API: ${url.toString()}`);
+    console.log(`[${rid}] Using token: ${token.access_token.substring(0, 10)}...`);
 
     // Call Realtyna Smart Package API
     const res = await fetch(url.toString(), {
@@ -89,6 +90,8 @@ serve(async (req) => {
         'Accept': 'application/json'
       }
     });
+
+    console.log(`[${rid}] API response status: ${res.status}`);
 
     if (!res.ok) {
       const errorText = await res.text();
