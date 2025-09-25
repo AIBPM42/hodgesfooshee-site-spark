@@ -122,20 +122,44 @@ serve(async (req) => {
       console.error(`[${rid}] API call failed: ${res.status}`);
       console.error(`[${rid}] Error response: ${errorText}`);
       console.error(`[${rid}] Request URL: ${apiUrl}`);
-      console.error(`[${rid}] Request headers used:`, headers);
       
       // Log specific error details for common issues
       if (res.status === 401) {
         console.error(`[${rid}] Authentication failed - token may be expired or invalid`);
       } else if (res.status === 403) {
-        console.error(`[${rid}] Authorization failed - check token format and permissions`);
+        console.error(`[${rid}] Authorization failed - token may have insufficient scope`);
+        console.error(`[${rid}] Required scope: api:read reso:read`);
+        console.error(`[${rid}] Current token scope: ${token.scope}`);
+        console.error(`[${rid}] Please reconnect to Realtyna to get a new token with correct permissions`);
       }
       
+      // Log the API failure to usage logs
+      await sb.from('api_usage_logs').insert({
+        provider: 'realtyna',
+        endpoint: '/reso/odata/Property',
+        method: 'GET',
+        status_code: res.status,
+        error_message: errorText,
+        metadata: { 
+          sync_batch_size: 10,
+          request_id: rid,
+          api_url: apiUrl,
+          error_type: res.status === 403 ? 'insufficient_scope' : 'api_error',
+          token_scope: token.scope
+        }
+      });
+      
       return new Response(JSON.stringify({
+        success: false,
         error: `API error: ${res.status}`,
         details: errorText,
         request_id: rid,
         processed: 0,
+        synced: 0,
+        total: 0,
+        message: res.status === 403 
+          ? 'Authentication failed. The OAuth token may have insufficient permissions. Please click "Reconnect to Realtyna" to get a new token with RESO data access.'
+          : `Failed to fetch data from Realtyna API. Status: ${res.status}.`,
         note: "api_error"
       }), { 
         status: 200,  // Return 200 to prevent UI error state
@@ -226,12 +250,16 @@ serve(async (req) => {
     });
 
     const log = {
+      success: true,
       at: new Date().toISOString(),
       request_id: rid,
       duration_ms: Math.round(performance.now() - t0),
       count: items.length,
       processed: processedCount,
+      synced: processedCount,
+      total: processedCount,
       errors: errorCount,
+      message: `Successfully synced ${processedCount} listings from Realtyna`,
       note: "sync_realtyna"
     };
 

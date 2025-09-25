@@ -20,7 +20,9 @@ serve(async (req) => {
       throw new Error('Realtyna OAuth credentials not configured')
     }
 
-    // Check if we have a valid token
+    const requiredScope = 'api:read reso:read'
+    
+    // Check if we have a valid token with the required scope
     const { data: tokens } = await supabase
       .from('oauth_tokens')
       .select('*')
@@ -30,14 +32,25 @@ serve(async (req) => {
       .limit(1)
 
     if (tokens && tokens.length > 0) {
-      console.log('Found valid token, returning existing token')
-      return new Response(
-        JSON.stringify({ 
-          access_token: tokens[0].access_token,
-          expires_at: tokens[0].expires_at 
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      const existingToken = tokens[0]
+      // Check if existing token has the required scope
+      if (existingToken.scope && existingToken.scope.includes('reso:read')) {
+        console.log('Found valid token with RESO scope, returning existing token')
+        return new Response(
+          JSON.stringify({ 
+            access_token: existingToken.access_token,
+            expires_at: existingToken.expires_at 
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      } else {
+        console.log('Found token but missing RESO scope, will request new token')
+        // Delete the existing token since it doesn't have the right scope
+        await supabase
+          .from('oauth_tokens')
+          .delete()
+          .eq('id', existingToken.id)
+      }
     }
 
     // No valid token found, get a new one
@@ -70,7 +83,7 @@ serve(async (req) => {
             grant_type: 'client_credentials',
             client_id: clientId,
             client_secret: clientSecret,
-            scope: 'api:read reso:read'  // Request both API and RESO permissions
+            scope: requiredScope  // Request both API and RESO permissions
           })
         })
         
@@ -131,7 +144,7 @@ serve(async (req) => {
         refresh_token: tokenData.refresh_token || null,
         token_type: tokenData.token_type || 'bearer',
         expires_at: expiresAt.toISOString(),
-        scope: tokenData.scope || 'api:read'
+        scope: tokenData.scope || requiredScope
       })
       .select()
       .single()
