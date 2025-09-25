@@ -81,28 +81,22 @@ serve(async (req) => {
       });
     }
 
-    // Build Smart Package API URL with Middle Tennessee geographic coverage
-    const base = "https://api.realtyfeed.com";
-    // Smart Package listings endpoint
-    const url = new URL("/api/v1/smart/listings", base);
+    // Build RESO OData API URL with geographic and MLS filters
+    const baseUrl = "https://api.realtyfeed.com/reso/odata/Property";
+    const params = new URLSearchParams({
+      '$filter': "StandardStatus eq 'Active' or StandardStatus eq 'Coming Soon'",
+      '$top': "100",
+      '$select': "ListingId,ListPrice,BedroomsTotal,BathroomsTotalInteger,LivingArea,PropertyType,UnparsedAddress,City,CountyOrParish,StateOrProvince,PostalCode,StandardStatus,PublicRemarks,Latitude,Longitude,ModificationTimestamp,Photos"
+    });
     
+    // Add cursor for pagination if available
     if (cursor) {
-      url.searchParams.set("cursor", cursor);
+      params.append('$skip', cursor);
     }
-    url.searchParams.set("status", "Active,ComingSoon");
-    url.searchParams.set("limit", "100"); // Reasonable batch size
     
-    // Add geographic parameters for Middle Tennessee RealTracs coverage
-    // Davidson County (Nashville metro core)
-    url.searchParams.set("counties", "Davidson,Williamson,Rutherford,Sumner,Wilson,Cheatham,Robertson,Maury");
-    // Alternative: MLS-specific parameter if counties don't work
-    url.searchParams.set("mls", "RealTracs");
-    // State filter to ensure Tennessee focus
-    url.searchParams.set("state", "TN");
-    // Geographic bounds for Middle Tennessee metro area
-    url.searchParams.set("bounds", "35.8,-87.1,36.8,-86.0"); // Rough Nashville metro bounds
+    const apiUrl = `${baseUrl}?${params.toString()}`;
     
-    console.log(`[${rid}] Calling API: ${url.toString()}`);
+    console.log(`[${rid}] Calling API: ${apiUrl}`);
     console.log(`[${rid}] Using token: ${token.access_token.substring(0, 10)}...`);
 
     // Validate token format before making API call
@@ -129,7 +123,7 @@ serve(async (req) => {
 
     console.log(`[${rid}] Request headers prepared (auth header length: ${headers.Authorization.length})`);
 
-    const res = await fetch(url.toString(), {
+    const res = await fetch(apiUrl, {
       headers: headers
     });
 
@@ -140,7 +134,7 @@ serve(async (req) => {
       const errorText = await res.text();
       console.error(`[${rid}] API call failed: ${res.status}`);
       console.error(`[${rid}] Error response: ${errorText}`);
-      console.error(`[${rid}] Request URL: ${url.toString()}`);
+      console.error(`[${rid}] Request URL: ${apiUrl}`);
       console.error(`[${rid}] Request headers used:`, headers);
       
       // Log specific error details for common issues
@@ -163,9 +157,11 @@ serve(async (req) => {
     const body = await res.json();
     console.log(`[${rid}] API response received`);
 
-    // Extract items and next cursor
-    const items = body.items ?? body.data ?? body.listings ?? [];
-    const nextCursor = body.nextCursor ?? body.next ?? body.cursor ?? null;
+    // Extract items and next cursor from OData response
+    const items = body.value ?? body.data ?? body.listings ?? [];
+    // OData uses @odata.nextLink for pagination
+    const nextCursor = body['@odata.nextLink'] ? 
+      new URL(body['@odata.nextLink']).searchParams.get('$skip') : null;
     
     console.log(`[${rid}] Processing ${items.length} items, next cursor: ${nextCursor}`);
 
@@ -175,12 +171,12 @@ serve(async (req) => {
     // Process each listing
     for (const listing of items) {
       try {
-        // Map fields to existing mls_listings schema
+        // Map fields to existing mls_listings schema (OData field names)
         const mappedListing = {
-          mls_id: listing.MLSId ?? listing.Id ?? listing.mls_id,
+          mls_id: listing.ListingId ?? listing.MLSId ?? listing.Id ?? listing.mls_id,
           price: listing.ListPrice ?? listing.Price ?? 0,
-          beds: listing.Bedrooms ?? listing.BedroomsTotal ?? 0,
-          baths: listing.Bathrooms ?? listing.BathroomsTotalInteger ?? 0,
+          beds: listing.BedroomsTotal ?? listing.Bedrooms ?? 0,
+          baths: listing.BathroomsTotalInteger ?? listing.Bathrooms ?? 0,
           sqft: listing.LivingArea ?? listing.SquareFeet ?? 0,
           property_type: listing.PropertyType ?? listing.PropertySubType ?? 'Residential',
           address: listing.UnparsedAddress ?? 
@@ -190,7 +186,7 @@ serve(async (req) => {
           county: listing.CountyOrParish ?? '',
           state: listing.StateOrProvince ?? 'TN',
           zip: listing.PostalCode ?? '',
-          status: listing.Status ?? listing.StandardStatus ?? 'Active',
+          status: listing.StandardStatus ?? listing.Status ?? 'Active',
           remarks: listing.PublicRemarks ?? listing.Remarks ?? '',
           lat: listing.Latitude ?? 0,
           lng: listing.Longitude ?? 0,
@@ -198,7 +194,7 @@ serve(async (req) => {
             new Date(listing.ModificationTimestamp).toISOString() : 
             new Date().toISOString(),
           // Store photos as JSONB array (existing schema)
-          photos: (listing.Media ?? listing.Photos ?? [])
+          photos: (listing.Photos ?? listing.Media ?? [])
             .map((media: any) => media.MediaURL ?? media.Url ?? media.url)
             .filter((url: string) => url && url.trim() !== '')
         };
@@ -235,7 +231,7 @@ serve(async (req) => {
 
     // Log API usage
     await sb.from("api_usage_logs").insert({
-      endpoint: "/api/v1/smart/listings",
+      endpoint: "/reso/odata/Property",
       provider: "realtyna",
       method: "GET",
       status_code: res.status,

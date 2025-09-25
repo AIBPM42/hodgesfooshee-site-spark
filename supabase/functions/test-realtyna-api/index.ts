@@ -49,8 +49,8 @@ serve(async (req) => {
 
     console.log(`[${rid}] Token found, testing API call...`);
     
-    // Simple API test - use same endpoint as working sync function
-    const testUrl = "https://api.realtyfeed.com/api/v1/smart/listings?limit=1&status=Active";
+    // Simple API test - use RESO OData endpoint like the working search-properties function
+    const testUrl = "https://api.realtyfeed.com/reso/odata/Property?$filter=StandardStatus eq 'Active'&$top=1";
     
     const headers = {
       'Authorization': `Bearer ${token.access_token}`,
