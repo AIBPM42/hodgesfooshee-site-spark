@@ -44,10 +44,10 @@ serve(async (req) => {
 
     // Get active token
     const { data: token } = await sb
-      .from("realtyna_tokens")
+      .from("oauth_tokens")
       .select("*")
-      .eq("principal_type", "app")
-      .order("updated_at", { ascending: false })
+      .eq("provider", "realtyna")
+      .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
       
