@@ -60,8 +60,8 @@ serve(async (req) => {
     }
 
     // Build Smart Package API URL with Middle Tennessee geographic coverage
-    const base = Deno.env.get("REALTYNA_BASE") || "https://api.realtyfeed.com";
-    // {needs-verification} - Smart Package listings endpoint
+    const base = "https://api.realtyfeed.com";
+    // Smart Package listings endpoint
     const url = new URL("/api/v1/smart/listings", base);
     
     if (cursor) {
