@@ -70,7 +70,7 @@ serve(async (req) => {
             grant_type: 'client_credentials',
             client_id: clientId,
             client_secret: clientSecret,
-            scope: 'api:read'
+            scope: 'api:read reso:read'  // Request both API and RESO permissions
           })
         })
         
