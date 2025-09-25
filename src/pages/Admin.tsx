@@ -64,6 +64,23 @@ const Admin = () => {
     }
   };
 
+  // Test API connection
+  const testMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke('test-realtyna-api');
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      toast.success('API test successful! Connection verified');
+      console.log('Test result:', data);
+    },
+    onError: (error) => {
+      console.error('Test error:', error);
+      toast.error('API test failed');
+    },
+  });
+
   // Trigger sync
   const syncMutation = useMutation({
     mutationFn: async () => {
@@ -132,23 +149,41 @@ const Admin = () => {
                   </div>
                 )}
 
-                <Button 
-                  onClick={connectRealtyna} 
-                  disabled={isConnecting}
-                  variant={tokenIsValid ? "outline" : "default"}
-                  className="w-full"
-                >
-                  {isConnecting ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Connecting...
-                    </>
-                  ) : tokenIsValid ? (
-                    "Reconnect to Realtyna"
-                  ) : (
-                    "Connect to Realtyna"
-                  )}
-                </Button>
+                <div className="space-y-3">
+                  <Button 
+                    onClick={() => testMutation.mutate()} 
+                    disabled={testMutation.isPending || !tokenIsValid}
+                    variant="secondary"
+                    className="w-full"
+                  >
+                    {testMutation.isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Testing API...
+                      </>
+                    ) : (
+                      "Test API Connection"
+                    )}
+                  </Button>
+                  
+                  <Button 
+                    onClick={connectRealtyna} 
+                    disabled={isConnecting}
+                    variant={tokenIsValid ? "outline" : "default"}
+                    className="w-full"
+                  >
+                    {isConnecting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Connecting...
+                      </>
+                    ) : tokenIsValid ? (
+                      "Reconnect to Realtyna"
+                    ) : (
+                      "Connect to Realtyna"
+                    )}
+                  </Button>
+                </div>
               </div>
             )}
           </CardContent>
