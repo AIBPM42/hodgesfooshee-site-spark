@@ -49,7 +49,7 @@ serve(async (req) => {
       body: new URLSearchParams({ 
         client_id, 
         client_secret,
-        scope: "api:read reso:read"
+        scope: "api:read"
       })
     });
 
