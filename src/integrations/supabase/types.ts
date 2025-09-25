@@ -539,6 +539,7 @@ export type Database = {
           principal_type: string
           refresh_token: string | null
           scope: string | null
+          token_type: string | null
           updated_at: string | null
         }
         Insert: {
@@ -550,6 +551,7 @@ export type Database = {
           principal_type: string
           refresh_token?: string | null
           scope?: string | null
+          token_type?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -561,6 +563,7 @@ export type Database = {
           principal_type?: string
           refresh_token?: string | null
           scope?: string | null
+          token_type?: string | null
           updated_at?: string | null
         }
         Relationships: []
