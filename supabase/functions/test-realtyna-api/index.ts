@@ -47,10 +47,27 @@ serve(async (req) => {
       });
     }
 
-    console.log(`[${rid}] Token found, testing API call...`);
+    console.log(`[${rid}] Token found, testing multiple API endpoints...`);
     
-    // Simple API test - use RESO OData endpoint like the working search-properties function
-    const testUrl = "https://api.realtyfeed.com/reso/odata/Property?$filter=StandardStatus eq 'Active'&$top=1";
+    // Test multiple endpoints to determine access level
+    const testEndpoints = [
+      {
+        name: "Regular API - Properties", 
+        url: "https://api.realtyfeed.com/v1/properties?limit=1"
+      },
+      {
+        name: "RESO OData - Property", 
+        url: "https://api.realtyfeed.com/reso/odata/Property?$filter=StandardStatus eq 'Active'&$top=1"
+      },
+      {
+        name: "RESO OData - Members", 
+        url: "https://api.realtyfeed.com/reso/odata/Member?$top=1"
+      },
+      {
+        name: "Regular API - Search", 
+        url: "https://api.realtyfeed.com/v1/search?query=Nashville&limit=1"
+      }
+    ];
     
     const headers = {
       'Authorization': `Bearer ${token.access_token}`,
@@ -58,38 +75,69 @@ serve(async (req) => {
       'Content-Type': 'application/json'
     };
 
-    console.log(`[${rid}] Making test request to: ${testUrl}`);
     console.log(`[${rid}] Token preview: ${token.access_token.substring(0, 20)}...`);
+    console.log(`[${rid}] Token scope: ${token.scope}`);
 
-    const res = await fetch(testUrl, { headers });
-    
-    console.log(`[${rid}] Response status: ${res.status}`);
-    console.log(`[${rid}] Response headers:`, Object.fromEntries(res.headers.entries()));
+    const results = [];
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error(`[${rid}] API error: ${res.status} - ${errorText}`);
-      
-      return new Response(JSON.stringify({
-        error: `API test failed: ${res.status}`,
-        details: errorText,
-        token_preview: token.access_token.substring(0, 20) + "...",
-        request_url: testUrl
-      }), {
-        status: res.status,
-        headers: { ...corsHeaders, 'content-type': 'application/json' }
-      });
+    for (const endpoint of testEndpoints) {
+      try {
+        console.log(`[${rid}] Testing ${endpoint.name}: ${endpoint.url}`);
+        
+        const res = await fetch(endpoint.url, { headers });
+        
+        console.log(`[${rid}] ${endpoint.name} - Status: ${res.status}`);
+        
+        if (res.ok) {
+          const data = await res.json();
+          results.push({
+            endpoint: endpoint.name,
+            url: endpoint.url,
+            status: res.status,
+            success: true,
+            data_preview: JSON.stringify(data).substring(0, 200) + "...",
+            message: "Success"
+          });
+          console.log(`[${rid}] ${endpoint.name} - SUCCESS`);
+          break; // If one works, we know the token is valid
+        } else {
+          const errorText = await res.text();
+          results.push({
+            endpoint: endpoint.name,
+            url: endpoint.url,
+            status: res.status,
+            success: false,
+            error: errorText.substring(0, 200) + "...",
+            message: `Failed with ${res.status}`
+          });
+          console.log(`[${rid}] ${endpoint.name} - FAILED: ${res.status}`);
+        }
+      } catch (fetchError) {
+        results.push({
+          endpoint: endpoint.name,
+          url: endpoint.url,
+          status: 0,
+          success: false,
+          error: fetchError instanceof Error ? fetchError.message : 'Network error',
+          message: "Network error"
+        });
+        console.log(`[${rid}] ${endpoint.name} - NETWORK ERROR:`, fetchError);
+      }
     }
 
-    const data = await res.json();
-    console.log(`[${rid}] API test successful`);
-
+    const hasSuccess = results.some(r => r.success);
+    
     return new Response(JSON.stringify({
-      success: true,
-      message: "API connection test successful",
-      data_preview: data,
-      token_expires: token.expires_at
+      success: hasSuccess,
+      message: hasSuccess ? "At least one API endpoint is accessible" : "All API endpoints failed - check account permissions",
+      token_scope: token.scope,
+      token_expires: token.expires_at,
+      results: results,
+      recommendation: hasSuccess 
+        ? "Token works with some endpoints. Check RESO permissions with Realtyna support."
+        : "Token authentication failed on all endpoints. Verify account status with Realtyna."
     }), {
+      status: hasSuccess ? 200 : 403,
       headers: { ...corsHeaders, 'content-type': 'application/json' }
     });
 
