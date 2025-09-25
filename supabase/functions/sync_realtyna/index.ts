@@ -24,15 +24,6 @@ serve(async (req) => {
     );
 
     console.log(`[${rid}] Supabase client created, starting Realtyna sync...`);
-    
-    // Quick test - return early to see if basic function works
-    return new Response(JSON.stringify({ 
-      status: "test", 
-      request_id: rid, 
-      message: "Function is working" 
-    }), {
-      headers: { ...corsHeaders, "content-type": "application/json" }
-    });
 
     // Ensure valid token by calling realtyna-refresh
     try {
