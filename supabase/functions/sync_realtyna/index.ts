@@ -32,13 +32,13 @@ serve(async (req) => {
 
     console.log(`[${rid}] Starting basic sync without pagination`);
 
-    // Get active token with detailed logging
-    console.log(`[${rid}] Fetching oauth token from database...`);
+    // Get active Client Credentials token
+    console.log(`[${rid}] Fetching client credentials token from database...`);
     
     const { data: token, error: tokenError } = await sb
-      .from("oauth_tokens")
+      .from("realtyna_tokens")
       .select("*")
-      .eq("provider", "realtyna")
+      .eq("principal_type", "app")
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -52,10 +52,22 @@ serve(async (req) => {
     }
       
     if (!token) {
-      console.error(`[${rid}] No oauth token found in database`);
-      return new Response("No token available", { 
-        status: 500, 
-        headers: corsHeaders 
+      console.error(`[${rid}] No client credentials token found in database`);
+      
+      // Set error in ingest_state
+      await sb.from("ingest_state").upsert({
+        source: "realtyna_listings",
+        last_error: "No authentication token available - run Client Credentials auth first",
+        last_run_at: new Date().toISOString()
+      }, { onConflict: "source" });
+      
+      return new Response(JSON.stringify({
+        success: false,
+        error: "No authentication token available",
+        message: "Use the 'Connect to Realtyna' button to authenticate first"
+      }), { 
+        status: 401, 
+        headers: { ...corsHeaders, 'content-type': 'application/json' }
       });
     }
 
@@ -67,23 +79,30 @@ serve(async (req) => {
     const expiresAt = new Date(token.expires_at);
     if (now >= expiresAt) {
       console.error(`[${rid}] Token is expired (expires: ${expiresAt}, now: ${now})`);
-      return new Response("Token expired", { 
+      
+      // Set error in ingest_state
+      await sb.from("ingest_state").upsert({
+        source: "realtyna_listings",
+        last_error: "Authentication token expired - reconnect to Realtyna",
+        last_run_at: new Date().toISOString()
+      }, { onConflict: "source" });
+      
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Authentication token expired",
+        message: "Use the 'Reconnect to Realtyna' button to get a fresh token"
+      }), { 
         status: 401, 
-        headers: corsHeaders 
+        headers: { ...corsHeaders, 'content-type': 'application/json' }
       });
     }
 
-    // Build RESO OData API URL - simple sync without pagination for now
-    const baseUrl = "https://api.realtyfeed.com/reso/odata/Property";
-    const params = new URLSearchParams({
-      '$filter': "StandardStatus eq 'Active' or StandardStatus eq 'Coming Soon'",
-      '$top': "10",  // Start with small batch for testing
-      '$select': "ListingId,ListPrice,BedroomsTotal,BathroomsTotalInteger,LivingArea,PropertyType,UnparsedAddress,City,CountyOrParish,StateOrProvince,PostalCode,StandardStatus,PublicRemarks,Latitude,Longitude,ModificationTimestamp,Photos"
-    });
+    // RESO OData pagination sync
+    const BASE_URL = "https://api.realtyfeed.com/reso/odata/Property";
+    const BATCH_SIZE = 100;
+    const MAX_PAGES = 20; // Limit pages per run
     
-    const apiUrl = `${baseUrl}?${params.toString()}`;
-    
-    console.log(`[${rid}] Calling API: ${apiUrl}`);
+    console.log(`[${rid}] Starting paginated sync with base URL: ${BASE_URL}`);
     console.log(`[${rid}] Using token: ${token.access_token.substring(0, 10)}...`);
 
     // Validate token format before making API call
@@ -100,139 +119,145 @@ serve(async (req) => {
     console.log(`[${rid}] Token length: ${token.access_token.length}`);
     console.log(`[${rid}] Token starts with: ${token.access_token.substring(0, 10)}`);
 
-    // Call Realtyna Smart Package API with properly formatted headers
-    const headers = {
+    // Prepare headers with optional API key
+    const headers: Record<string, string> = {
       'Authorization': `Bearer ${token.access_token}`,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'User-Agent': 'Supabase-Edge-Function/1.0'
+      'Accept': 'application/json'
     };
+
+    // Add API key if available
+    if (Deno.env.get("REALTYNA_API_KEY")) {
+      headers['x-api-key'] = Deno.env.get("REALTYNA_API_KEY")!;
+    }
 
     console.log(`[${rid}] Request headers prepared (auth header length: ${headers.Authorization.length})`);
 
-    const res = await fetch(apiUrl, {
-      headers: headers
-    });
-
-    console.log(`[${rid}] API response status: ${res.status}`);
-    console.log(`[${rid}] API response headers:`, Object.fromEntries(res.headers.entries()));
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error(`[${rid}] API call failed: ${res.status}`);
-      console.error(`[${rid}] Error response: ${errorText}`);
-      console.error(`[${rid}] Request URL: ${apiUrl}`);
+    // Paginated fetch function
+    const fetchPage = async (url?: string) => {
+      const requestUrl = url || `${BASE_URL}?$filter=StandardStatus in ('Active','Coming Soon','ComingSoon')&$top=${BATCH_SIZE}&$select=ListingKey,ListPrice,BedroomsTotal,BathroomsTotalInteger,LivingArea,PropertyType,UnparsedAddress,City,CountyOrParish,StateOrProvince,PostalCode,StandardStatus,PublicRemarks,Latitude,Longitude,ModificationTimestamp&$expand=Media($select=MediaURL)`;
       
-      // Log specific error details for common issues
-      if (res.status === 401) {
-        console.error(`[${rid}] Authentication failed - token may be expired or invalid`);
-      } else if (res.status === 403) {
-        console.error(`[${rid}] Authorization failed - token may have insufficient scope`);
-        console.error(`[${rid}] Required scope: api:read reso:read`);
-        console.error(`[${rid}] Current token scope: ${token.scope}`);
-        console.error(`[${rid}] Please reconnect to Realtyna to get a new token with correct permissions`);
-      }
+      console.log(`[${rid}] Fetching: ${requestUrl.substring(0, 100)}...`);
       
-      // Log the API failure to usage logs
-      await sb.from('api_usage_logs').insert({
-        provider: 'realtyna',
-        endpoint: '/reso/odata/Property',
-        method: 'GET',
-        status_code: res.status,
-        error_message: errorText,
-        metadata: { 
-          sync_batch_size: 10,
-          request_id: rid,
-          api_url: apiUrl,
-          error_type: res.status === 403 ? 'insufficient_scope' : 'api_error',
-          token_scope: token.scope
-        }
-      });
+      const res = await fetch(requestUrl, { headers });
       
-      return new Response(JSON.stringify({
-        success: false,
-        error: `API error: ${res.status}`,
-        details: errorText,
-        request_id: rid,
-        processed: 0,
-        synced: 0,
-        total: 0,
-        message: res.status === 403 
-          ? 'Authentication failed. The OAuth token may have insufficient permissions. Please click "Reconnect to Realtyna" to get a new token with RESO data access.'
-          : `Failed to fetch data from Realtyna API. Status: ${res.status}.`,
-        note: "api_error"
-      }), { 
-        status: 200,  // Return 200 to prevent UI error state
-        headers: { ...corsHeaders, 'content-type': 'application/json' }
-      });
-    }
-
-    const body = await res.json();
-    console.log(`[${rid}] API response received`);
-
-    // Extract items from OData response
-    const items = body.value ?? body.data ?? body.listings ?? [];
-    console.log(`[${rid}] Processing ${items.length} items from API response`);
-
-    let processedCount = 0;
-    let errorCount = 0;
-
-    // Process each listing
-    for (const listing of items) {
-      try {
-        // Map fields to existing mls_listings schema (OData field names)
-        const mappedListing = {
-          mls_id: listing.ListingId ?? listing.MLSId ?? listing.Id ?? listing.mls_id,
-          price: listing.ListPrice ?? listing.Price ?? 0,
-          beds: listing.BedroomsTotal ?? listing.Bedrooms ?? 0,
-          baths: listing.BathroomsTotalInteger ?? listing.Bathrooms ?? 0,
-          sqft: listing.LivingArea ?? listing.SquareFeet ?? 0,
-          property_type: listing.PropertyType ?? listing.PropertySubType ?? 'Residential',
-          address: listing.UnparsedAddress ?? 
-                  (`${listing.StreetNumber ?? ''} ${listing.StreetName ?? ''}`.trim() ||
-                  'Address not available'),
-          city: listing.City ?? '',
-          county: listing.CountyOrParish ?? '',
-          state: listing.StateOrProvince ?? 'TN',
-          zip: listing.PostalCode ?? '',
-          status: listing.StandardStatus ?? listing.Status ?? 'Active',
-          remarks: listing.PublicRemarks ?? listing.Remarks ?? '',
-          lat: listing.Latitude ?? 0,
-          lng: listing.Longitude ?? 0,
-          source_updated_at: listing.ModificationTimestamp ? 
-            new Date(listing.ModificationTimestamp).toISOString() : 
-            new Date().toISOString(),
-          // Store photos as JSONB array (existing schema)
-          photos: (listing.Photos ?? listing.Media ?? [])
-            .map((media: any) => media.MediaURL ?? media.Url ?? media.url)
-            .filter((url: string) => url && url.trim() !== '')
-        };
-
-        // Upsert to mls_listings
-        const { error: upsertError } = await sb
-          .from("mls_listings")
-          .upsert(mappedListing, { onConflict: "mls_id" });
-
-        if (upsertError) {
-          console.error(`[${rid}] Upsert error for MLS ${mappedListing.mls_id}:`, upsertError);
-          errorCount++;
-        } else {
-          processedCount++;
+      console.log(`[${rid}] API response status: ${res.status}`);
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error(`[${rid}] API call failed: ${res.status}`);
+        console.error(`[${rid}] Error response: ${errorText}`);
+        
+        // Set error in ingest_state and stop processing on 403
+        if (res.status === 403) {
+          console.error(`[${rid}] 403 Forbidden - stopping sync and setting error state`);
+          await sb.from("ingest_state").upsert({
+            source: "realtyna_listings",
+            last_error: `403 Forbidden: ${errorText.substring(0, 200)}`,
+            last_run_at: new Date().toISOString()
+          }, { onConflict: "source" });
         }
         
-      } catch (itemError) {
-        console.error(`[${rid}] Error processing item:`, itemError);
-        errorCount++;
+        throw new Error(`API error ${res.status}: ${errorText}`);
+      }
+      
+      return res.json();
+    };
+
+    let totalProcessed = 0;
+    let totalErrors = 0;
+    let nextUrl: string | undefined;
+    
+    console.log(`[${rid}] Starting paginated sync (max ${MAX_PAGES} pages)`);
+
+    for (let pageNum = 1; pageNum <= MAX_PAGES; pageNum++) {
+      try {
+        const pageData = await fetchPage(nextUrl);
+        const items = pageData.value || [];
+        nextUrl = pageData['@odata.nextLink'];
+        
+        console.log(`[${rid}] Page ${pageNum}: ${items.length} items, nextLink: ${!!nextUrl}`);
+        
+        if (items.length === 0) {
+          console.log(`[${rid}] No more items, ending sync`);
+          break;
+        }
+
+        // Process items from this page
+        for (const listing of items) {
+          try {
+            // Map using ListingKey as primary identifier
+            const mappedListing = {
+              mls_id: listing.ListingKey || listing.ListingId || listing.Id,
+              price: listing.ListPrice || 0,
+              beds: listing.BedroomsTotal || 0,
+              baths: listing.BathroomsTotalInteger || 0,
+              sqft: listing.LivingArea || 0,
+              property_type: listing.PropertyType || 'Residential',
+              address: listing.UnparsedAddress || 'Address not available',
+              city: listing.City || '',
+              county: listing.CountyOrParish || '',
+              state: listing.StateOrProvince || 'TN',
+              zip: listing.PostalCode || '',
+              status: listing.StandardStatus || 'Active',
+              remarks: listing.PublicRemarks || '',
+              lat: listing.Latitude || 0,
+              lng: listing.Longitude || 0,
+              source_updated_at: listing.ModificationTimestamp ? 
+                new Date(listing.ModificationTimestamp).toISOString() : 
+                new Date().toISOString(),
+              // Extract photos from Media expansion
+              photos: (listing.Media || [])
+                .map((media: any) => media.MediaURL)
+                .filter((url: string) => url && url.trim() !== '')
+            };
+
+            // Upsert using ListingKey
+            const { error: upsertError } = await sb
+              .from("mls_listings")
+              .upsert(mappedListing, { onConflict: "mls_id" });
+
+            if (upsertError) {
+              console.error(`[${rid}] Upsert error for ${mappedListing.mls_id}:`, upsertError);
+              totalErrors++;
+            } else {
+              totalProcessed++;
+            }
+            
+          } catch (itemError) {
+            console.error(`[${rid}] Error processing item:`, itemError);
+            totalErrors++;
+          }
+        }
+        
+        // Stop if no next page
+        if (!nextUrl) {
+          console.log(`[${rid}] No more pages, sync complete`);
+          break;
+        }
+        
+      } catch (pageError) {
+        console.error(`[${rid}] Error fetching page ${pageNum}:`, pageError);
+        
+        // If it's a 403, we already set the error state, so break the loop
+        if (pageError instanceof Error && pageError.message.includes('403')) {
+          break;
+        }
+        
+        totalErrors++;
+        break; // Stop on page errors
       }
     }
 
-    // Update sync state
-    await sb.from("ingest_state").upsert({
-      source: "realtyna_listings", 
-      last_run_at: new Date().toISOString(),
-      last_item_ts: new Date().toISOString()
-    }, { onConflict: "source" });
-    
+    // Clear any previous error if sync is successful
+    if (totalProcessed > 0) {
+      await sb.from("ingest_state").upsert({
+        source: "realtyna_listings",
+        last_run_at: new Date().toISOString(),
+        last_item_ts: new Date().toISOString(),
+        last_error: null // Clear previous errors on success
+      }, { onConflict: "source" });
+    }
+
     console.log(`[${rid}] Updated sync state`);
 
     // Log API usage
@@ -240,13 +265,14 @@ serve(async (req) => {
       endpoint: "/reso/odata/Property",
       provider: "realtyna",
       method: "GET",
-      status_code: res.status,
+      status_code: 200,
       response_time_ms: Math.round(performance.now() - t0),
-        metadata: {
-          request_id: rid,
-          items_processed: processedCount,
-          items_failed: errorCount
-        }
+      metadata: {
+        request_id: rid,
+        items_processed: totalProcessed,
+        items_failed: totalErrors,
+        pages_fetched: Math.min(MAX_PAGES, Math.ceil(totalProcessed / BATCH_SIZE))
+      }
     });
 
     const log = {
@@ -254,13 +280,13 @@ serve(async (req) => {
       at: new Date().toISOString(),
       request_id: rid,
       duration_ms: Math.round(performance.now() - t0),
-      count: items.length,
-      processed: processedCount,
-      synced: processedCount,
-      total: processedCount,
-      errors: errorCount,
-      message: `Successfully synced ${processedCount} listings from Realtyna`,
-      note: "sync_realtyna"
+      count: totalProcessed,
+      processed: totalProcessed,
+      synced: totalProcessed,
+      total: totalProcessed,
+      errors: totalErrors,
+      message: `Successfully synced ${totalProcessed} listings from Realtyna RESO OData API`,
+      note: "sync_realtyna_paginated"
     };
 
     console.log(`[${rid}] Sync complete:`, log);

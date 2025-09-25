@@ -26,3 +26,9 @@ verify_jwt = false
 
 [functions.test-realtyna-api]
 verify_jwt = false
+
+[functions.realtyna-auth-cc]
+verify_jwt = false
+
+[functions.realtyna-selftest]
+verify_jwt = false

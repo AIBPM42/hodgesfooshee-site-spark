@@ -12,16 +12,31 @@ const Admin = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const queryClient = useQueryClient();
 
-  // Check token status
+  // Check Client Credentials token status
   const { data: tokenStatus, isLoading: tokenLoading } = useQuery({
-    queryKey: ['oauth-tokens'],
+    queryKey: ['realtyna-tokens'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('oauth_tokens')
+        .from('realtyna_tokens')
         .select('*')
-        .eq('provider', 'realtyna')
+        .eq('principal_type', 'app')
         .order('created_at', { ascending: false })
         .limit(1)
+        .maybeSingle();
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Check for sync errors
+  const { data: ingestState } = useQuery({
+    queryKey: ['ingest-state'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('ingest_state')
+        .select('*')
+        .eq('source', 'realtyna_listings')
         .maybeSingle();
       
       if (error) throw error;
@@ -42,20 +57,24 @@ const Admin = () => {
     },
   });
 
-  // Initiate OAuth connection
+  // Initiate Client Credentials connection
   const connectRealtyna = async () => {
     setIsConnecting(true);
     try {
-      // Call the manage-oauth-tokens function to get a client credentials token
-      const response = await supabase.functions.invoke('manage-oauth-tokens');
+      const response = await supabase.functions.invoke('realtyna-auth-cc');
       
       if (response.error) {
         throw new Error(response.error.message);
       }
       
+      if (!response.data?.success) {
+        throw new Error(response.data?.error || 'Authentication failed');
+      }
+      
       // Invalidate queries to refresh the connection status
-      queryClient.invalidateQueries({ queryKey: ['oauth-tokens'] });
-      toast.success('Successfully connected to Realtyna');
+      queryClient.invalidateQueries({ queryKey: ['realtyna-tokens'] });
+      queryClient.invalidateQueries({ queryKey: ['ingest-state'] });
+      toast.success('Successfully connected to Realtyna using Client Credentials');
     } catch (error) {
       console.error('Connection error:', error);
       toast.error('Failed to connect to Realtyna: ' + (error instanceof Error ? error.message : 'Unknown error'));
@@ -91,6 +110,7 @@ const Admin = () => {
     onSuccess: (data) => {
       toast.success(`Sync completed! Processed ${data.processed || 0} listings`);
       queryClient.invalidateQueries({ queryKey: ['listings-count'] });
+      queryClient.invalidateQueries({ queryKey: ['ingest-state'] });
     },
     onError: (error) => {
       console.error('Sync error:', error);
@@ -107,6 +127,18 @@ const Admin = () => {
           <h1 className="text-3xl font-bold">RealTracs Admin</h1>
           <p className="text-muted-foreground">Manage Realtyna connection and data sync</p>
         </div>
+
+        {/* Error Banner */}
+        {ingestState?.last_error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              <strong>Sync Error:</strong> {ingestState.last_error}
+              <br />
+              <span className="text-sm">Last attempt: {new Date(ingestState.last_run_at).toLocaleString()}</span>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Connection Status */}
         <Card>
@@ -145,7 +177,8 @@ const Admin = () => {
                 {tokenStatus && (
                   <div className="text-sm text-muted-foreground space-y-1">
                     <p>Token expires: {new Date(tokenStatus.expires_at).toLocaleString()}</p>
-                    <p>Scope: {tokenStatus.scope || 'api:read api:write'}</p>
+                    <p>Minutes remaining: {Math.max(0, Math.round((new Date(tokenStatus.expires_at).getTime() - Date.now()) / 60000))}</p>
+                    <p>Flow: Client Credentials ({tokenStatus.scope})</p>
                   </div>
                 )}
 
@@ -197,7 +230,7 @@ const Admin = () => {
               Data Sync Status
             </CardTitle>
             <CardDescription>
-              Sync listings from RealTracs covering Middle Tennessee metro area
+              Sync listings from RealTracs using RESO OData API covering Middle Tennessee metro area
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
