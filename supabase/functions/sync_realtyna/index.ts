@@ -7,11 +7,11 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY   = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const sb = createClient(SUPABASE_URL, SERVICE_KEY);
 
-const BASE        = Deno.env.get("RF_BASE")!;            // e.g. https://api.realtyfeed.com
-const API_KEY     = Deno.env.get("REALTY_API_KEY")!;
-const CLIENT_ID   = Deno.env.get("MLS_CLIENT_ID")!;
-const CLIENT_SECRET = Deno.env.get("MLS_CLIENT_SECRET")!;
-const SCOPE       = Deno.env.get("RF_SCOPE") ?? "api:read";
+const BASE        = Deno.env.get("REALTYFEED_BASE")!;            // e.g. https://api.realtyfeed.com
+const API_KEY     = Deno.env.get("REALTYFEED_API_KEY")!;
+const CLIENT_ID   = Deno.env.get("REALTYFEED_CLIENT_ID")!;
+const CLIENT_SECRET = Deno.env.get("REALTYFEED_CLIENT_SECRET")!;
+const SCOPE       = Deno.env.get("REALTYFEED_SCOPE") ?? "api:read";
 
 const TOKEN_URL   = `${BASE}/v1/auth/token`;
 const RESO_BASE   = `${BASE}/reso/odata`;
