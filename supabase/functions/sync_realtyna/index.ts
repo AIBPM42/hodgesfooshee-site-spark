@@ -16,12 +16,23 @@ serve(async (req) => {
   const rid = crypto.randomUUID();
   
   try {
+    console.log(`[${rid}] Starting sync function...`);
+    
     const sb = createClient(
       Deno.env.get("SUPABASE_URL")!, 
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    console.log(`[${rid}] Starting Realtyna sync...`);
+    console.log(`[${rid}] Supabase client created, starting Realtyna sync...`);
+    
+    // Quick test - return early to see if basic function works
+    return new Response(JSON.stringify({ 
+      status: "test", 
+      request_id: rid, 
+      message: "Function is working" 
+    }), {
+      headers: { ...corsHeaders, "content-type": "application/json" }
+    });
 
     // Ensure valid token by calling realtyna-refresh
     try {
