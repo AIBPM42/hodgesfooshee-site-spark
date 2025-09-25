@@ -199,23 +199,32 @@ const Admin = () => {
                     )}
                   </Button>
                   
-                  <Button 
+                   <Button 
                     onClick={connectRealtyna} 
                     disabled={isConnecting}
                     variant={tokenIsValid ? "outline" : "default"}
                     className="w-full"
                   >
-                    {isConnecting ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Connecting...
-                      </>
-                    ) : tokenIsValid ? (
-                      "Reconnect to Realtyna"
-                    ) : (
-                      "Connect to Realtyna"
-                    )}
-                  </Button>
+                     {isConnecting ? (
+                       <>
+                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                         Connecting...
+                       </>
+                     ) : tokenIsValid ? (
+                       "Reconnect to Realtyna"
+                     ) : (
+                       "Connect to Realtyna"
+                     )}
+                   </Button>
+                   
+                   <Button 
+                     onClick={() => window.open('/realtyna-test', '_blank')}
+                     variant="ghost"
+                     size="sm"
+                     className="w-full"
+                   >
+                     Open Diagnostic Test Page
+                   </Button>
                 </div>
               </div>
             )}
