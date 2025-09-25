@@ -89,7 +89,8 @@ serve(async (req) => {
     const res = await fetch(url.toString(), {
       headers: { 
         'Authorization': `Bearer ${token.access_token}`,
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       }
     });
 
