@@ -141,12 +141,13 @@ serve(async (req) => {
     
     const expiresAt = new Date(Date.now() + (tokenData.expires_in ?? 3600) * 1000).toISOString();
     
-    const { error: insertError } = await sb.from("realtyna_tokens").insert({
-      principal_type: "app",
+    const { error: insertError } = await sb.from("oauth_tokens").insert({
+      provider: "realtyna",
       access_token: tokenData.access_token,
       refresh_token: tokenData.refresh_token ?? null,
       scope: tokenData.scope ?? null,
-      expires_at: expiresAt
+      expires_at: expiresAt,
+      token_type: "bearer"
     });
     
     if (insertError) {

@@ -21,10 +21,10 @@ serve(async (req) => {
     console.log('Checking for app tokens to refresh...');
     
     const { data: tok, error: fetchError } = await sb
-      .from("realtyna_tokens")
+      .from("oauth_tokens")
       .select("*")
-      .eq("principal_type", "app")
-      .order("updated_at", { ascending: false })
+      .eq("provider", "realtyna")
+      .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
     
@@ -107,7 +107,7 @@ serve(async (req) => {
     const expiresAt = new Date(Date.now() + (refreshData.expires_in ?? 3600) * 1000).toISOString();
     
     const { error: updateError } = await sb
-      .from("realtyna_tokens")
+      .from("oauth_tokens")
       .update({
         access_token: refreshData.access_token,
         refresh_token: refreshData.refresh_token ?? tok.refresh_token,
