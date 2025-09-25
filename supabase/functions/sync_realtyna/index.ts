@@ -25,14 +25,10 @@ serve(async (req) => {
 
     console.log(`[${rid}] Supabase client created, starting Realtyna sync...`);
 
-    // Ensure valid token by calling realtyna-refresh
-    try {
-      await fetch(`${Deno.env.get("SUPABASE_URL")!}/functions/v1/realtyna-refresh`, {
-        headers: { 'Authorization': `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!}` }
-      });
-    } catch (error) {
-      console.log(`[${rid}] Token refresh failed, continuing with existing token:`, error);
-    }
+    // Skip token refresh for now to isolate the main issue
+    console.log(`[${rid}] Skipping token refresh to isolate sync issues`);
+    
+    // Note: We'll re-enable token refresh once the main sync is working
 
     // Get current cursor state
     const { data: state } = await sb
@@ -44,8 +40,10 @@ serve(async (req) => {
     const cursor = state?.last_cursor ?? null;
     console.log(`[${rid}] Current cursor: ${cursor}`);
 
-    // Get active token
-    const { data: token } = await sb
+    // Get active token with detailed logging
+    console.log(`[${rid}] Fetching oauth token from database...`);
+    
+    const { data: token, error: tokenError } = await sb
       .from("oauth_tokens")
       .select("*")
       .eq("provider", "realtyna")
@@ -53,10 +51,32 @@ serve(async (req) => {
       .limit(1)
       .maybeSingle();
       
+    if (tokenError) {
+      console.error(`[${rid}] Error fetching token:`, tokenError);
+      return new Response("Token fetch error", { 
+        status: 500, 
+        headers: corsHeaders 
+      });
+    }
+      
     if (!token) {
-      console.error(`[${rid}] No app token found`);
+      console.error(`[${rid}] No oauth token found in database`);
       return new Response("No token available", { 
         status: 500, 
+        headers: corsHeaders 
+      });
+    }
+
+    console.log(`[${rid}] Token found - expires at: ${token.expires_at}`);
+    console.log(`[${rid}] Token scope: ${token.scope}`);
+    
+    // Check if token is expired
+    const now = new Date();
+    const expiresAt = new Date(token.expires_at);
+    if (now >= expiresAt) {
+      console.error(`[${rid}] Token is expired (expires: ${expiresAt}, now: ${now})`);
+      return new Response("Token expired", { 
+        status: 401, 
         headers: corsHeaders 
       });
     }
@@ -85,21 +105,56 @@ serve(async (req) => {
     console.log(`[${rid}] Calling API: ${url.toString()}`);
     console.log(`[${rid}] Using token: ${token.access_token.substring(0, 10)}...`);
 
-    // Call Realtyna Smart Package API
+    // Validate token format before making API call
+    if (!token.access_token || typeof token.access_token !== 'string') {
+      console.error(`[${rid}] Invalid token format:`, typeof token.access_token);
+      return new Response("Invalid token format", { 
+        status: 500, 
+        headers: corsHeaders 
+      });
+    }
+
+    // Log token details for debugging (first 10 chars only)
+    console.log(`[${rid}] Token type: ${typeof token.access_token}`);
+    console.log(`[${rid}] Token length: ${token.access_token.length}`);
+    console.log(`[${rid}] Token starts with: ${token.access_token.substring(0, 10)}`);
+
+    // Call Realtyna Smart Package API with properly formatted headers
+    const headers = {
+      'Authorization': `Bearer ${token.access_token}`,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'User-Agent': 'Supabase-Edge-Function/1.0'
+    };
+
+    console.log(`[${rid}] Request headers prepared (auth header length: ${headers.Authorization.length})`);
+
     const res = await fetch(url.toString(), {
-      headers: { 
-        'Authorization': `Bearer ${token.access_token}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
+      headers: headers
     });
 
     console.log(`[${rid}] API response status: ${res.status}`);
+    console.log(`[${rid}] API response headers:`, Object.fromEntries(res.headers.entries()));
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error(`[${rid}] API call failed: ${res.status} ${errorText}`);
-      return new Response(`Upstream API error: ${res.status}`, { 
+      console.error(`[${rid}] API call failed: ${res.status}`);
+      console.error(`[${rid}] Error response: ${errorText}`);
+      console.error(`[${rid}] Request URL: ${url.toString()}`);
+      console.error(`[${rid}] Request headers used:`, headers);
+      
+      // Log specific error details for common issues
+      if (res.status === 401) {
+        console.error(`[${rid}] Authentication failed - token may be expired or invalid`);
+      } else if (res.status === 403) {
+        console.error(`[${rid}] Authorization failed - check token format and permissions`);
+      }
+      
+      return new Response(JSON.stringify({
+        error: `Upstream API error: ${res.status}`,
+        details: errorText,
+        request_id: rid
+      }), { 
         status: 502, 
         headers: { ...corsHeaders, 'content-type': 'application/json' }
       });
