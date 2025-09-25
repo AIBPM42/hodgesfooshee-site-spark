@@ -126,8 +126,8 @@ serve(async (req) => {
     };
 
     // Add API key if available
-    if (Deno.env.get("REALTYNA_API_KEY")) {
-      headers['x-api-key'] = Deno.env.get("REALTYNA_API_KEY")!;
+    if (Deno.env.get("realtyna_api_key")) {
+      headers['x-api-key'] = Deno.env.get("realtyna_api_key")!;
     }
 
     console.log(`[${rid}] Request headers prepared (auth header length: ${headers.Authorization.length})`);

@@ -34,9 +34,9 @@ serve(async (req) => {
       });
     }
 
-    const base = Deno.env.get("REALTYNA_BASE") || "https://api.realtyfeed.com";
-    const clientId = Deno.env.get("REALTYNA_CLIENT_ID")!;
-    const clientSecret = Deno.env.get("REALTYNA_CLIENT_SECRET")!;
+    const base = Deno.env.get("realtyna_base") || "https://api.realtyfeed.com";
+    const clientId = Deno.env.get("realtyna_client_id")!;
+    const clientSecret = Deno.env.get("realtyna_client_secret")!;
     const redirectUri = `https://xhqwmtzawqfffepcqxwf.functions.supabase.co/realtyna-callback`;
     
     console.log(`OAuth callback - Base: ${base}, ClientID: ${clientId?.substring(0, 8)}..., Code: ${code?.substring(0, 10)}...`);

@@ -69,7 +69,7 @@ serve(async (req) => {
       });
     }
 
-    const base = Deno.env.get("REALTYNA_BASE") || "https://api.realtyfeed.com";
+    const base = Deno.env.get("realtyna_base") || "https://api.realtyfeed.com";
     // {needs-verification} - Using same token endpoint as callback function
     const tokenEndpoint = `${base}/oauth/token`;
     
@@ -84,8 +84,8 @@ serve(async (req) => {
       body: new URLSearchParams({
         grant_type: "refresh_token",
         refresh_token: tok.refresh_token,
-        client_id: Deno.env.get("REALTYNA_CLIENT_ID")!,
-        client_secret: Deno.env.get("REALTYNA_CLIENT_SECRET")!
+        client_id: Deno.env.get("realtyna_client_id")!,
+        client_secret: Deno.env.get("realtyna_client_secret")!
       })
     });
     

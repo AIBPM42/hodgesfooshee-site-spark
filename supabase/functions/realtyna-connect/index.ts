@@ -12,8 +12,8 @@ serve(async (req) => {
   }
 
   try {
-    const base = Deno.env.get("REALTYNA_BASE") || "https://api.realtyfeed.com";
-    const clientId = Deno.env.get("REALTYNA_CLIENT_ID");
+    const base = Deno.env.get("realtyna_base") || "https://api.realtyfeed.com";
+    const clientId = Deno.env.get("realtyna_client_id");
     const redirectUri = `https://xhqwmtzawqfffepcqxwf.functions.supabase.co/realtyna-callback`;
     
     console.log(`OAuth Connect - Base: ${base}, ClientID: ${clientId?.substring(0, 8) || 'NOT_SET'}...`);

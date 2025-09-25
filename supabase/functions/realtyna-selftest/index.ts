@@ -25,9 +25,9 @@ serve(async (req) => {
       timestamp: new Date().toISOString(),
       request_id: rid,
       environment: {
-        client_id_present: !!Deno.env.get("REALTYNA_CLIENT_ID"),
-        client_secret_present: !!Deno.env.get("REALTYNA_CLIENT_SECRET"),
-        api_key_present: !!Deno.env.get("REALTYNA_API_KEY")
+        client_id_present: !!Deno.env.get("realtyna_client_id"),
+        client_secret_present: !!Deno.env.get("realtyna_client_secret"),
+        api_key_present: !!Deno.env.get("realtyna_api_key")
       },
       auth_test: {},
       api_endpoints: [],
@@ -44,8 +44,8 @@ serve(async (req) => {
           "Accept": "application/json" 
         },
         body: new URLSearchParams({ 
-          client_id: Deno.env.get("REALTYNA_CLIENT_ID")!,
-          client_secret: Deno.env.get("REALTYNA_CLIENT_SECRET")!
+          client_id: Deno.env.get("realtyna_client_id")!,
+          client_secret: Deno.env.get("realtyna_client_secret")!
         })
       });
 
@@ -117,8 +117,8 @@ serve(async (req) => {
       };
 
       // Add API key if available
-      if (Deno.env.get("REALTYNA_API_KEY")) {
-        headers['x-api-key'] = Deno.env.get("REALTYNA_API_KEY")!;
+      if (Deno.env.get("realtyna_api_key")) {
+        headers['x-api-key'] = Deno.env.get("realtyna_api_key")!;
       }
 
       for (const endpoint of endpoints) {

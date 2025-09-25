@@ -22,8 +22,8 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const client_id = Deno.env.get("REALTYNA_CLIENT_ID");
-    const client_secret = Deno.env.get("REALTYNA_CLIENT_SECRET");
+    const client_id = Deno.env.get("realtyna_client_id");
+    const client_secret = Deno.env.get("realtyna_client_secret");
     
     if (!client_id || !client_secret) {
       console.error(`[${rid}] Missing client credentials`);
