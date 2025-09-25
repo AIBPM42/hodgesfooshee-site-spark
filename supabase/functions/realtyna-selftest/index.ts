@@ -96,7 +96,7 @@ serve(async (req) => {
       const endpoints = [
         {
           name: "RESO OData Property",
-          url: "https://api.realtyfeed.com/reso/odata/Property?$top=1",
+          url: "https://api.realtyfeed.com/reso/odata/Property?$top=1&$select=ListingKey,ListPrice,City,StandardStatus,BedroomsTotal,BathroomsTotalInteger,LivingArea,ModificationTimestamp",
           expected: "OData property data"
         },
         {
@@ -113,7 +113,8 @@ serve(async (req) => {
 
       const headers: Record<string, string> = {
         'Authorization': `Bearer ${currentToken.access_token}`,
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Prefer': 'odata.maxpagesize=1'
       };
 
       // Add API key if available
@@ -127,29 +128,49 @@ serve(async (req) => {
           
           if (res.ok) {
             const data = await res.json();
-            testResults.api_endpoints.push({
-              name: endpoint.name,
-              url: endpoint.url,
-              success: true,
-              status: res.status,
-              data_structure: {
-                has_value_array: Array.isArray(data.value),
-                has_odata_context: !!data['@odata.context'],
-                has_odata_nextlink: !!data['@odata.nextLink'],
-                item_count: data.value?.length || 0
-              },
-              message: "Success"
-            });
+            
+            // For Property endpoint, return { ok, status, payload } format
+            if (endpoint.name === "RESO OData Property") {
+              testResults.api_endpoints.push({
+                ok: true,
+                status: res.status,
+                payload: data
+              });
+            } else {
+              testResults.api_endpoints.push({
+                name: endpoint.name,
+                url: endpoint.url,
+                success: true,
+                status: res.status,
+                data_structure: {
+                  has_value_array: Array.isArray(data.value),
+                  has_odata_context: !!data['@odata.context'],
+                  has_odata_nextlink: !!data['@odata.nextLink'],
+                  item_count: data.value?.length || 0
+                },
+                message: "Success"
+              });
+            }
           } else {
             const errorText = await res.text();
-            testResults.api_endpoints.push({
-              name: endpoint.name,
-              url: endpoint.url,
-              success: false,
-              status: res.status,
-              error: errorText.substring(0, 200),
-              message: `Failed with ${res.status}`
-            });
+            
+            // For Property endpoint, return { ok, status, payload } format
+            if (endpoint.name === "RESO OData Property") {
+              testResults.api_endpoints.push({
+                ok: false,
+                status: res.status,
+                payload: errorText
+              });
+            } else {
+              testResults.api_endpoints.push({
+                name: endpoint.name,
+                url: endpoint.url,
+                success: false,
+                status: res.status,
+                error: errorText.substring(0, 200),
+                message: `Failed with ${res.status}`
+              });
+            }
           }
         } catch (endpointError) {
           testResults.api_endpoints.push({
@@ -167,7 +188,7 @@ serve(async (req) => {
     const { data: ingestState } = await sb
       .from("ingest_state")
       .select("*")
-      .eq("source", "realtyna_listings")
+      .eq("key", "realtyna_listings")
       .maybeSingle();
 
     testResults.database_state.ingest_state = ingestState;
@@ -186,8 +207,8 @@ serve(async (req) => {
       testResults.recommendations.push("No API endpoints accessible - contact Realtyna to enable RESO Output for your account");
     }
 
-    if (ingestState?.last_error) {
-      testResults.recommendations.push(`Last sync error: ${ingestState.last_error} - check error details and retry`);
+    if (ingestState?.value?.last_error) {
+      testResults.recommendations.push(`Last sync error: ${ingestState.value.last_error} - check error details and retry`);
     }
 
     testResults.summary = {

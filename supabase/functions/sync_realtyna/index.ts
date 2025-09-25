@@ -184,16 +184,16 @@ serve(async (req) => {
         // Process items from this page
         for (const listing of items) {
           try {
-            // Map to new standardized schema using RESO field names
+            // Map to standardized RESO schema
             const mappedListing = {
-              listing_key: listing.ListingKey,
+              listing_key: listing.ListingKey || listing.Id || `unk_${Date.now()}_${Math.random()}`,
               listing_id: listing.ListingId || listing.Id,
-              list_price: listing.ListPrice || 0,
-              city: listing.City || '',
+              list_price: listing.ListPrice ? Number(listing.ListPrice) : null,
+              city: listing.City || null,
               standard_status: listing.StandardStatus || 'Active',
-              bedrooms_total: listing.BedroomsTotal || 0,
-              bathrooms_total_integer: listing.BathroomsTotalInteger || 0,
-              living_area: listing.LivingArea || 0,
+              bedrooms_total: listing.BedroomsTotal ? Number(listing.BedroomsTotal) : null,
+              bathrooms_total_integer: listing.BathroomsTotalInteger ? Number(listing.BathroomsTotalInteger) : null,
+              living_area: listing.LivingArea ? Number(listing.LivingArea) : null,
               modification_timestamp: listing.ModificationTimestamp ? 
                 new Date(listing.ModificationTimestamp).toISOString() : 
                 null,
