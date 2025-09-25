@@ -1,306 +1,192 @@
+// supabase/functions/sync_realtyna/index.ts
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+// ====== ENV ======
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SERVICE_KEY   = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const sb = createClient(SUPABASE_URL, SERVICE_KEY);
+
+const BASE        = Deno.env.get("REALTYFEED_BASE")!;            // e.g. https://api.realtyfeed.com
+const API_KEY     = Deno.env.get("REALTYFEED_API_KEY")!;
+const CLIENT_ID   = Deno.env.get("REALTYFEED_CLIENT_ID")!;
+const CLIENT_SECRET = Deno.env.get("REALTYFEED_CLIENT_SECRET")!;
+const SCOPE       = Deno.env.get("REALTYFEED_SCOPE") ?? "api:read";
+
+const TOKEN_URL   = `${BASE}/v1/auth/token`;
+const RESO_BASE   = `${BASE}/reso/odata`;
+
+// ====== CORS ======
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,OPTIONS",
+  "Access-Control-Allow-Headers": "authorization, content-type, x-api-key",
+  "Content-Type": "application/json",
 };
 
-serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+// ====== Helpers ======
+async function getToken(): Promise<string> {
+  const body = new URLSearchParams({
+    client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET,
+    grant_type: "client_credentials",
+    scope: SCOPE,
+  });
+
+  const res = await fetch(TOKEN_URL, {
+    method: "POST",
+    headers: {
+      "x-api-key": API_KEY,
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body,
+  });
+  if (!res.ok) throw new Error(`token ${res.status}: ${await res.text()}`);
+  const json = await res.json();
+  return json.access_token as string;
+}
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function fetchWithBackoff(url: string, headers: HeadersInit, tries = 5) {
+  let delay = 250;
+  for (let i = 0; i < tries; i++) {
+    const res = await fetch(url, { headers });
+    if (res.status !== 429) return res;
+    await sleep(delay);
+    delay = Math.min(4000, delay * 2); // 250 → 500 → 1000 → 2000 → 4000
   }
+  return fetch(url, { headers }); // final attempt
+}
 
-  const t0 = performance.now();
-  const rid = crypto.randomUUID();
-  
+async function getState() {
+  const { data } = await sb
+    .from("ingest_state")
+    .select("value")
+    .eq("key", "property_sync")
+    .maybeSingle();
+  return (data?.value as any) || {};
+}
+
+async function setState(value: any) {
+  await sb
+    .from("ingest_state")
+    .upsert({ key: "property_sync", value, updated_at: new Date().toISOString() });
+}
+
+async function clearState() {
+  await sb.from("ingest_state").delete().eq("key", "property_sync");
+}
+
+// Map + upsert into mls_listings keyed by listing_key
+async function upsertBatch(items: any[]) {
+  if (!items?.length) return;
+  const rows = items
+    .map((p: any) => ({
+      listing_key: p.ListingKey?.toString(),
+      listing_id: p.ListingId ?? null,
+      list_price: p.ListPrice ?? null,
+      city: p.City ?? null,
+      standard_status: p.StandardStatus ?? null,
+      bedrooms_total: p.BedroomsTotal ?? null,
+      bathrooms_total_integer: p.BathroomsTotalInteger ?? null,
+      living_area: p.LivingArea ?? null,
+      modification_timestamp: p.ModificationTimestamp
+        ? new Date(p.ModificationTimestamp).toISOString()
+        : null,
+      rf_modification_timestamp: p.RFModificationTimestamp
+        ? new Date(p.RFModificationTimestamp).toISOString()
+        : null,
+      updated_at: new Date().toISOString(),
+    }))
+    .filter((r: any) => r.listing_key); // require a key
+
+  if (!rows.length) return;
+  const { error } = await sb.from("mls_listings").upsert(rows, { onConflict: "listing_key" });
+  if (error) throw error;
+}
+
+// ====== Handler ======
+serve(async (req) => {
   try {
-    console.log(`[${rid}] Starting sync function...`);
-    
-    const sb = createClient(
-      Deno.env.get("SUPABASE_URL")!, 
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
-
-    console.log(`[${rid}] Supabase client created, starting Realtyna sync...`);
-
-    // Get active Client Credentials token
-    console.log(`[${rid}] Fetching client credentials token from database...`);
-    
-    const { data: token, error: tokenError } = await sb
-      .from("realtyna_tokens")
-      .select("*")
-      .eq("principal_type", "app")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-      
-    if (tokenError) {
-      console.error(`[${rid}] Error fetching token:`, tokenError);
-      return new Response("Token fetch error", { 
-        status: 500, 
-        headers: corsHeaders 
-      });
-    }
-      
-    if (!token) {
-      console.error(`[${rid}] No client credentials token found in database`);
-      
-      // Set error in ingest_state using new key-value structure
-      await sb.from("ingest_state").upsert({
-        key: "realtyna_listings",
-        value: {
-          last_error: "No authentication token available - run Client Credentials auth first",
-          last_run_at: new Date().toISOString()
-        }
-      }, { onConflict: "key" });
-      
-      return new Response(JSON.stringify({
-        success: false,
-        error: "No authentication token available",
-        message: "Use the 'Connect to Realtyna' button to authenticate first"
-      }), { 
-        status: 401, 
-        headers: { ...corsHeaders, 'content-type': 'application/json' }
-      });
+    if (req.method === "OPTIONS") {
+      return new Response(null, { headers: CORS_HEADERS });
     }
 
-    console.log(`[${rid}] Token found - expires at: ${token.expires_at}`);
-    console.log(`[${rid}] Token scope: ${token.scope}`);
-    
-    // Check if token is expired
-    const now = new Date();
-    const expiresAt = new Date(token.expires_at);
-    if (now >= expiresAt) {
-      console.error(`[${rid}] Token is expired (expires: ${expiresAt}, now: ${now})`);
-      
-      // Set error in ingest_state using new key-value structure
-      await sb.from("ingest_state").upsert({
-        key: "realtyna_listings",
-        value: {
-          last_error: "Authentication token expired - reconnect to Realtyna",
-          last_run_at: new Date().toISOString()
-        }
-      }, { onConflict: "key" });
-      
-      return new Response(JSON.stringify({
-        success: false,
-        error: "Authentication token expired",
-        message: "Use the 'Reconnect to Realtyna' button to get a fresh token"
-      }), { 
-        status: 401, 
-        headers: { ...corsHeaders, 'content-type': 'application/json' }
-      });
-    }
+    // optional query param: ?reset=true to clear high-water mark
+    const url = new URL(req.url);
+    const reset = url.searchParams.get("reset") === "true";
+    if (reset) await clearState();
 
-    // RESO OData pagination sync
-    const BASE_URL = "https://api.realtyfeed.com/reso/odata/Property";
-    const BATCH_SIZE = 100;
-    const MAX_PAGES = 20; // Limit pages per run
-    
-    console.log(`[${rid}] Starting paginated sync with base URL: ${BASE_URL}`);
-    console.log(`[${rid}] Using token: ${token.access_token.substring(0, 10)}...`);
-
-    // Validate token format before making API call
-    if (!token.access_token || typeof token.access_token !== 'string') {
-      console.error(`[${rid}] Invalid token format:`, typeof token.access_token);
-      return new Response("Invalid token format", { 
-        status: 500, 
-        headers: corsHeaders 
-      });
-    }
-
-    // Log token details for debugging (first 10 chars only)
-    console.log(`[${rid}] Token type: ${typeof token.access_token}`);
-    console.log(`[${rid}] Token length: ${token.access_token.length}`);
-    console.log(`[${rid}] Token starts with: ${token.access_token.substring(0, 10)}`);
-
-    // Prepare headers with optional API key
-    const headers: Record<string, string> = {
-      'Authorization': `Bearer ${token.access_token}`,
-      'Accept': 'application/json'
+    const token = await getToken();
+    const headers = {
+      "x-api-key": API_KEY,
+      "Accept": "application/json",
+      "Authorization": `Bearer ${token}`,
+      "Prefer": "odata.maxpagesize=200", // hint page size
     };
 
-    // Add API key if available
-    if (Deno.env.get("realtyna_api_key")) {
-      headers['x-api-key'] = Deno.env.get("realtyna_api_key")!;
+    let state = await getState();
+    let nextUrl: string | undefined = state.nextLink;
+
+    // Build initial page if not resuming via @odata.nextLink
+    if (!nextUrl) {
+      const since = state.lastRFModified as string | undefined;
+      const filter = since ? `&$filter=RFModificationTimestamp gt ${since}` : "";
+      nextUrl =
+        `${RESO_BASE}/Property?` +
+        `$top=200&` +
+        `$select=ListingKey,ListingId,ListPrice,City,StandardStatus,` +
+        `BedroomsTotal,BathroomsTotalInteger,LivingArea,ModificationTimestamp,RFModificationTimestamp` +
+        `${filter}&$orderby=RFModificationTimestamp asc`;
     }
 
-    console.log(`[${rid}] Request headers prepared (auth header length: ${headers.Authorization.length})`);
+    let total = 0;
+    // Safety caps to prevent runaway loops
+    const MAX_PAGES = 50;
+    const PACE_MS = 120; // ~ gentle pace to stay under Smart plan 10 RPS
+    for (let i = 0; i < MAX_PAGES; i++) {
+      const res = await fetchWithBackoff(nextUrl!, headers);
+      const json = await res.json();
 
-    // Paginated fetch function
-    const fetchPage = async (url?: string) => {
-      const requestUrl = url || `${BASE_URL}?$filter=StandardStatus in ('Active','Coming Soon','ComingSoon')&$top=${BATCH_SIZE}&$select=ListingKey,ListPrice,BedroomsTotal,BathroomsTotalInteger,LivingArea,PropertyType,UnparsedAddress,City,CountyOrParish,StateOrProvince,PostalCode,StandardStatus,PublicRemarks,Latitude,Longitude,ModificationTimestamp&$expand=Media($select=MediaURL)`;
-      
-      console.log(`[${rid}] Fetching: ${requestUrl.substring(0, 100)}...`);
-      
-      const res = await fetch(requestUrl, { headers });
-      
-      console.log(`[${rid}] API response status: ${res.status}`);
-      
       if (!res.ok) {
-        const errorText = await res.text();
-        console.error(`[${rid}] API call failed: ${res.status}`);
-        console.error(`[${rid}] Error response: ${errorText}`);
-        
-        // Set error in ingest_state and stop processing on 403
-        if (res.status === 403) {
-          console.error(`[${rid}] 403 Forbidden - stopping sync and setting error state`);
-          await sb.from("ingest_state").upsert({
-            key: "realtyna_listings",
-            value: {
-              last_error: `403 Forbidden: ${errorText.substring(0, 200)}`,
-              last_run_at: new Date().toISOString()
-            }
-          }, { onConflict: "key" });
-        }
-        
-        throw new Error(`API error ${res.status}: ${errorText}`);
+        console.error("sync_realtyna page error:", res.status, json);
+        return new Response(
+          JSON.stringify({ ok: false, status: res.status, error: json }),
+          { status: 500, headers: CORS_HEADERS }
+        );
       }
-      
-      return res.json();
-    };
 
-    let totalProcessed = 0;
-    let totalErrors = 0;
-    let nextUrl: string | undefined;
-    
-    console.log(`[${rid}] Starting paginated sync (max ${MAX_PAGES} pages)`);
+      const items = json.value ?? [];
+      await upsertBatch(items);
+      total += items.length;
 
-    for (let pageNum = 1; pageNum <= MAX_PAGES; pageNum++) {
-      try {
-        const pageData = await fetchPage(nextUrl);
-        const items = pageData.value || [];
-        nextUrl = pageData['@odata.nextLink'];
-        
-        console.log(`[${rid}] Page ${pageNum}: ${items.length} items, nextLink: ${!!nextUrl}`);
-        
-        if (items.length === 0) {
-          console.log(`[${rid}] No more items, ending sync`);
-          break;
-        }
+      // Update high-water mark and nextLink
+      const lastRF = items.length
+        ? items[items.length - 1].RFModificationTimestamp
+        : state.lastRFModified;
 
-        // Process items from this page
-        for (const listing of items) {
-          try {
-            // Map to standardized RESO schema
-            const mappedListing = {
-              listing_key: listing.ListingKey || listing.Id || `unk_${Date.now()}_${Math.random()}`,
-              listing_id: listing.ListingId || listing.Id,
-              list_price: listing.ListPrice ? Number(listing.ListPrice) : null,
-              city: listing.City || null,
-              standard_status: listing.StandardStatus || 'Active',
-              bedrooms_total: listing.BedroomsTotal ? Number(listing.BedroomsTotal) : null,
-              bathrooms_total_integer: listing.BathroomsTotalInteger ? Number(listing.BathroomsTotalInteger) : null,
-              living_area: listing.LivingArea ? Number(listing.LivingArea) : null,
-              modification_timestamp: listing.ModificationTimestamp ? 
-                new Date(listing.ModificationTimestamp).toISOString() : 
-                null,
-              rf_modification_timestamp: new Date().toISOString()
-            };
+      state = {
+        lastRFModified: lastRF ?? state.lastRFModified,
+        nextLink: json["@odata.nextLink"],
+      };
+      await setState(state);
 
-            // Upsert using listing_key as unique identifier
-            const { error: upsertError } = await sb
-              .from("mls_listings")
-              .upsert(mappedListing, { onConflict: "listing_key" });
-
-            if (upsertError) {
-              console.error(`[${rid}] Upsert error for ${mappedListing.listing_key}:`, upsertError);
-              totalErrors++;
-            } else {
-              totalProcessed++;
-            }
-            
-          } catch (itemError) {
-            console.error(`[${rid}] Error processing item:`, itemError);
-            totalErrors++;
-          }
-        }
-        
-        // Stop if no next page
-        if (!nextUrl) {
-          console.log(`[${rid}] No more pages, sync complete`);
-          break;
-        }
-        
-      } catch (pageError) {
-        console.error(`[${rid}] Error fetching page ${pageNum}:`, pageError);
-        
-        // If it's a 403, we already set the error state, so break the loop
-        if (pageError instanceof Error && pageError.message.includes('403')) {
-          break;
-        }
-        
-        totalErrors++;
-        break; // Stop on page errors
-      }
+      if (!json["@odata.nextLink"]) break;
+      nextUrl = json["@odata.nextLink"];
+      await sleep(PACE_MS);
     }
 
-    // Clear any previous error if sync is successful
-    if (totalProcessed > 0) {
-      await sb.from("ingest_state").upsert({
-        key: "realtyna_listings",
-        value: {
-          last_run_at: new Date().toISOString(),
-          last_item_ts: new Date().toISOString(),
-          last_error: null // Clear previous errors on success
-        }
-      }, { onConflict: "key" });
-    }
-
-    console.log(`[${rid}] Updated sync state`);
-
-    // Log API usage
-    await sb.from("api_usage_logs").insert({
-      endpoint: "/reso/odata/Property",
-      provider: "realtyna",
-      method: "GET",
-      status_code: 200,
-      response_time_ms: Math.round(performance.now() - t0),
-      metadata: {
-        request_id: rid,
-        items_processed: totalProcessed,
-        items_failed: totalErrors,
-        pages_fetched: Math.min(MAX_PAGES, Math.ceil(totalProcessed / BATCH_SIZE))
-      }
-    });
-
-    const log = {
-      success: true,
-      at: new Date().toISOString(),
-      request_id: rid,
-      duration_ms: Math.round(performance.now() - t0),
-      count: totalProcessed,
-      processed: totalProcessed,
-      synced: totalProcessed,
-      total: totalProcessed,
-      errors: totalErrors,
-      message: `Successfully synced ${totalProcessed} listings from Realtyna RESO OData API`,
-      note: "sync_realtyna_paginated"
-    };
-
-    console.log(`[${rid}] Sync complete:`, log);
-
-    return new Response(JSON.stringify(log), {
-      headers: { ...corsHeaders, "content-type": "application/json" }
-    });
-
-  } catch (error) {
-    console.error(`[${rid}] Sync failed:`, error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    
-    const errorLog = {
-      at: new Date().toISOString(),
-      request_id: rid,
-      duration_ms: Math.round(performance.now() - t0),
-      error: errorMessage,
-      note: "sync_realtyna_failed"
-    };
-
-    return new Response(JSON.stringify(errorLog), {
-      status: 500,
-      headers: { ...corsHeaders, 'content-type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ ok: true, total, state }),
+      { headers: CORS_HEADERS }
+    );
+  } catch (e) {
+    console.error("sync_realtyna fatal:", e);
+    return new Response(
+      JSON.stringify({ ok: false, error: String(e) }),
+      { status: 500, headers: CORS_HEADERS }
+    );
   }
 });
