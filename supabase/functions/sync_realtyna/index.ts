@@ -25,13 +25,6 @@ serve(async (req) => {
 
     console.log(`[${rid}] Supabase client created, starting Realtyna sync...`);
 
-    // Skip token refresh for now to isolate the main issue
-    console.log(`[${rid}] Skipping token refresh to isolate sync issues`);
-    
-    // Note: We'll re-enable token refresh once the main sync is working
-
-    console.log(`[${rid}] Starting basic sync without pagination`);
-
     // Get active Client Credentials token
     console.log(`[${rid}] Fetching client credentials token from database...`);
     
@@ -54,12 +47,14 @@ serve(async (req) => {
     if (!token) {
       console.error(`[${rid}] No client credentials token found in database`);
       
-      // Set error in ingest_state
+      // Set error in ingest_state using new key-value structure
       await sb.from("ingest_state").upsert({
-        source: "realtyna_listings",
-        last_error: "No authentication token available - run Client Credentials auth first",
-        last_run_at: new Date().toISOString()
-      }, { onConflict: "source" });
+        key: "realtyna_listings",
+        value: {
+          last_error: "No authentication token available - run Client Credentials auth first",
+          last_run_at: new Date().toISOString()
+        }
+      }, { onConflict: "key" });
       
       return new Response(JSON.stringify({
         success: false,
@@ -80,12 +75,14 @@ serve(async (req) => {
     if (now >= expiresAt) {
       console.error(`[${rid}] Token is expired (expires: ${expiresAt}, now: ${now})`);
       
-      // Set error in ingest_state
+      // Set error in ingest_state using new key-value structure
       await sb.from("ingest_state").upsert({
-        source: "realtyna_listings",
-        last_error: "Authentication token expired - reconnect to Realtyna",
-        last_run_at: new Date().toISOString()
-      }, { onConflict: "source" });
+        key: "realtyna_listings",
+        value: {
+          last_error: "Authentication token expired - reconnect to Realtyna",
+          last_run_at: new Date().toISOString()
+        }
+      }, { onConflict: "key" });
       
       return new Response(JSON.stringify({
         success: false,
@@ -151,10 +148,12 @@ serve(async (req) => {
         if (res.status === 403) {
           console.error(`[${rid}] 403 Forbidden - stopping sync and setting error state`);
           await sb.from("ingest_state").upsert({
-            source: "realtyna_listings",
-            last_error: `403 Forbidden: ${errorText.substring(0, 200)}`,
-            last_run_at: new Date().toISOString()
-          }, { onConflict: "source" });
+            key: "realtyna_listings",
+            value: {
+              last_error: `403 Forbidden: ${errorText.substring(0, 200)}`,
+              last_run_at: new Date().toISOString()
+            }
+          }, { onConflict: "key" });
         }
         
         throw new Error(`API error ${res.status}: ${errorText}`);
@@ -185,39 +184,29 @@ serve(async (req) => {
         // Process items from this page
         for (const listing of items) {
           try {
-            // Map using ListingKey as primary identifier
+            // Map to new standardized schema using RESO field names
             const mappedListing = {
-              mls_id: listing.ListingKey || listing.ListingId || listing.Id,
-              price: listing.ListPrice || 0,
-              beds: listing.BedroomsTotal || 0,
-              baths: listing.BathroomsTotalInteger || 0,
-              sqft: listing.LivingArea || 0,
-              property_type: listing.PropertyType || 'Residential',
-              address: listing.UnparsedAddress || 'Address not available',
+              listing_key: listing.ListingKey,
+              listing_id: listing.ListingId || listing.Id,
+              list_price: listing.ListPrice || 0,
               city: listing.City || '',
-              county: listing.CountyOrParish || '',
-              state: listing.StateOrProvince || 'TN',
-              zip: listing.PostalCode || '',
-              status: listing.StandardStatus || 'Active',
-              remarks: listing.PublicRemarks || '',
-              lat: listing.Latitude || 0,
-              lng: listing.Longitude || 0,
-              source_updated_at: listing.ModificationTimestamp ? 
+              standard_status: listing.StandardStatus || 'Active',
+              bedrooms_total: listing.BedroomsTotal || 0,
+              bathrooms_total_integer: listing.BathroomsTotalInteger || 0,
+              living_area: listing.LivingArea || 0,
+              modification_timestamp: listing.ModificationTimestamp ? 
                 new Date(listing.ModificationTimestamp).toISOString() : 
-                new Date().toISOString(),
-              // Extract photos from Media expansion
-              photos: (listing.Media || [])
-                .map((media: any) => media.MediaURL)
-                .filter((url: string) => url && url.trim() !== '')
+                null,
+              rf_modification_timestamp: new Date().toISOString()
             };
 
-            // Upsert using ListingKey
+            // Upsert using listing_key as unique identifier
             const { error: upsertError } = await sb
               .from("mls_listings")
-              .upsert(mappedListing, { onConflict: "mls_id" });
+              .upsert(mappedListing, { onConflict: "listing_key" });
 
             if (upsertError) {
-              console.error(`[${rid}] Upsert error for ${mappedListing.mls_id}:`, upsertError);
+              console.error(`[${rid}] Upsert error for ${mappedListing.listing_key}:`, upsertError);
               totalErrors++;
             } else {
               totalProcessed++;
@@ -251,11 +240,13 @@ serve(async (req) => {
     // Clear any previous error if sync is successful
     if (totalProcessed > 0) {
       await sb.from("ingest_state").upsert({
-        source: "realtyna_listings",
-        last_run_at: new Date().toISOString(),
-        last_item_ts: new Date().toISOString(),
-        last_error: null // Clear previous errors on success
-      }, { onConflict: "source" });
+        key: "realtyna_listings",
+        value: {
+          last_run_at: new Date().toISOString(),
+          last_item_ts: new Date().toISOString(),
+          last_error: null // Clear previous errors on success
+        }
+      }, { onConflict: "key" });
     }
 
     console.log(`[${rid}] Updated sync state`);

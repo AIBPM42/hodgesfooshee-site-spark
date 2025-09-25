@@ -36,7 +36,7 @@ const Admin = () => {
       const { data, error } = await supabase
         .from('ingest_state')
         .select('*')
-        .eq('source', 'realtyna_listings')
+        .eq('key', 'realtyna_listings')
         .maybeSingle();
       
       if (error) throw error;
@@ -129,13 +129,13 @@ const Admin = () => {
         </div>
 
         {/* Error Banner */}
-        {(ingestState as any)?.last_error && (
+        {(ingestState?.value as any)?.last_error && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              <strong>Sync Error:</strong> {(ingestState as any).last_error}
+              <strong>Sync Error:</strong> {(ingestState.value as any).last_error}
               <br />
-              <span className="text-sm">Last attempt: {new Date(ingestState.last_run_at).toLocaleString()}</span>
+              <span className="text-sm">Last attempt: {(ingestState.value as any).last_run_at ? new Date((ingestState.value as any).last_run_at).toLocaleString() : 'Unknown'}</span>
             </AlertDescription>
           </Alert>
         )}

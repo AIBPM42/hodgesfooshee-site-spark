@@ -192,22 +192,7 @@ export type Database = {
           rank?: number | null
           tag?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "featured_listings_listing_id_fkey"
-            columns: ["listing_id"]
-            isOneToOne: true
-            referencedRelation: "mls_listings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "featured_listings_listing_id_fkey"
-            columns: ["listing_id"]
-            isOneToOne: true
-            referencedRelation: "public_listings"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       footer_links: {
         Row: {
@@ -238,25 +223,19 @@ export type Database = {
       }
       ingest_state: {
         Row: {
-          last_cursor: string | null
-          last_error: string | null
-          last_item_ts: string | null
-          last_run_at: string | null
-          source: string
+          key: string
+          updated_at: string | null
+          value: Json | null
         }
         Insert: {
-          last_cursor?: string | null
-          last_error?: string | null
-          last_item_ts?: string | null
-          last_run_at?: string | null
-          source: string
+          key: string
+          updated_at?: string | null
+          value?: Json | null
         }
         Update: {
-          last_cursor?: string | null
-          last_error?: string | null
-          last_item_ts?: string | null
-          last_run_at?: string | null
-          source?: string
+          key?: string
+          updated_at?: string | null
+          value?: Json | null
         }
         Relationships: []
       }
@@ -286,73 +265,49 @@ export type Database = {
       }
       mls_listings: {
         Row: {
-          address: string | null
-          baths: number | null
-          beds: number | null
+          bathrooms_total_integer: number | null
+          bedrooms_total: number | null
           city: string | null
-          county: string | null
           created_at: string | null
-          id: string
-          lat: number | null
-          lng: number | null
-          mls_id: string
-          photos: Json | null
-          price: number | null
-          property_type: string | null
-          remarks: string | null
-          source_updated_at: string | null
-          sqft: number | null
-          state: string | null
-          status: string | null
-          sv: unknown | null
+          id: number
+          list_price: number | null
+          listing_id: string | null
+          listing_key: string
+          living_area: number | null
+          modification_timestamp: string | null
+          rf_modification_timestamp: string | null
+          standard_status: string | null
           updated_at: string | null
-          zip: string | null
         }
         Insert: {
-          address?: string | null
-          baths?: number | null
-          beds?: number | null
+          bathrooms_total_integer?: number | null
+          bedrooms_total?: number | null
           city?: string | null
-          county?: string | null
           created_at?: string | null
-          id?: string
-          lat?: number | null
-          lng?: number | null
-          mls_id: string
-          photos?: Json | null
-          price?: number | null
-          property_type?: string | null
-          remarks?: string | null
-          source_updated_at?: string | null
-          sqft?: number | null
-          state?: string | null
-          status?: string | null
-          sv?: unknown | null
+          id?: number
+          list_price?: number | null
+          listing_id?: string | null
+          listing_key: string
+          living_area?: number | null
+          modification_timestamp?: string | null
+          rf_modification_timestamp?: string | null
+          standard_status?: string | null
           updated_at?: string | null
-          zip?: string | null
         }
         Update: {
-          address?: string | null
-          baths?: number | null
-          beds?: number | null
+          bathrooms_total_integer?: number | null
+          bedrooms_total?: number | null
           city?: string | null
-          county?: string | null
           created_at?: string | null
-          id?: string
-          lat?: number | null
-          lng?: number | null
-          mls_id?: string
-          photos?: Json | null
-          price?: number | null
-          property_type?: string | null
-          remarks?: string | null
-          source_updated_at?: string | null
-          sqft?: number | null
-          state?: string | null
-          status?: string | null
-          sv?: unknown | null
+          id?: number
+          list_price?: number | null
+          listing_id?: string | null
+          listing_key?: string
+          living_area?: number | null
+          modification_timestamp?: string | null
+          rf_modification_timestamp?: string | null
+          standard_status?: string | null
           updated_at?: string | null
-          zip?: string | null
         }
         Relationships: []
       }
@@ -612,63 +567,7 @@ export type Database = {
       }
     }
     Views: {
-      public_listings: {
-        Row: {
-          address: string | null
-          baths: number | null
-          beds: number | null
-          city: string | null
-          county: string | null
-          id: string | null
-          mls_id: string | null
-          photos: Json | null
-          price: number | null
-          property_type: string | null
-          source_updated_at: string | null
-          sqft: number | null
-          state: string | null
-          status: string | null
-          thumb: string | null
-          zip: string | null
-        }
-        Insert: {
-          address?: string | null
-          baths?: number | null
-          beds?: number | null
-          city?: string | null
-          county?: string | null
-          id?: string | null
-          mls_id?: string | null
-          photos?: Json | null
-          price?: number | null
-          property_type?: string | null
-          source_updated_at?: string | null
-          sqft?: number | null
-          state?: string | null
-          status?: string | null
-          thumb?: never
-          zip?: string | null
-        }
-        Update: {
-          address?: string | null
-          baths?: number | null
-          beds?: number | null
-          city?: string | null
-          county?: string | null
-          id?: string | null
-          mls_id?: string | null
-          photos?: Json | null
-          price?: number | null
-          property_type?: string | null
-          source_updated_at?: string | null
-          sqft?: number | null
-          state?: string | null
-          status?: string | null
-          thumb?: never
-          zip?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       check_rate_limit: {
