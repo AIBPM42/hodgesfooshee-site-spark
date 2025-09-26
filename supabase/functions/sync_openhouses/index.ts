@@ -13,7 +13,7 @@ const CLIENT_SECRET = Deno.env.get("MLS_CLIENT_SECRET")!;
 const SCOPE = Deno.env.get("RF_SCOPE") ?? "api:read";
 
 const TOKEN_URL = `${BASE}/v1/auth/token`;
-const RESO_BASE = `${BASE}/reso/odata`;
+const RESO_BASE = `${BASE}/odata`;
 
 // ====== CORS ======
 const CORS_HEADERS = {

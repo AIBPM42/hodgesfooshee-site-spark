@@ -13,8 +13,8 @@ serve(async (req) => {
   }
 
   try {
-    const clientId = Deno.env.get('realtyna_client_id')
-    const clientSecret = Deno.env.get('realtyna_client_secret')
+    const clientId = Deno.env.get('REALTYNA_CLIENT_ID')
+    const clientSecret = Deno.env.get('REALTYNA_CLIENT_SECRET')
     
     if (!clientId || !clientSecret) {
       throw new Error('Realtyna OAuth credentials not configured')
