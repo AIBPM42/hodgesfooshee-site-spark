@@ -178,21 +178,29 @@ export type Database = {
       }
       featured_listings: {
         Row: {
-          listing_id: string
+          listing_id: number
           rank: number | null
           tag: string | null
         }
         Insert: {
-          listing_id: string
+          listing_id: number
           rank?: number | null
           tag?: string | null
         }
         Update: {
-          listing_id?: string
+          listing_id?: number
           rank?: number | null
           tag?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "featured_listings_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: true
+            referencedRelation: "mls_listings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       footer_links: {
         Row: {
