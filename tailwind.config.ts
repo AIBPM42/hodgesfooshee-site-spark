@@ -43,6 +43,11 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          orange: 'var(--accent-orange)',
+          green: 'var(--accent-green)',
+          purple: 'var(--accent-purple)',
+          red: 'var(--accent-red)',
+          gold: 'var(--accent-gold)',
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -62,26 +67,12 @@ export default {
           secondary: 'var(--text-secondary)',
           muted: 'var(--text-muted)',
         },
-        accent: {
-          orange: 'var(--accent-orange)',
-          green: 'var(--accent-green)',
-          purple: 'var(--accent-purple)',
-          red: 'var(--accent-red)',
-          gold: 'var(--accent-gold)',
-        },
         state: {
           success: 'var(--state-success)',
           info: 'var(--state-info)',
           warning: 'var(--state-warning)',
           danger: 'var(--state-danger)',
         },
-      },
-      backgroundImage:{
-        'bg-soft':'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.05))'
-      },
-      boxShadow: {
-        card: '0 1px 0 0 var(--border-subtle), 0 12px 24px -24px rgba(0,0,0,0.6)',
-        glow: '0 0 38px 0 color-mix(in srgb, var(--accent-orange) 22%, transparent)',
       },
       backdropBlur: {
         xs: "2px",

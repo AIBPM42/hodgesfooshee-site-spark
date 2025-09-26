@@ -61,15 +61,17 @@
   --radius: 0.5rem;
 }
 
+/* Baseline application of the backgrounds */
+html, body { 
+  background: var(--bg); 
+  color: var(--text-primary); 
+  min-height: 100vh;
+}
+
 * {
   border-color: hsl(var(--border));
 }
 
-body {
-  background-color: var(--bg);
-  color: var(--text-primary);
-  min-height: 100vh;
-}
 
 h1 { 
   font-family: "Playfair Display", serif; 
