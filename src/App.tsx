@@ -13,7 +13,12 @@ import OfficeResults from "./pages/OfficeResults";
 import PropertyDetail from "./pages/PropertyDetail";
 import NotFound from "./pages/NotFound";
 import MLS from "./pages/MLS";
-import Admin from "./pages/Admin";
+import DashboardLayout from "./components/DashboardLayout";
+import Overview from "./pages/dashboard/Overview";
+import MLSModule from "./pages/dashboard/MLSModule";
+import AIModule from "./pages/dashboard/AIModule";
+import AnalyticsModule from "./pages/dashboard/AnalyticsModule";
+import SocialModule from "./pages/dashboard/SocialModule";
 import RealtynaSelftest from "./pages/RealtynaSelftest";
 
 const queryClient = new QueryClient({
@@ -34,7 +39,13 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin" element={<DashboardLayout />}>
+              <Route index element={<Overview />} />
+              <Route path="mls" element={<MLSModule />} />
+              <Route path="ai" element={<AIModule />} />
+              <Route path="analytics" element={<AnalyticsModule />} />
+              <Route path="social" element={<SocialModule />} />
+            </Route>
             <Route path="/mls" element={<MLS />} />
             <Route path="/realtyna-test" element={<RealtynaSelftest />} />
             <Route path="/search/properties" element={<PropertySearchResults />} />
