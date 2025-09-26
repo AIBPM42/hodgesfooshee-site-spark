@@ -47,3 +47,9 @@ verify_jwt = false
 
 [functions.sync-orchestrator]
 verify_jwt = false
+
+[functions.test-sync]
+verify_jwt = false
+
+[functions.manual-test-sync]
+verify_jwt = false
