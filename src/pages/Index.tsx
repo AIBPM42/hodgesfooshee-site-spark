@@ -4,6 +4,7 @@ import FeaturedProperties from "@/components/FeaturedProperties";
 import ServicesSection from "@/components/ServicesSection";
 import LatestMarketInsights from "@/components/LatestMarketInsights";
 import Footer from "@/components/Footer";
+import DynamicStats from "@/components/DynamicStats";
 
 const Index = () => {
   function handleSearch(params: Record<string,string>) {
@@ -34,25 +35,8 @@ const Index = () => {
           {/* SmartSearchBar Component */}
           <SmartSearchBar onGo={handleSearch} />
           
-          {/* Stats Section */}
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            <div className="bg-glass rounded-2xl p-6 shadow-glass">
-              <div className="text-4xl font-bold text-white mb-2">500+</div>
-              <div className="text-white/80">Homes Sold</div>
-            </div>
-            <div className="bg-glass rounded-2xl p-6 shadow-glass">
-              <div className="text-4xl font-bold text-white mb-2">25+</div>
-              <div className="text-white/80">Years Experience</div>
-            </div>
-            <div className="bg-glass rounded-2xl p-6 shadow-glass">
-              <div className="text-4xl font-bold text-white mb-2">9</div>
-              <div className="text-white/80">Counties Served</div>
-            </div>
-            <div className="bg-glass rounded-2xl p-6 shadow-glass">
-              <div className="text-4xl font-bold text-white mb-2">98%</div>
-              <div className="text-white/80">Client Satisfaction</div>
-            </div>
-          </div>
+          {/* Dynamic Stats Section */}
+          <DynamicStats />
         </div>
       </section>
       
