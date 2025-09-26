@@ -20,7 +20,7 @@ serve(async (req) => {
       throw new Error('Realtyna OAuth credentials not configured')
     }
 
-    const requiredScope = 'api:read reso:read'
+    const requiredScope = 'api/read'
     
     // Check if we have a valid token with the required scope
     const { data: tokens } = await supabase
@@ -34,8 +34,8 @@ serve(async (req) => {
     if (tokens && tokens.length > 0) {
       const existingToken = tokens[0]
       // Check if existing token has the required scope
-      if (existingToken.scope && existingToken.scope.includes('reso:read')) {
-        console.log('Found valid token with RESO scope, returning existing token')
+      if (existingToken.scope && existingToken.scope.includes('api/read')) {
+        console.log('Found valid token with API scope, returning existing token')
         return new Response(
           JSON.stringify({ 
             access_token: existingToken.access_token,
@@ -44,7 +44,7 @@ serve(async (req) => {
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
       } else {
-        console.log('Found token but missing RESO scope, will request new token')
+        console.log('Found token but missing API scope, will request new token')
         // Delete the existing token since it doesn't have the right scope
         await supabase
           .from('oauth_tokens')

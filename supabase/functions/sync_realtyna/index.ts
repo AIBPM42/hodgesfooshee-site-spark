@@ -11,7 +11,7 @@ const BASE        = Deno.env.get("RF_BASE")!;            // e.g. https://api.rea
 const API_KEY     = Deno.env.get("REALTY_API_KEY")!;
 const CLIENT_ID   = Deno.env.get("MLS_CLIENT_ID")!;
 const CLIENT_SECRET = Deno.env.get("MLS_CLIENT_SECRET")!;
-const SCOPE       = Deno.env.get("RF_SCOPE") ?? "api:read";
+const SCOPE       = Deno.env.get("RF_SCOPE") ?? "api/read";
 
 const TOKEN_URL   = `${BASE}/v1/auth/token`;
 const RESO_BASE   = `${BASE}/reso/odata`;
@@ -137,8 +137,7 @@ serve(async (req) => {
       nextUrl =
         `${RESO_BASE}/Property?` +
         `$top=200&` +
-        `$select=ListingKey,ListingId,ListPrice,City,StandardStatus,` +
-        `BedroomsTotal,BathroomsTotalInteger,LivingArea,ModificationTimestamp,RFModificationTimestamp` +
+        `$select=*` +
         `${filter}&$orderby=RFModificationTimestamp asc`;
     }
 
