@@ -21,10 +21,10 @@ export default function SocialModule() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-bold text-neutral-100 mb-2">
+        <h1 className="text-3xl font-display font-bold text-primary mb-2">
           Social & Agent Tools
         </h1>
-        <p className="text-lg text-neutral-400">
+        <p className="text-lg text-secondary">
           Team collaboration, performance tracking, and success management
         </p>
       </div>
@@ -37,12 +37,12 @@ export default function SocialModule() {
           { title: 'Collaboration Score', value: '89%', icon: MessageCircle, change: '+2.1% this week', color: 'text-purple-400' },
           { title: 'Success Rate', value: '87%', icon: Trophy, change: '+8.4% vs last quarter', color: 'text-orange-400' }
         ].map((metric) => (
-          <Card key={metric.title} className="bg-white/5 backdrop-blur-xl border-white/10">
+          <Card key={metric.title} className="card-surface">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-400 mb-1">{metric.title}</p>
-                  <p className="text-2xl font-bold text-neutral-100">{metric.value}</p>
+                  <p className="text-sm text-secondary mb-1">{metric.title}</p>
+                  <p className="text-2xl font-bold text-primary">{metric.value}</p>
                   <p className={`text-sm ${metric.color} font-medium`}>{metric.change}</p>
                 </div>
                 <metric.icon className={`h-8 w-8 ${metric.color}`} />

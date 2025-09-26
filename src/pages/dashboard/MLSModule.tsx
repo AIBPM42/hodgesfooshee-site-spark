@@ -21,18 +21,18 @@ export default function MLSModule() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-bold text-neutral-100 mb-2">
+        <h1 className="text-3xl font-display font-bold text-primary mb-2">
           MLS Data Sync Module
         </h1>
-        <p className="text-lg text-neutral-400">
+        <p className="text-lg text-secondary">
           Real-time synchronization with RealTracs MLS system
         </p>
       </div>
 
       {/* Connection Status */}
-      <Card className="bg-white/5 backdrop-blur-xl border-white/10">
+      <Card className="card-surface">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-neutral-100">
+          <CardTitle className="flex items-center gap-2 text-primary">
             <Database className="h-5 w-5" />
             RealTracs Connection Status
           </CardTitle>
@@ -42,8 +42,8 @@ export default function MLSModule() {
             <div className="flex items-center gap-3">
               <CheckCircle className="h-6 w-6 text-green-400" />
               <div>
-                <p className="font-medium text-neutral-100">Connected to RealTracs MLS</p>
-                <p className="text-sm text-neutral-400">OAuth token valid until Mar 15, 2025</p>
+                <p className="font-medium text-primary">Connected to RealTracs MLS</p>
+                <p className="text-sm text-secondary">OAuth token valid until Mar 15, 2025</p>
               </div>
             </div>
             <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
@@ -68,12 +68,12 @@ export default function MLSModule() {
           { title: 'Members', value: '1,234', icon: Users, change: '+12 this month', color: 'text-purple-400' },
           { title: 'Open Houses', value: '89', icon: Calendar, change: '+15 this weekend', color: 'text-orange-400' }
         ].map((metric) => (
-          <Card key={metric.title} className="bg-white/5 backdrop-blur-xl border-white/10">
+          <Card key={metric.title} className="card-surface">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-400 mb-1">{metric.title}</p>
-                  <p className="text-2xl font-bold text-neutral-100">{metric.value}</p>
+                  <p className="text-sm text-secondary mb-1">{metric.title}</p>
+                  <p className="text-2xl font-bold text-primary">{metric.value}</p>
                   <p className={`text-sm ${metric.color} font-medium`}>{metric.change}</p>
                 </div>
                 <metric.icon className={`h-8 w-8 ${metric.color}`} />
@@ -84,38 +84,38 @@ export default function MLSModule() {
       </div>
 
       {/* Sync Controls */}
-      <Card className="bg-white/5 backdrop-blur-xl border-white/10">
+      <Card className="card-surface">
         <CardHeader>
-          <CardTitle className="text-neutral-100">Data Synchronization</CardTitle>
-          <CardDescription className="text-neutral-300">
+          <CardTitle className="text-primary">Data Synchronization</CardTitle>
+          <CardDescription className="text-secondary">
             Manual sync controls and automation settings
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium">
+            <Button className="btn-accent">
               <RefreshCw className="h-4 w-4 mr-2" />
               Sync Listings
             </Button>
-            <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium">
+            <Button className="btn-accent">
               <Building className="h-4 w-4 mr-2" />
               Sync Offices
             </Button>
-            <Button className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium">
+            <Button className="btn-accent">
               <Users className="h-4 w-4 mr-2" />
               Sync Members
             </Button>
-            <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium">
+            <Button className="btn-accent">
               <Calendar className="h-4 w-4 mr-2" />
               Sync Open Houses
             </Button>
           </div>
           
-          <div className="flex items-center gap-4 pt-4 border-t border-white/10">
-            <Clock className="h-5 w-5 text-neutral-400" />
+          <div className="flex items-center gap-4 pt-4 border-t border-subtle">
+            <Clock className="h-5 w-5 text-secondary" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-neutral-100">Auto-sync Schedule</p>
-              <p className="text-xs text-neutral-400">Every 15 minutes during business hours (8 AM - 8 PM CST)</p>
+              <p className="text-sm font-medium text-primary">Auto-sync Schedule</p>
+              <p className="text-xs text-secondary">Every 15 minutes during business hours (8 AM - 8 PM CST)</p>
             </div>
             <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
               Enabled
@@ -125,10 +125,10 @@ export default function MLSModule() {
       </Card>
 
       {/* Recent Sync Activity */}
-      <Card className="bg-white/5 backdrop-blur-xl border-white/10">
+      <Card className="card-surface">
         <CardHeader>
-          <CardTitle className="text-neutral-100">Recent Sync Activity</CardTitle>
-          <CardDescription className="text-neutral-300">
+          <CardTitle className="text-primary">Recent Sync Activity</CardTitle>
+          <CardDescription className="text-secondary">
             Latest synchronization results and system logs
           </CardDescription>
         </CardHeader>
@@ -141,7 +141,7 @@ export default function MLSModule() {
               { time: '47 minutes ago', action: 'Open Houses sync completed', status: 'success', details: '89 open houses processed, 12 new events' },
               { time: '1 hour ago', action: 'ZIP Codes sync completed', status: 'warning', details: '3,421 postal codes processed, 5 validation warnings' }
             ].map((activity, index) => (
-              <div key={index} className="flex items-start gap-4 py-4 border-b border-white/10 last:border-0">
+              <div key={index} className="flex items-start gap-4 py-4 border-b border-subtle last:border-0">
                 <div className={`p-2 rounded-full ${
                   activity.status === 'success' ? 'bg-green-500/20' : 
                   activity.status === 'warning' ? 'bg-yellow-500/20' : 'bg-red-500/20'
@@ -156,10 +156,10 @@ export default function MLSModule() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <p className="font-medium text-neutral-100">{activity.action}</p>
-                    <p className="text-xs text-neutral-400">{activity.time}</p>
+                    <p className="font-medium text-primary">{activity.action}</p>
+                    <p className="text-xs text-secondary">{activity.time}</p>
                   </div>
-                  <p className="text-sm text-neutral-300 mt-1">{activity.details}</p>
+                  <p className="text-sm text-secondary mt-1">{activity.details}</p>
                 </div>
               </div>
             ))}

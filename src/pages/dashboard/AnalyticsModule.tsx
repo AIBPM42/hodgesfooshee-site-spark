@@ -20,23 +20,23 @@ export default function AnalyticsModule() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-display font-bold text-neutral-100 mb-2">
+          <h1 className="text-3xl font-display font-bold text-primary mb-2">
             Analytics Dashboard
           </h1>
-          <p className="text-lg text-neutral-400">
+          <p className="text-lg text-secondary">
             Market insights, performance metrics, and trend analysis
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="border-white/20 text-neutral-300 hover:text-neutral-100">
+          <Button variant="outline" className="border-subtle text-secondary hover:text-primary">
             <Filter className="h-4 w-4 mr-2" />
             Filters
           </Button>
-          <Button variant="outline" className="border-white/20 text-neutral-300 hover:text-neutral-100">
+          <Button variant="outline" className="border-subtle text-secondary hover:text-primary">
             <Calendar className="h-4 w-4 mr-2" />
             Date Range
           </Button>
-          <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium">
+          <Button className="btn-accent">
             <Download className="h-4 w-4 mr-2" />
             Export Report
           </Button>
@@ -51,12 +51,12 @@ export default function AnalyticsModule() {
           { title: 'Days on Market', value: '28 days', change: '-4.2%', trend: 'down', icon: TrendingDown },
           { title: 'Market Velocity', value: '2.4x', change: '+8.9%', trend: 'up', icon: Target }
         ].map((metric) => (
-          <Card key={metric.title} className="bg-white/5 backdrop-blur-xl border-white/10">
+          <Card key={metric.title} className="card-surface">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-400 mb-1">{metric.title}</p>
-                  <p className="text-2xl font-bold text-neutral-100">{metric.value}</p>
+                  <p className="text-sm text-secondary mb-1">{metric.title}</p>
+                  <p className="text-2xl font-bold text-primary">{metric.value}</p>
                   <div className="flex items-center gap-1 mt-1">
                     <metric.icon className={`h-4 w-4 ${metric.trend === 'up' ? 'text-green-400' : 'text-red-400'}`} />
                     <p className={`text-sm font-medium ${metric.trend === 'up' ? 'text-green-400' : 'text-red-400'}`}>

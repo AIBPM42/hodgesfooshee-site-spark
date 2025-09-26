@@ -21,10 +21,10 @@ export default function AIModule() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-bold text-neutral-100 mb-2">
+        <h1 className="text-3xl font-display font-bold text-primary mb-2">
           AI & Automation Module
         </h1>
-        <p className="text-lg text-neutral-400">
+        <p className="text-lg text-secondary">
           Advanced AI integrations and automated workflow management
         </p>
       </div>
@@ -37,7 +37,7 @@ export default function AIModule() {
           { name: 'Perplexity', status: 'beta', usage: '156 searches', icon: Search, color: 'text-yellow-400' },
           { name: 'Manus API', status: 'configured', usage: '89 requests', icon: Cpu, color: 'text-purple-400' }
         ].map((service) => (
-          <Card key={service.name} className="bg-white/5 backdrop-blur-xl border-white/10">
+          <Card key={service.name} className="card-surface">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-3">
                 <service.icon className={`h-8 w-8 ${service.color}`} />
@@ -49,32 +49,32 @@ export default function AIModule() {
                   {service.status}
                 </Badge>
               </div>
-              <h3 className="font-medium text-neutral-100 mb-1">{service.name}</h3>
-              <p className="text-sm text-neutral-400">{service.usage} today</p>
+              <h3 className="font-medium text-primary mb-1">{service.name}</h3>
+              <p className="text-sm text-secondary">{service.usage} today</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
       {/* Quick Actions */}
-      <Card className="bg-white/5 backdrop-blur-xl border-white/10">
+      <Card className="card-surface">
         <CardHeader>
-          <CardTitle className="text-neutral-100">AI Operations</CardTitle>
-          <CardDescription className="text-neutral-300">
+          <CardTitle className="text-primary">AI Operations</CardTitle>
+          <CardDescription className="text-secondary">
             Test and configure AI services
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium">
+            <Button className="btn-accent">
               <MessageSquare className="h-4 w-4 mr-2" />
               Test ChatGPT
             </Button>
-            <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium">
+            <Button className="btn-accent">
               <Search className="h-4 w-4 mr-2" />
               Test Perplexity
             </Button>
-            <Button className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium">
+            <Button className="btn-accent">
               <Settings className="h-4 w-4 mr-2" />
               Configure APIs
             </Button>
@@ -90,10 +90,10 @@ export default function AIModule() {
       </Card>
 
       {/* Automation Workflows */}
-      <Card className="bg-white/5 backdrop-blur-xl border-white/10">
+      <Card className="card-surface">
         <CardHeader>
-          <CardTitle className="text-neutral-100">Automation Workflows</CardTitle>
-          <CardDescription className="text-neutral-300">
+          <CardTitle className="text-primary">Automation Workflows</CardTitle>
+          <CardDescription className="text-secondary">
             n8n workflows and automated processes
           </CardDescription>
         </CardHeader>
@@ -105,7 +105,7 @@ export default function AIModule() {
               { name: 'Lead Qualification Bot', status: 'paused', runs: '89 today', accuracy: '91.5%' },
               { name: 'Social Media Content Creator', status: 'beta', runs: '45 today', accuracy: '88.3%' }
             ].map((workflow, index) => (
-              <div key={index} className="flex items-center justify-between py-4 border-b border-white/10 last:border-0">
+              <div key={index} className="flex items-center justify-between py-4 border-b border-subtle last:border-0">
                 <div className="flex items-center gap-4">
                   <div className={`p-2 rounded-full ${
                     workflow.status === 'active' ? 'bg-green-500/20' :
@@ -117,8 +117,8 @@ export default function AIModule() {
                     }`} />
                   </div>
                   <div>
-                    <p className="font-medium text-neutral-100">{workflow.name}</p>
-                    <p className="text-sm text-neutral-400">{workflow.runs} • {workflow.accuracy} accuracy</p>
+                    <p className="font-medium text-primary">{workflow.name}</p>
+                    <p className="text-sm text-secondary">{workflow.runs} • {workflow.accuracy} accuracy</p>
                   </div>
                 </div>
                 <Badge className={
@@ -135,10 +135,10 @@ export default function AIModule() {
       </Card>
 
       {/* Recent AI Activity */}
-      <Card className="bg-white/5 backdrop-blur-xl border-white/10">
+      <Card className="card-surface">
         <CardHeader>
-          <CardTitle className="text-neutral-100">Recent AI Activity</CardTitle>
-          <CardDescription className="text-neutral-300">
+          <CardTitle className="text-primary">Recent AI Activity</CardTitle>
+          <CardDescription className="text-secondary">
             Latest AI operations and results
           </CardDescription>
         </CardHeader>
@@ -151,7 +151,7 @@ export default function AIModule() {
               { time: '22 minutes ago', action: 'Content generation failed', model: 'GPT-4', count: '1 blog post', status: 'error' },
               { time: '35 minutes ago', action: 'Perplexity search completed', model: 'Perplexity', count: '8 queries', status: 'success' }
             ].map((activity, index) => (
-              <div key={index} className="flex items-start gap-4 py-4 border-b border-white/10 last:border-0">
+              <div key={index} className="flex items-start gap-4 py-4 border-b border-subtle last:border-0">
                 <div className={`p-2 rounded-full ${
                   activity.status === 'success' ? 'bg-green-500/20' : 'bg-red-500/20'
                 }`}>
@@ -163,10 +163,10 @@ export default function AIModule() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <p className="font-medium text-neutral-100">{activity.action}</p>
-                    <p className="text-xs text-neutral-400">{activity.time}</p>
+                    <p className="font-medium text-primary">{activity.action}</p>
+                    <p className="text-xs text-secondary">{activity.time}</p>
                   </div>
-                  <p className="text-sm text-neutral-300 mt-1">
+                  <p className="text-sm text-secondary mt-1">
                     {activity.model} • {activity.count}
                   </p>
                 </div>

@@ -105,10 +105,10 @@ export default function Overview() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-bold text-textc-primary mb-2">
+        <h1 className="text-3xl font-display font-bold text-primary mb-2">
           Backend Dashboard
         </h1>
-        <p className="text-lg text-textc-secondary">
+        <p className="text-lg text-secondary">
           Complete real estate data management and automation platform
         </p>
       </div>
@@ -116,12 +116,12 @@ export default function Overview() {
       {/* System Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {systemMetrics.map((metric) => (
-          <Card key={metric.title} className="bg-card border border-subtle shadow-card">
+          <Card key={metric.title} className="card-surface border border-subtle shadow-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-textc-secondary mb-1">{metric.title}</p>
-                  <p className="text-2xl font-bold text-textc-primary">{metric.value}</p>
+                  <p className="text-sm text-secondary mb-1">{metric.title}</p>
+                  <p className="text-2xl font-bold text-primary">{metric.value}</p>
                   <p className={`text-sm ${metric.color} font-medium`}>
                     {metric.change} from last period
                   </p>
@@ -136,7 +136,7 @@ export default function Overview() {
       {/* Module Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {moduleCards.map((module) => (
-          <Card key={module.title} className="bg-card border border-subtle shadow-card hover:shadow-glow transition-all duration-300">
+          <Card key={module.title} className="card-surface border border-subtle shadow-card hover:shadow-glow transition-all duration-300">
             <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -144,14 +144,14 @@ export default function Overview() {
                     <module.icon className="h-6 w-6 text-accent-orange" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl text-textc-primary">{module.title}</CardTitle>
+                    <CardTitle className="text-xl text-primary">{module.title}</CardTitle>
                     <Badge className={`mt-1 ${module.statusColor}`}>
                       {module.status}
                     </Badge>
                   </div>
                 </div>
               </div>
-              <CardDescription className="text-textc-secondary mt-2">
+              <CardDescription className="text-secondary mt-2">
                 {module.description}
               </CardDescription>
             </CardHeader>
@@ -161,8 +161,8 @@ export default function Overview() {
               <div className="grid grid-cols-3 gap-4">
                 {module.stats.map((stat) => (
                   <div key={stat.label} className="text-center">
-                    <p className="text-lg font-bold text-textc-primary">{stat.value}</p>
-                    <p className="text-xs text-textc-secondary">{stat.label}</p>
+                    <p className="text-lg font-bold text-primary">{stat.value}</p>
+                    <p className="text-xs text-secondary">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -170,7 +170,7 @@ export default function Overview() {
               {/* Action Button */}
               <Button 
                 asChild 
-                className="w-full border border-accent-orange bg-[color-mix(in_srgb,var(--accent-orange)_12%,transparent)] text-accent-orange hover:bg-[color-mix(in_srgb,var(--accent-orange)_20%,transparent)] hover:shadow-glow font-medium"
+                className="w-full btn-accent"
               >
                 <Link to={module.href}>
                   Open {module.title}
@@ -182,10 +182,10 @@ export default function Overview() {
       </div>
 
       {/* Recent Activity */}
-      <Card className="bg-card border border-subtle shadow-card">
+      <Card className="card-surface border border-subtle shadow-card">
         <CardHeader>
-          <CardTitle className="text-xl text-textc-primary">Recent Activity</CardTitle>
-          <CardDescription className="text-textc-secondary">
+          <CardTitle className="text-xl text-primary">Recent Activity</CardTitle>
+          <CardDescription className="text-secondary">
             Latest system events and data updates
           </CardDescription>
         </CardHeader>
@@ -199,11 +199,11 @@ export default function Overview() {
             ].map((activity, index) => (
               <div key={index} className="flex items-center justify-between py-3 border-b border-subtle last:border-0">
                 <div>
-                  <p className="text-sm font-medium text-textc-primary">{activity.event}</p>
-                  <p className="text-xs text-textc-secondary">{activity.time}</p>
+                  <p className="text-sm font-medium text-primary">{activity.event}</p>
+                  <p className="text-xs text-secondary">{activity.time}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-textc-secondary">{activity.count}</p>
+                  <p className="text-sm text-secondary">{activity.count}</p>
                   <Badge 
                     className={
                       activity.type === 'success' 
