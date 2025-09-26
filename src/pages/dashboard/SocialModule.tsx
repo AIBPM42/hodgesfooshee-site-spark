@@ -37,7 +37,7 @@ export default function SocialModule() {
           { title: 'Collaboration Score', value: '89%', icon: MessageCircle, change: '+2.1% this week', color: 'text-purple-400' },
           { title: 'Success Rate', value: '87%', icon: Trophy, change: '+8.4% vs last quarter', color: 'text-orange-400' }
         ].map((metric) => (
-          <Card key={metric.title} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
+          <Card key={metric.title} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>

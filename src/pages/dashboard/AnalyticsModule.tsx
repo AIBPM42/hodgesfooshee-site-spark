@@ -51,7 +51,7 @@ export default function AnalyticsModule() {
           { title: 'Days on Market', value: '28 days', change: '-4.2%', trend: 'down', icon: TrendingDown },
           { title: 'Market Velocity', value: '2.4x', change: '+8.9%', trend: 'up', icon: Target }
         ].map((metric) => (
-          <Card key={metric.title} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
+          <Card key={metric.title} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>

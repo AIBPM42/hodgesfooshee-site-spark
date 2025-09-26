@@ -30,7 +30,7 @@ export default function MLSModule() {
       </div>
 
       {/* Connection Status */}
-      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
+      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-[var(--text-primary)]">
             <Database className="h-5 w-5" />
@@ -68,7 +68,7 @@ export default function MLSModule() {
           { title: 'Members', value: '1,234', icon: Users, change: '+12 this month', color: 'text-purple-400' },
           { title: 'Open Houses', value: '89', icon: Calendar, change: '+15 this weekend', color: 'text-orange-400' }
         ].map((metric) => (
-          <Card key={metric.title} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
+          <Card key={metric.title} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -84,7 +84,7 @@ export default function MLSModule() {
       </div>
 
       {/* Sync Controls */}
-      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
+      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
         <CardHeader>
           <CardTitle className="text-[var(--text-primary)]">Data Synchronization</CardTitle>
           <CardDescription className="text-[var(--text-secondary)]">
@@ -125,7 +125,7 @@ export default function MLSModule() {
       </Card>
 
       {/* Recent Sync Activity */}
-      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
+      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
         <CardHeader>
           <CardTitle className="text-[var(--text-primary)]">Recent Sync Activity</CardTitle>
           <CardDescription className="text-[var(--text-secondary)]">

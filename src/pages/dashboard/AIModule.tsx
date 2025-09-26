@@ -37,7 +37,7 @@ export default function AIModule() {
           { name: 'Perplexity', status: 'beta', usage: '156 searches', icon: Search, color: 'text-yellow-400' },
           { name: 'Manus API', status: 'configured', usage: '89 requests', icon: Cpu, color: 'text-purple-400' }
         ].map((service) => (
-          <Card key={service.name} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
+          <Card key={service.name} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-3">
                 <service.icon className={`h-8 w-8 ${service.color}`} />
@@ -57,7 +57,7 @@ export default function AIModule() {
       </div>
 
       {/* Quick Actions */}
-      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
+      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
         <CardHeader>
           <CardTitle className="text-[var(--text-primary)]">AI Operations</CardTitle>
           <CardDescription className="text-[var(--text-secondary)]">
@@ -90,7 +90,7 @@ export default function AIModule() {
       </Card>
 
       {/* Automation Workflows */}
-      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
+      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
         <CardHeader>
           <CardTitle className="text-[var(--text-primary)]">Automation Workflows</CardTitle>
           <CardDescription className="text-[var(--text-secondary)]">
@@ -135,7 +135,7 @@ export default function AIModule() {
       </Card>
 
       {/* Recent AI Activity */}
-      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
+      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
         <CardHeader>
           <CardTitle className="text-[var(--text-primary)]">Recent AI Activity</CardTitle>
           <CardDescription className="text-[var(--text-secondary)]">

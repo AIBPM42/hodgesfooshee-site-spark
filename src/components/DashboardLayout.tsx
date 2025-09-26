@@ -63,7 +63,7 @@ export default function DashboardLayout() {
   return (
   <div className="min-h-screen bg-[var(--bg)] text-[var(--text-primary)]">
       {/* Professional Header */}
-      <header className="sticky top-0 z-50 h-16 bg-[var(--sidebar)] backdrop-blur-xl border-b border-[var(--border-subtle)]">
+      <header className="sticky top-0 z-50 h-16 bg-[var(--sidebar)] border-b border-[var(--border-subtle)]">
         <div className="flex h-full items-center justify-between px-6">
           {/* Breadcrumbs */}
           <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
@@ -105,7 +105,7 @@ export default function DashboardLayout() {
                   className={`
                     flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                     ${isActive 
-                      ? 'bg-[var(--surface)] border-2 border-[var(--accent-orange)] text-[var(--text-primary)]' 
+                      ? 'bg-[var(--surface)] border border-[var(--accent-orange)] text-[var(--text-primary)]' 
                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface)]/70'
                     }
                   `}

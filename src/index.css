@@ -38,10 +38,6 @@
   --series-d: var(--accent-red);
   --series-e: var(--accent-gold);
 
-  /* Effects */
-  --glass:          rgba(255,255,255,0.04); /* subtle glass layer */
-  --glow:           0 0 0 0 rgba(0,0,0,0);  /* default off */
-
   /* Shadcn variables mapped to Hodges spec */
   --background: 58 58 58;        /* #3A3A3A */
   --foreground: 255 255 255;     /* #FFFFFF */
@@ -138,4 +134,36 @@ body, .copy {
     border-radius: 14px;
   }
 }
+
+/* Hard overrides to keep the ops-console flat/premium */
+.card, .panel, .tile, .stat, .widget, .module,
+[class*="Card"], [data-role="card"] {
+  background: var(--surface) !important;
+  border: 1px solid var(--border-subtle) !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+/* Remove rings/shadows globally inside admin */
+#root, .dashboard, .admin, [data-app="admin"] * {
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-shadow: 0 0 #0000 !important;
+}
+
+/* Kill any utility rings/shadows that slip in */
+.ring, [class*="ring-"], [class*="shadow-"] { box-shadow: none !important; }
+
+/* Chart trays */
+.chart-surface, [data-role="chart-surface"] {
+  background: var(--bg-soft) !important;
+  border: 1px solid var(--border-subtle) !important;
+  box-shadow: none !important;
+}
+
+/* Badges: solid, no glow */
+.badge--success{ background: var(--accent-green) !important; color:#0E2B0E !important; }
+.badge--beta   { background: var(--accent-purple) !important; color:#220A2B !important; }
+.badge--warn   { background: var(--accent-gold) !important;   color:#2B210A !important; }
+.badge--info   { background: #2D9CDB !important;              color:#07131B !important; }
 
