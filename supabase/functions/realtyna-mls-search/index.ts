@@ -27,8 +27,8 @@ serve(async (req) => {
   const pageSize = Math.min(50, Math.max(1, parseInt(qp("page_size") || "12")));
 
   let query = sb
-    .from("mls_listings")
-    .select("id, mls_id, status, price, property_type, beds, baths, sqft, address, city, county, state, zip, photos, updated_at", { count: "exact" })
+    .from("mls_listings_view")
+    .select("id, mls_id, status, price, beds, baths, sqft, address, city, county, state, zip, photos, updated_at", { count: "exact" })
     .gte("price", min)
     .lte("price", max)
     .in("status", ["Active","ComingSoon"])
@@ -61,7 +61,10 @@ serve(async (req) => {
       }
     }
     
-    query = query.ilike("property_type", `%${typeFilter}%`);
+  // Remove property type filtering since view doesn't have property_type field
+  // if (type) {
+  //   query = query.ilike("property_type", `%${typeFilter}%`);
+  // }
   }
 
   // Smart free text search - only use when we don't have specific filters already
@@ -69,21 +72,11 @@ serve(async (req) => {
   const hasSpecificFilters = city || beds > 0 || baths > 0 || type;
   
   if (q && q.trim() && !hasSpecificFilters) {
-    // Enhanced free-text search with property type synonyms
+    // Enhanced free-text search - only search available fields in the view
     const searchTerms = [
       `city.ilike.%${q}%`,
-      `county.ilike.%${q}%`,
-      `property_type.ilike.%${q}%`,
-      `address.ilike.%${q}%`
+      `county.ilike.%${q}%`
     ];
-    
-    // Add property type synonym searches for common terms
-    if (q.toLowerCase().includes('house') || q.toLowerCase().includes('residential')) {
-      searchTerms.push(`property_type.ilike.%Residential%`);
-    }
-    if (q.toLowerCase().includes('condo')) {
-      searchTerms.push(`property_type.ilike.%Condo%`);
-    }
     
     query = query.or(searchTerms.join(','));
   }
