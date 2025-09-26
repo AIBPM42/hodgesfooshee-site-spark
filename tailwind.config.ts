@@ -52,22 +52,31 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Hodges brand palette
-        brand: {
-          50: '#eef8ff',
-          100: '#d8f0ff',
-          200: '#b7e3ff',
-          500: '#11a0d9',
-          600: '#0a80b1',   // primary
-          700: '#096a93',   // hover
-          900: '#063f57',   // deep accents
+        // Hodges Backend Color Spec
+        bg: {
+          main: "hsl(var(--bg-main))",
+          nav: "hsl(var(--bg-nav))",
         },
-        surface: '#f6f9fc',
-        // Glass morphism colors
-        glass: {
-          DEFAULT: "hsl(var(--glass))",
-          light: "hsl(var(--glass-light))",
-          dark: "hsl(var(--glass-dark))",
+        textc: {
+          primary: "hsl(var(--textc-primary))",
+          secondary: "hsl(var(--textc-secondary))",
+        },
+        accent: {
+          orange: "hsl(var(--accent-orange))",
+          green: "hsl(var(--accent-green))",
+          purple: "hsl(var(--accent-purple))",
+          red: "hsl(var(--accent-red))",
+          gold: "hsl(var(--accent-gold))",
+        },
+        series: {
+          a: "hsl(var(--series-a))",
+          b: "hsl(var(--series-b))",
+          c: "hsl(var(--series-c))",
+          d: "hsl(var(--series-d))",
+          e: "hsl(var(--series-e))",
+        },
+        border: {
+          subtle: "hsla(var(--border-subtle))",
         },
       },
       backgroundImage: {
@@ -82,6 +91,8 @@ export default {
         glass: "0 8px 24px rgba(0,0,0,.08)",
         premium: "var(--shadow-premium)",
         soft: "var(--shadow-soft)",
+        card: "var(--shadow-card)",
+        glow: "var(--shadow-glow)",
       },
       backdropBlur: {
         xs: "2px",

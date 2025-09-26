@@ -5,71 +5,84 @@
 @tailwind utilities;
 
 :root {
-  /* Light theme with Hodges blue branding */
-  --background: 0 0% 96.5%;  /* #f6f9fc surface */
-  --foreground: 210 24% 12%;
-  --card: 0 0% 100%;
-  --card-foreground: 210 24% 12%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 210 24% 12%;
-  --primary: 200 84% 37%;  /* brand-600 #0a80b1 */
-  --primary-foreground: 0 0% 100%;
-  --secondary: 210 24% 90%;
-  --secondary-foreground: 210 24% 12%;
-  --muted: 210 24% 90%;
-  --muted-foreground: 210 24% 40%;
-  --accent: 200 84% 42%;  /* brand-500 #11a0d9 */
-  --accent-foreground: 0 0% 100%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 210 24% 85%;
-  --input: 210 24% 85%;
-  --ring: 200 84% 37%;
+  /* Hodges Backend Color Spec - Professional Graphite Theme */
+  --background: 0 0% 23%;  /* #3a3a3a main */
+  --foreground: 0 0% 96%;  /* #f4f4f4 primary text */
+  --card: 0 0% 29%;        /* #4a4a4a */
+  --card-foreground: 0 0% 96%;
+  --popover: 0 0% 29%;
+  --popover-foreground: 0 0% 96%;
+  --primary: 14 100% 58%;   /* accent-orange #ff5a2b */
+  --primary-foreground: 0 0% 96%;
+  --secondary: 0 0% 18%;    /* nav background #2e2e2e */
+  --secondary-foreground: 0 0% 81%;  /* #cfcfcf */
+  --muted: 0 0% 18%;
+  --muted-foreground: 0 0% 81%;
+  --accent: 88 50% 53%;     /* accent-green #8bc34a */
+  --accent-foreground: 0 0% 96%;
+  --destructive: 4 90% 58%; /* accent-red #e53935 */
+  --destructive-foreground: 0 0% 96%;
+  --border: 0 0% 100% / 0.08;  /* subtle white with opacity */
+  --input: 0 0% 18%;
+  --ring: 14 100% 58%;
   --radius: 0.75rem;
 
-  /* Glass morphism effects */
-  --glass: 0 0% 100% / 0.1;
-  --glass-light: 0 0% 100% / 0.15;
-  --glass-dark: 0 0% 0% / 0.15;
+  /* Hodges Backend Core Colors */
+  --bg-main: 0 0% 23%;      /* #3a3a3a */
+  --bg-nav: 0 0% 18%;       /* #2e2e2e */
+  --textc-primary: 0 0% 96%; /* #f4f4f4 */
+  --textc-secondary: 0 0% 81%; /* #cfcfcf */
 
-  /* Brand colors (Hodges blue theme) */
-  --brand-primary: 200 84% 37%;  /* #0a80b1 */
-  --brand-secondary: 200 84% 42%; /* #11a0d9 */
-  --brand-accent: 200 82% 30%;    /* #096a93 */
+  /* Accent Colors - Strategic Usage */
+  --accent-orange: 14 100% 58%;  /* #ff5a2b - CTAs, primary actions */
+  --accent-green: 88 50% 53%;    /* #8bc34a - success, active states */
+  --accent-purple: 291 64% 42%;  /* #9c27b0 - AI/beta features */
+  --accent-red: 4 90% 58%;       /* #e53935 - errors only */
+  --accent-gold: 51 62% 52%;     /* #d4af37 - premium/executive */
+
+  /* Chart Series Colors */
+  --series-a: 14 100% 61%;   /* #ff6a3d */
+  --series-b: 207 76% 62%;   /* #5aa9e6 */
+  --series-c: 88 50% 53%;    /* #8bc34a */
+  --series-d: 291 64% 42%;   /* #9c27b0 */
+  --series-e: 42 100% 67%;   /* #ffc857 */
+
+  /* Borders */
+  --border-subtle: 0 0% 100% / 0.08; /* #ffffff14 */
+
+  /* Shadows - Professional Depth */
+  --shadow-card: 0 12px 30px rgba(0,0,0,.25);
+  --shadow-glow: 0 0 0 1px hsla(0, 0%, 100%, 0.08) inset, 0 8px 30px hsla(14, 100%, 58%, 0.15);
+  --shadow-premium: 0 20px 40px -12px hsla(14, 100%, 58%, 0.25);
+  --shadow-soft: 0 4px 20px -2px hsla(0, 0%, 0%, 0.15);
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, hsl(200, 84%, 37%), hsl(200, 84%, 42%));
-  --gradient-secondary: linear-gradient(135deg, hsl(220, 30%, 18%), hsl(220, 30%, 25%));
-  --gradient-accent: linear-gradient(135deg, hsl(200, 82%, 30%), hsl(200, 84%, 37%));
-  --gradient-glass: linear-gradient(135deg, hsla(0, 0%, 100%, 0.15), hsla(0, 0%, 100%, 0.05));
-  --gradient-hero: radial-gradient(1200px 600px at 10% -10%, rgba(17,160,217,.22), transparent 60%), radial-gradient(1000px 500px at 110% 10%, rgba(9,106,147,.15), transparent 60%);
-
-  /* Shadows */
-  --shadow-glass: 0 8px 24px rgba(0,0,0,.08);
-  --shadow-premium: 0 20px 40px -12px hsla(200, 84%, 37%, 0.25);
-  --shadow-soft: 0 4px 20px -2px hsla(0, 0%, 0%, 0.08);
+  --gradient-primary: linear-gradient(135deg, hsl(14, 100%, 58%), hsl(14, 100%, 61%));
+  --gradient-secondary: linear-gradient(135deg, hsl(0, 0%, 18%), hsl(0, 0%, 23%));
+  --gradient-accent: linear-gradient(135deg, hsl(88, 50%, 53%), hsl(207, 76%, 62%));
 }
 
+/* Dark mode inherits same professional theme */
 .dark {
-  --background: 210 24% 8%;
-  --foreground: 210 5% 95%;
-  --card: 210 20% 12%;
-  --card-foreground: 210 5% 95%;
-  --popover: 210 20% 12%;
-  --popover-foreground: 210 5% 95%;
-  --primary: 25 95% 53%;
-  --primary-foreground: 210 20% 12%;
-  --secondary: 210 20% 16%;
-  --secondary-foreground: 210 5% 95%;
-  --muted: 210 20% 16%;
-  --muted-foreground: 210 5% 60%;
-  --accent: 25 95% 53%;
-  --accent-foreground: 210 20% 12%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 210 20% 12%;
-  --border: 210 20% 20%;
-  --input: 210 20% 20%;
-  --ring: 25 95% 53%;
+  --background: 0 0% 23%;
+  --foreground: 0 0% 96%;
+  --card: 0 0% 29%;
+  --card-foreground: 0 0% 96%;
+  --popover: 0 0% 29%;
+  --popover-foreground: 0 0% 96%;
+  --primary: 14 100% 58%;
+  --primary-foreground: 0 0% 96%;
+  --secondary: 0 0% 18%;
+  --secondary-foreground: 0 0% 81%;
+  --muted: 0 0% 18%;
+  --muted-foreground: 0 0% 81%;
+  --accent: 88 50% 53%;
+  --accent-foreground: 0 0% 96%;
+  --destructive: 4 90% 58%;
+  --destructive-foreground: 0 0% 96%;
+  --border: 0 0% 100% / 0.08;
+  --input: 0 0% 18%;
+  --ring: 14 100% 58%;
 }
 
 * {
@@ -77,8 +90,8 @@
 }
 
 body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
+  background-color: hsl(var(--bg-main));
+  color: hsl(var(--textc-primary));
   min-height: 100vh;
 }
 

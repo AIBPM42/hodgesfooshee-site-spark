@@ -61,16 +61,16 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900">
-      {/* Glass Header */}
-      <header className="sticky top-0 z-50 h-16 bg-white/5 backdrop-blur-xl border-b border-white/10">
+    <div className="min-h-screen bg-bg-main text-textc-primary">
+      {/* Professional Header */}
+      <header className="sticky top-0 z-50 h-16 bg-bg-nav border-b border-subtle">
         <div className="flex h-full items-center justify-between px-6">
           {/* Breadcrumbs */}
-          <div className="flex items-center gap-2 text-sm text-neutral-300">
+          <div className="flex items-center gap-2 text-sm text-textc-secondary">
             {getBreadcrumbs().map((crumb, index) => (
               <React.Fragment key={crumb}>
                 {index > 0 && <ChevronRight className="h-4 w-4" />}
-                <span className={index === getBreadcrumbs().length - 1 ? 'text-neutral-100 font-medium' : ''}>
+                <span className={index === getBreadcrumbs().length - 1 ? 'text-textc-primary font-medium' : ''}>
                   {crumb}
                 </span>
               </React.Fragment>
@@ -79,10 +79,10 @@ export default function DashboardLayout() {
 
           {/* Header Actions */}
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="text-neutral-300 hover:text-neutral-100">
+            <Button variant="ghost" size="sm" className="text-textc-secondary hover:text-textc-primary">
               <Bell className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm" className="text-neutral-300 hover:text-neutral-100">
+            <Button variant="ghost" size="sm" className="text-textc-secondary hover:text-textc-primary">
               <User className="h-4 w-4" />
             </Button>
           </div>
@@ -90,8 +90,8 @@ export default function DashboardLayout() {
       </header>
 
       <div className="flex">
-        {/* Sidebar */}
-        <aside className="w-64 h-[calc(100vh-4rem)] bg-white/5 backdrop-blur-xl border-r border-white/10 p-4">
+        {/* Professional Sidebar */}
+        <aside className="w-64 h-[calc(100vh-4rem)] bg-bg-nav border-r border-subtle p-4">
           <div className="space-y-2">
             {sidebarModules.map((module) => {
               const isActive = module.exact 
@@ -105,8 +105,8 @@ export default function DashboardLayout() {
                   className={`
                     flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
                     ${isActive 
-                      ? 'bg-gradient-to-r from-orange-500/20 to-orange-600/20 text-orange-300 border border-orange-500/30' 
-                      : 'text-neutral-300 hover:text-neutral-100 hover:bg-white/5'
+                      ? 'border border-accent-orange bg-[color-mix(in_srgb,var(--accent-orange)_12%,transparent)] text-accent-orange' 
+                      : 'text-textc-secondary hover:text-textc-primary hover:bg-[color-mix(in_srgb,var(--textc-primary)_5%,transparent)]'
                     }
                   `}
                 >
@@ -115,7 +115,11 @@ export default function DashboardLayout() {
                   {module.badge && (
                     <Badge 
                       variant="secondary" 
-                      className="ml-auto text-xs bg-green-500/20 text-green-300 border-green-500/30"
+                      className={`ml-auto text-xs ${
+                        module.badge === 'Active' 
+                          ? 'bg-[color-mix(in_srgb,var(--accent-green)_20%,transparent)] text-accent-green border-accent-green'
+                          : 'bg-[color-mix(in_srgb,var(--accent-purple)_20%,transparent)] text-accent-purple border-accent-purple'
+                      }`}
                     >
                       {module.badge}
                     </Badge>
@@ -125,25 +129,25 @@ export default function DashboardLayout() {
             })}
           </div>
 
-          <Separator className="my-6 bg-white/10" />
+          <Separator className="my-6 bg-border-subtle" />
           
           {/* Quick Stats */}
           <div className="space-y-3">
-            <h4 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+            <h4 className="text-xs font-semibold text-textc-secondary uppercase tracking-wider">
               Quick Stats
             </h4>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-neutral-300">
+              <div className="flex justify-between text-textc-secondary">
                 <span>Active Listings</span>
-                <span className="text-green-400 font-medium">2,847</span>
+                <span className="text-accent-green font-medium">2,847</span>
               </div>
-              <div className="flex justify-between text-neutral-300">
+              <div className="flex justify-between text-textc-secondary">
                 <span>API Health</span>
-                <span className="text-green-400 font-medium">100%</span>
+                <span className="text-accent-green font-medium">100%</span>
               </div>
-              <div className="flex justify-between text-neutral-300">
+              <div className="flex justify-between text-textc-secondary">
                 <span>Last Sync</span>
-                <span className="text-neutral-400">5m ago</span>
+                <span className="text-textc-secondary">5m ago</span>
               </div>
             </div>
           </div>
