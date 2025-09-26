@@ -88,7 +88,21 @@ export default function MLS() {
   const hasActiveFilters = q || minPrice || maxPrice || beds || baths || county || city || type;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="mls-search p-6 max-w-7xl mx-auto">
+      {/* Custom styling to override input colors */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .mls-search input, .mls-search select {
+            background: hsl(var(--background)) !important;
+            color: hsl(var(--foreground)) !important;
+            border: 1px solid hsl(var(--border)) !important;
+          }
+          .mls-search input:focus, .mls-search select:focus {
+            outline: 2px solid hsl(var(--ring)) !important;
+            outline-offset: 2px !important;
+          }
+        `
+      }} />
       {/* Breadcrumb Navigation */}
       <div className="mb-4">
         <button 
