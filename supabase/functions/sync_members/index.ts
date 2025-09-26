@@ -25,25 +25,18 @@ const CORS_HEADERS = {
 
 // ====== Helpers ======
 async function getToken(): Promise<string> {
-  const body = new URLSearchParams({
-    client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
-    grant_type: "client_credentials",
-    scope: SCOPE,
-  });
-
-  const res = await fetch(TOKEN_URL, {
-    method: "POST",
-    headers: {
-      "x-api-key": API_KEY,
-      "Accept": "application/json",
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body,
-  });
-  if (!res.ok) throw new Error(`token ${res.status}: ${await res.text()}`);
-  const json = await res.json();
-  return json.access_token as string;
+  // Use the manage-oauth-tokens function to get a valid token
+  const tokenRes = await sb.functions.invoke('manage-oauth-tokens');
+  
+  if (tokenRes.error) {
+    throw new Error(`Failed to get OAuth token: ${tokenRes.error.message}`);
+  }
+  
+  if (!tokenRes.data?.access_token) {
+    throw new Error('No access token returned from manage-oauth-tokens');
+  }
+  
+  return tokenRes.data.access_token;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));

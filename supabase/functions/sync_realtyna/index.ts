@@ -26,25 +26,18 @@ const CORS_HEADERS = {
 
 // ====== Helpers ======
 async function getToken(): Promise<string> {
-  const body = new URLSearchParams({
-    client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
-    grant_type: "client_credentials",
-    scope: SCOPE,
-  });
-
-  const res = await fetch(TOKEN_URL, {
-    method: "POST",
-    headers: {
-      "x-api-key": API_KEY,
-      "Accept": "application/json",
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body,
-  });
-  if (!res.ok) throw new Error(`token ${res.status}: ${await res.text()}`);
-  const json = await res.json();
-  return json.access_token as string;
+  // Use the manage-oauth-tokens function to get a valid token
+  const tokenRes = await sb.functions.invoke('manage-oauth-tokens');
+  
+  if (tokenRes.error) {
+    throw new Error(`Failed to get OAuth token: ${tokenRes.error.message}`);
+  }
+  
+  if (!tokenRes.data?.access_token) {
+    throw new Error('No access token returned from manage-oauth-tokens');
+  }
+  
+  return tokenRes.data.access_token;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -133,22 +126,22 @@ serve(async (req) => {
     // Build initial page if not resuming via @odata.nextLink
     if (!nextUrl) {
       const since = state.lastRFModified as string | undefined;
-      // TEMP: Disable filter for initial hydration test
-      const filter = ""; // since ? `&$filter=RFModificationTimestamp gt ${since}` : "";
-      console.log("Building initial URL - Since filter disabled for test");
+      const filter = since ? `&$filter=RFModificationTimestamp gt ${since}` : "";
+      console.log("Building initial URL with filter:", filter);
       nextUrl =
         `${RESO_BASE}/Property?` +
-        `$top=25&` +  // Cap at 25 for test
-        `$select=*` +
-        `${filter}&$orderby=ModificationTimestamp desc`;  // Use standard field
+        `$top=200&` +
+        `$select=ListingKey,ListingId,ListPrice,City,StandardStatus,BedroomsTotal,` +
+        `BathroomsTotalInteger,LivingArea,ModificationTimestamp,RFModificationTimestamp` +
+        `${filter}&$orderby=RFModificationTimestamp asc`;
       console.log("Initial URL:", nextUrl);
     }
 
     let total = 0;
     let pages_fetched = 0;
     let items_inserted = 0;
-    // Safety caps to prevent runaway loops - cap at 1 page for test
-    const MAX_PAGES = 1;  // Only process first page for test
+    // Safety caps to prevent runaway loops
+    const MAX_PAGES = 50;  // Process up to 50 pages
     const PACE_MS = 120; // ~ gentle pace to stay under Smart plan 10 RPS
     
     console.log("Starting sync with MAX_PAGES:", MAX_PAGES);
