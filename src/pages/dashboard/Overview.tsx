@@ -105,10 +105,10 @@ export default function Overview() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-bold text-primary mb-2">
+        <h1 className="text-3xl font-display font-bold text-[var(--text-primary)] mb-2">
           Backend Dashboard
         </h1>
-        <p className="text-lg text-secondary">
+        <p className="text-lg text-[var(--text-secondary)]">
           Complete real estate data management and automation platform
         </p>
       </div>
@@ -116,12 +116,12 @@ export default function Overview() {
       {/* System Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {systemMetrics.map((metric) => (
-          <Card key={metric.title} className="card-surface border border-subtle shadow-card">
+          <Card key={metric.title} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-secondary mb-1">{metric.title}</p>
-                  <p className="text-2xl font-bold text-primary">{metric.value}</p>
+                  <p className="text-sm text-[var(--text-secondary)] mb-1">{metric.title}</p>
+                  <p className="text-2xl font-bold text-[var(--text-primary)]">{metric.value}</p>
                   <p className={`text-sm ${metric.color} font-medium`}>
                     {metric.change} from last period
                   </p>
@@ -136,7 +136,7 @@ export default function Overview() {
       {/* Module Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {moduleCards.map((module) => (
-          <Card key={module.title} className="card-surface border border-subtle shadow-card hover:shadow-glow transition-all duration-300">
+          <Card key={module.title} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card hover:shadow-glow transition-all duration-300">
             <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -144,14 +144,14 @@ export default function Overview() {
                     <module.icon className="h-6 w-6 text-accent-orange" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl text-primary">{module.title}</CardTitle>
+                    <CardTitle className="text-xl text-[var(--text-primary)]">{module.title}</CardTitle>
                     <Badge className={`mt-1 ${module.statusColor}`}>
                       {module.status}
                     </Badge>
                   </div>
                 </div>
               </div>
-              <CardDescription className="text-secondary mt-2">
+              <CardDescription className="text-[var(--text-secondary)] mt-2">
                 {module.description}
               </CardDescription>
             </CardHeader>
@@ -161,8 +161,8 @@ export default function Overview() {
               <div className="grid grid-cols-3 gap-4">
                 {module.stats.map((stat) => (
                   <div key={stat.label} className="text-center">
-                    <p className="text-lg font-bold text-primary">{stat.value}</p>
-                    <p className="text-xs text-secondary">{stat.label}</p>
+                    <p className="text-lg font-bold text-[var(--text-primary)]">{stat.value}</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -182,10 +182,10 @@ export default function Overview() {
       </div>
 
       {/* Recent Activity */}
-      <Card className="card-surface border border-subtle shadow-card">
+      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
         <CardHeader>
-          <CardTitle className="text-xl text-primary">Recent Activity</CardTitle>
-          <CardDescription className="text-secondary">
+          <CardTitle className="text-xl text-[var(--text-primary)]">Recent Activity</CardTitle>
+          <CardDescription className="text-[var(--text-secondary)]">
             Latest system events and data updates
           </CardDescription>
         </CardHeader>
@@ -197,13 +197,13 @@ export default function Overview() {
               { time: '1 hour ago', event: 'Analytics report generated', type: 'success', count: '28 charts updated' },
               { time: '3 hours ago', event: 'Database backup completed', type: 'success', count: '2.4TB backed up' }
             ].map((activity, index) => (
-              <div key={index} className="flex items-center justify-between py-3 border-b border-subtle last:border-0">
+              <div key={index} className="flex items-center justify-between py-3 border-b border-[var(--border-subtle)] last:border-0">
                 <div>
-                  <p className="text-sm font-medium text-primary">{activity.event}</p>
-                  <p className="text-xs text-secondary">{activity.time}</p>
+                  <p className="text-sm font-medium text-[var(--text-primary)]">{activity.event}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{activity.time}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-secondary">{activity.count}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">{activity.count}</p>
                   <Badge 
                     className={
                       activity.type === 'success' 

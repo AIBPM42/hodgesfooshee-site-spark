@@ -21,10 +21,10 @@ export default function AIModule() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-bold text-primary mb-2">
+        <h1 className="text-3xl font-display font-bold text-[var(--text-primary)] mb-2">
           AI & Automation Module
         </h1>
-        <p className="text-lg text-secondary">
+        <p className="text-lg text-[var(--text-secondary)]">
           Advanced AI integrations and automated workflow management
         </p>
       </div>
@@ -37,7 +37,7 @@ export default function AIModule() {
           { name: 'Perplexity', status: 'beta', usage: '156 searches', icon: Search, color: 'text-yellow-400' },
           { name: 'Manus API', status: 'configured', usage: '89 requests', icon: Cpu, color: 'text-purple-400' }
         ].map((service) => (
-          <Card key={service.name} className="card-surface">
+          <Card key={service.name} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-3">
                 <service.icon className={`h-8 w-8 ${service.color}`} />
@@ -49,18 +49,18 @@ export default function AIModule() {
                   {service.status}
                 </Badge>
               </div>
-              <h3 className="font-medium text-primary mb-1">{service.name}</h3>
-              <p className="text-sm text-secondary">{service.usage} today</p>
+              <h3 className="font-medium text-[var(--text-primary)] mb-1">{service.name}</h3>
+              <p className="text-sm text-[var(--text-secondary)]">{service.usage} today</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
       {/* Quick Actions */}
-      <Card className="card-surface">
+      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
         <CardHeader>
-          <CardTitle className="text-primary">AI Operations</CardTitle>
-          <CardDescription className="text-secondary">
+          <CardTitle className="text-[var(--text-primary)]">AI Operations</CardTitle>
+          <CardDescription className="text-[var(--text-secondary)]">
             Test and configure AI services
           </CardDescription>
         </CardHeader>
@@ -90,10 +90,10 @@ export default function AIModule() {
       </Card>
 
       {/* Automation Workflows */}
-      <Card className="card-surface">
+      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
         <CardHeader>
-          <CardTitle className="text-primary">Automation Workflows</CardTitle>
-          <CardDescription className="text-secondary">
+          <CardTitle className="text-[var(--text-primary)]">Automation Workflows</CardTitle>
+          <CardDescription className="text-[var(--text-secondary)]">
             n8n workflows and automated processes
           </CardDescription>
         </CardHeader>
@@ -105,7 +105,7 @@ export default function AIModule() {
               { name: 'Lead Qualification Bot', status: 'paused', runs: '89 today', accuracy: '91.5%' },
               { name: 'Social Media Content Creator', status: 'beta', runs: '45 today', accuracy: '88.3%' }
             ].map((workflow, index) => (
-              <div key={index} className="flex items-center justify-between py-4 border-b border-subtle last:border-0">
+              <div key={index} className="flex items-center justify-between py-4 border-b border-[var(--border-subtle)] last:border-0">
                 <div className="flex items-center gap-4">
                   <div className={`p-2 rounded-full ${
                     workflow.status === 'active' ? 'bg-green-500/20' :
@@ -117,8 +117,8 @@ export default function AIModule() {
                     }`} />
                   </div>
                   <div>
-                    <p className="font-medium text-primary">{workflow.name}</p>
-                    <p className="text-sm text-secondary">{workflow.runs} • {workflow.accuracy} accuracy</p>
+                    <p className="font-medium text-[var(--text-primary)]">{workflow.name}</p>
+                    <p className="text-sm text-[var(--text-secondary)]">{workflow.runs} • {workflow.accuracy} accuracy</p>
                   </div>
                 </div>
                 <Badge className={
@@ -135,10 +135,10 @@ export default function AIModule() {
       </Card>
 
       {/* Recent AI Activity */}
-      <Card className="card-surface">
+      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
         <CardHeader>
-          <CardTitle className="text-primary">Recent AI Activity</CardTitle>
-          <CardDescription className="text-secondary">
+          <CardTitle className="text-[var(--text-primary)]">Recent AI Activity</CardTitle>
+          <CardDescription className="text-[var(--text-secondary)]">
             Latest AI operations and results
           </CardDescription>
         </CardHeader>
@@ -151,7 +151,7 @@ export default function AIModule() {
               { time: '22 minutes ago', action: 'Content generation failed', model: 'GPT-4', count: '1 blog post', status: 'error' },
               { time: '35 minutes ago', action: 'Perplexity search completed', model: 'Perplexity', count: '8 queries', status: 'success' }
             ].map((activity, index) => (
-              <div key={index} className="flex items-start gap-4 py-4 border-b border-subtle last:border-0">
+              <div key={index} className="flex items-start gap-4 py-4 border-b border-[var(--border-subtle)] last:border-0">
                 <div className={`p-2 rounded-full ${
                   activity.status === 'success' ? 'bg-green-500/20' : 'bg-red-500/20'
                 }`}>
@@ -163,10 +163,10 @@ export default function AIModule() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <p className="font-medium text-primary">{activity.action}</p>
-                    <p className="text-xs text-secondary">{activity.time}</p>
+                    <p className="font-medium text-[var(--text-primary)]">{activity.action}</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{activity.time}</p>
                   </div>
-                  <p className="text-sm text-secondary mt-1">
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">
                     {activity.model} • {activity.count}
                   </p>
                 </div>

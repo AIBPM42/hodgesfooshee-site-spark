@@ -20,19 +20,19 @@ export default function AnalyticsModule() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-display font-bold text-primary mb-2">
+          <h1 className="text-3xl font-display font-bold text-[var(--text-primary)] mb-2">
             Analytics Dashboard
           </h1>
-          <p className="text-lg text-secondary">
+          <p className="text-lg text-[var(--text-secondary)]">
             Market insights, performance metrics, and trend analysis
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="border-subtle text-secondary hover:text-primary">
+          <Button variant="outline" className="border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
             <Filter className="h-4 w-4 mr-2" />
             Filters
           </Button>
-          <Button variant="outline" className="border-subtle text-secondary hover:text-primary">
+          <Button variant="outline" className="border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
             <Calendar className="h-4 w-4 mr-2" />
             Date Range
           </Button>
@@ -51,12 +51,12 @@ export default function AnalyticsModule() {
           { title: 'Days on Market', value: '28 days', change: '-4.2%', trend: 'down', icon: TrendingDown },
           { title: 'Market Velocity', value: '2.4x', change: '+8.9%', trend: 'up', icon: Target }
         ].map((metric) => (
-          <Card key={metric.title} className="card-surface">
+          <Card key={metric.title} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl shadow-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-secondary mb-1">{metric.title}</p>
-                  <p className="text-2xl font-bold text-primary">{metric.value}</p>
+                  <p className="text-sm text-[var(--text-secondary)] mb-1">{metric.title}</p>
+                  <p className="text-2xl font-bold text-[var(--text-primary)]">{metric.value}</p>
                   <div className="flex items-center gap-1 mt-1">
                     <metric.icon className={`h-4 w-4 ${metric.trend === 'up' ? 'text-green-400' : 'text-red-400'}`} />
                     <p className={`text-sm font-medium ${metric.trend === 'up' ? 'text-green-400' : 'text-red-400'}`}>

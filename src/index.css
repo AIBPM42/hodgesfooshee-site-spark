@@ -125,14 +125,6 @@ h1, h2, h3, h4, h5, h6 {
 @layer utilities{
   .page-wrap{ background:var(--background); color:var(--text-primary); }
   .nav-wrap{ background:var(--bg-nav); }
-  .card-surface{
-    background:var(--surface);
-    border:1px solid var(--border-subtle);
-    -webkit-backdrop-filter:saturate(120%) blur(20px);
-    backdrop-filter:saturate(120%) blur(20px);
-    box-shadow:0 12px 30px rgba(0,0,0,.25);
-    border-radius:1rem;
-  }
   .chart-surface{
     background:var(--bg-soft);
     border:1px solid var(--border-subtle);
@@ -145,8 +137,6 @@ h1, h2, h3, h4, h5, h6 {
   .btn-accent:hover{
     background:color-mix(in srgb, var(--accent-orange) 18%, transparent);
   }
-  .text-primary{ color:var(--text-primary) }
-  .text-secondary{ color:var(--text-secondary) }
 }
 
 /* Remove any old blue button styles if they exist */
