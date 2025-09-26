@@ -200,6 +200,13 @@ export type Database = {
             referencedRelation: "mls_listings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "featured_listings_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: true
+            referencedRelation: "mls_listings_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       footer_links: {
@@ -827,7 +834,63 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      mls_listings_view: {
+        Row: {
+          address: string | null
+          baths: number | null
+          beds: number | null
+          city: string | null
+          county: string | null
+          created_at: string | null
+          id: number | null
+          listing_key: string | null
+          mls_id: string | null
+          photos: Json | null
+          price: number | null
+          sqft: number | null
+          state: string | null
+          status: string | null
+          updated_at: string | null
+          zip: string | null
+        }
+        Insert: {
+          address?: never
+          baths?: never
+          beds?: number | null
+          city?: string | null
+          county?: never
+          created_at?: string | null
+          id?: number | null
+          listing_key?: string | null
+          mls_id?: string | null
+          photos?: never
+          price?: never
+          sqft?: never
+          state?: never
+          status?: string | null
+          updated_at?: string | null
+          zip?: never
+        }
+        Update: {
+          address?: never
+          baths?: never
+          beds?: number | null
+          city?: string | null
+          county?: never
+          created_at?: string | null
+          id?: number | null
+          listing_key?: string | null
+          mls_id?: string | null
+          photos?: never
+          price?: never
+          sqft?: never
+          state?: never
+          status?: string | null
+          updated_at?: string | null
+          zip?: never
+        }
+        Relationships: []
+      }
     }
     Functions: {
       check_rate_limit: {
