@@ -311,6 +311,225 @@ export type Database = {
         }
         Relationships: []
       }
+      mls_members: {
+        Row: {
+          created_at: string | null
+          id: number
+          member_email: string | null
+          member_first_name: string | null
+          member_full_name: string | null
+          member_id: string | null
+          member_key: string
+          member_last_name: string | null
+          member_login_id: string | null
+          member_mobile_phone: string | null
+          member_phone: string | null
+          member_status: string | null
+          member_type: string | null
+          modification_timestamp: string | null
+          office_key: string | null
+          office_name: string | null
+          rf_modification_timestamp: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: never
+          member_email?: string | null
+          member_first_name?: string | null
+          member_full_name?: string | null
+          member_id?: string | null
+          member_key: string
+          member_last_name?: string | null
+          member_login_id?: string | null
+          member_mobile_phone?: string | null
+          member_phone?: string | null
+          member_status?: string | null
+          member_type?: string | null
+          modification_timestamp?: string | null
+          office_key?: string | null
+          office_name?: string | null
+          rf_modification_timestamp?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: never
+          member_email?: string | null
+          member_first_name?: string | null
+          member_full_name?: string | null
+          member_id?: string | null
+          member_key?: string
+          member_last_name?: string | null
+          member_login_id?: string | null
+          member_mobile_phone?: string | null
+          member_phone?: string | null
+          member_status?: string | null
+          member_type?: string | null
+          modification_timestamp?: string | null
+          office_key?: string | null
+          office_name?: string | null
+          rf_modification_timestamp?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      mls_offices: {
+        Row: {
+          created_at: string | null
+          id: number
+          modification_timestamp: string | null
+          office_address1: string | null
+          office_city: string | null
+          office_country: string | null
+          office_email: string | null
+          office_id: string | null
+          office_key: string
+          office_name: string | null
+          office_phone: string | null
+          office_postal_code: string | null
+          office_state_or_province: string | null
+          office_status: string | null
+          rf_modification_timestamp: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: never
+          modification_timestamp?: string | null
+          office_address1?: string | null
+          office_city?: string | null
+          office_country?: string | null
+          office_email?: string | null
+          office_id?: string | null
+          office_key: string
+          office_name?: string | null
+          office_phone?: string | null
+          office_postal_code?: string | null
+          office_state_or_province?: string | null
+          office_status?: string | null
+          rf_modification_timestamp?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: never
+          modification_timestamp?: string | null
+          office_address1?: string | null
+          office_city?: string | null
+          office_country?: string | null
+          office_email?: string | null
+          office_id?: string | null
+          office_key?: string
+          office_name?: string | null
+          office_phone?: string | null
+          office_postal_code?: string | null
+          office_state_or_province?: string | null
+          office_status?: string | null
+          rf_modification_timestamp?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      mls_open_houses: {
+        Row: {
+          created_at: string | null
+          id: number
+          listing_key: string | null
+          modification_timestamp: string | null
+          open_house_date: string | null
+          open_house_end_time: string | null
+          open_house_id: string | null
+          open_house_key: string
+          open_house_remarks: string | null
+          open_house_start_time: string | null
+          rf_modification_timestamp: string | null
+          showing_agent_first_name: string | null
+          showing_agent_key: string | null
+          showing_agent_last_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: never
+          listing_key?: string | null
+          modification_timestamp?: string | null
+          open_house_date?: string | null
+          open_house_end_time?: string | null
+          open_house_id?: string | null
+          open_house_key: string
+          open_house_remarks?: string | null
+          open_house_start_time?: string | null
+          rf_modification_timestamp?: string | null
+          showing_agent_first_name?: string | null
+          showing_agent_key?: string | null
+          showing_agent_last_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: never
+          listing_key?: string | null
+          modification_timestamp?: string | null
+          open_house_date?: string | null
+          open_house_end_time?: string | null
+          open_house_id?: string | null
+          open_house_key?: string
+          open_house_remarks?: string | null
+          open_house_start_time?: string | null
+          rf_modification_timestamp?: string | null
+          showing_agent_first_name?: string | null
+          showing_agent_key?: string | null
+          showing_agent_last_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      mls_postal_codes: {
+        Row: {
+          city: string | null
+          country: string | null
+          county_or_parish: string | null
+          created_at: string | null
+          id: number
+          modification_timestamp: string | null
+          postal_code: string | null
+          postal_code_key: string
+          postal_code_plus4: string | null
+          rf_modification_timestamp: string | null
+          state_or_province: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          county_or_parish?: string | null
+          created_at?: string | null
+          id?: never
+          modification_timestamp?: string | null
+          postal_code?: string | null
+          postal_code_key: string
+          postal_code_plus4?: string | null
+          rf_modification_timestamp?: string | null
+          state_or_province?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          county_or_parish?: string | null
+          created_at?: string | null
+          id?: never
+          modification_timestamp?: string | null
+          postal_code?: string | null
+          postal_code_key?: string
+          postal_code_plus4?: string | null
+          rf_modification_timestamp?: string | null
+          state_or_province?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       mls_raw_listings: {
         Row: {
           created_at: string
