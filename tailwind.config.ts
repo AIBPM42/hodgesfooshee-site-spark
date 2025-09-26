@@ -52,22 +52,36 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Hodges Backend Color Spec
-        bg:   { main:'#3a3a3a', nav:'#2e2e2e' },
-        surface:'#4a4a4a',
-        textc:{ primary:'#f4f4f4', secondary:'#cfcfcf' },
-        accent:{
-          orange:'#ff5a2b', green:'#8bc34a', purple:'#9c27b0', red:'#e53935', gold:'#d4af37'
+        bg: 'var(--bg)',
+        sidebar: 'var(--sidebar)',
+        surface: 'var(--surface)',
+        soft: 'var(--bg-soft)',
+        borderSubtle: 'var(--border-subtle)',
+        text: {
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          muted: 'var(--text-muted)',
         },
-        series:{ a:'#ff6a3d', b:'#5aa9e6', c:'#8bc34a', d:'#9c27b0', e:'#ffc857' },
-        border:{ subtle:'#ffffff14' },
+        accent: {
+          orange: 'var(--accent-orange)',
+          green: 'var(--accent-green)',
+          purple: 'var(--accent-purple)',
+          red: 'var(--accent-red)',
+          gold: 'var(--accent-gold)',
+        },
+        state: {
+          success: 'var(--state-success)',
+          info: 'var(--state-info)',
+          warning: 'var(--state-warning)',
+          danger: 'var(--state-danger)',
+        },
       },
       backgroundImage:{
         'bg-soft':'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.05))'
       },
-      boxShadow:{
-        card:'0 12px 30px rgba(0,0,0,.25)',
-        glow:'0 0 0 1px var(--border-subtle) inset, 0 8px 30px rgba(255,90,43,.15)'
+      boxShadow: {
+        card: '0 1px 0 0 var(--border-subtle), 0 12px 24px -24px rgba(0,0,0,0.6)',
+        glow: '0 0 38px 0 color-mix(in srgb, var(--accent-orange) 22%, transparent)',
       },
       backdropBlur: {
         xs: "2px",
@@ -76,6 +90,8 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xl: '14px',
+        '2xl': '20px',
       },
       fontFamily: {
         display: ["Playfair Display", "Georgia", "serif"],

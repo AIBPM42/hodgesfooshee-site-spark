@@ -61,16 +61,16 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen page-wrap">
+  <div className="min-h-screen bg-[var(--bg)] text-[var(--text-primary)]">
       {/* Professional Header */}
-      <header className="sticky top-0 z-50 h-16 nav-wrap backdrop-blur-xl border-b border-[var(--border-subtle)]">
+      <header className="sticky top-0 z-50 h-16 bg-[var(--sidebar)] backdrop-blur-xl border-b border-[var(--border-subtle)]">
         <div className="flex h-full items-center justify-between px-6">
           {/* Breadcrumbs */}
-          <div className="flex items-center gap-2 text-sm text-secondary">
+          <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
             {getBreadcrumbs().map((crumb, index) => (
               <React.Fragment key={crumb}>
                 {index > 0 && <ChevronRight className="h-4 w-4" />}
-                <span className={index === getBreadcrumbs().length - 1 ? 'text-primary font-medium' : ''}>
+                <span className={index === getBreadcrumbs().length - 1 ? 'text-[var(--text-primary)] font-medium' : ''}>
                   {crumb}
                 </span>
               </React.Fragment>
@@ -79,10 +79,10 @@ export default function DashboardLayout() {
 
           {/* Header Actions */}
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="text-secondary hover:text-primary">
+            <Button variant="ghost" size="sm" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
               <Bell className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm" className="text-secondary hover:text-primary">
+            <Button variant="ghost" size="sm" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
               <User className="h-4 w-4" />
             </Button>
           </div>
@@ -91,7 +91,7 @@ export default function DashboardLayout() {
 
       <div className="flex">
         {/* Professional Sidebar */}
-        <aside className="w-64 h-[calc(100vh-4rem)] nav-wrap border-r border-[var(--border-subtle)] p-4">
+        <aside className="w-64 h-[calc(100vh-4rem)] bg-[var(--sidebar)] border-r border-[var(--border-subtle)] p-4">
           <div className="space-y-2">
             {sidebarModules.map((module) => {
               const isActive = module.exact 
@@ -103,10 +103,10 @@ export default function DashboardLayout() {
                   key={module.href}
                   to={module.href}
                   className={`
-                    flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+                    flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                     ${isActive 
-                      ? 'btn-accent text-[var(--accent-orange)]' 
-                      : 'text-secondary hover:text-primary hover:bg-[color-mix(in_srgb,var(--text-primary)_5%,transparent)]'
+                      ? 'bg-[var(--surface)] border-2 border-[var(--accent-orange)] text-[var(--text-primary)] hover:shadow-glow focus:shadow-glow' 
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface)]/70'
                     }
                   `}
                 >
@@ -117,8 +117,8 @@ export default function DashboardLayout() {
                       variant="secondary" 
                       className={`ml-auto text-xs ${
                         module.badge === 'Active' 
-                          ? 'bg-[color-mix(in_srgb,var(--accent-green)_20%,transparent)] text-[var(--accent-green)] border-[var(--accent-green)]'
-                          : 'bg-[color-mix(in_srgb,var(--accent-purple)_20%,transparent)] text-[var(--accent-purple)] border-[var(--accent-purple)]'
+                          ? 'bg-[var(--state-success)]/16 text-[var(--state-success)] border border-[var(--state-success)]/30'
+                          : 'bg-[var(--accent-purple)]/16 text-[var(--accent-purple)] border border-[var(--accent-purple)]/30'
                       }`}
                     >
                       {module.badge}
@@ -133,21 +133,21 @@ export default function DashboardLayout() {
           
           {/* Quick Stats */}
           <div className="space-y-3">
-            <h4 className="text-xs font-semibold text-secondary uppercase tracking-wider">
+            <h4 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
               Quick Stats
             </h4>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-secondary">
+              <div className="flex justify-between text-[var(--text-secondary)]">
                 <span>Active Listings</span>
                 <span className="text-[var(--accent-green)] font-medium">2,847</span>
               </div>
-              <div className="flex justify-between text-secondary">
+              <div className="flex justify-between text-[var(--text-secondary)]">
                 <span>API Health</span>
                 <span className="text-[var(--accent-green)] font-medium">100%</span>
               </div>
-              <div className="flex justify-between text-secondary">
+              <div className="flex justify-between text-[var(--text-secondary)]">
                 <span>Last Sync</span>
-                <span className="text-secondary">5m ago</span>
+                <span className="text-[var(--text-secondary)]">5m ago</span>
               </div>
             </div>
           </div>
