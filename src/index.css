@@ -61,11 +61,19 @@
   --radius: 0.5rem;
 }
 
-/* Baseline application of the backgrounds */
+/* FORCE Light Graphite Background - Cache Bust: 2024-09-26-v2 */
 html, body { 
-  background: var(--bg); 
-  color: var(--text-primary); 
+  background: #3A3A3A !important; 
+  background: var(--bg) !important; 
+  color: var(--text-primary) !important; 
   min-height: 100vh;
+}
+
+/* Dashboard Root Container Override */
+#root, [data-app="dashboard"], .dashboard-root {
+  background: #3A3A3A !important;
+  background: var(--bg) !important;
+  min-height: 100vh !important;
 }
 
 * {
