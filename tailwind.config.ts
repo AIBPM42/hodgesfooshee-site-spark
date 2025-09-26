@@ -53,46 +53,21 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         // Hodges Backend Color Spec
-        bg: {
-          main: '#3a3a3a',
-          nav: '#2e2e2e',
+        bg:   { main:'#3a3a3a', nav:'#2e2e2e' },
+        surface:'#4a4a4a',
+        textc:{ primary:'#f4f4f4', secondary:'#cfcfcf' },
+        accent:{
+          orange:'#ff5a2b', green:'#8bc34a', purple:'#9c27b0', red:'#e53935', gold:'#d4af37'
         },
-        surface: '#4a4a4a',
-        textc: {
-          primary: '#f4f4f4',
-          secondary: '#cfcfcf',
-        },
-        accent: {
-          orange: '#ff5a2b',
-          green: '#8bc34a',
-          purple: '#9c27b0',
-          red: '#e53935',
-          gold: '#d4af37',
-        },
-        series: {
-          a: '#ff6a3d',
-          b: '#5aa9e6', 
-          c: '#8bc34a',
-          d: '#9c27b0',
-          e: '#ffc857',
-        },
-        border: {
-          subtle: '#ffffff14',
-        },
+        series:{ a:'#ff6a3d', b:'#5aa9e6', c:'#8bc34a', d:'#9c27b0', e:'#ffc857' },
+        border:{ subtle:'#ffffff14' },
       },
-      backgroundImage: {
-        "gradient-primary": "var(--gradient-primary)",
-        "gradient-secondary": "var(--gradient-secondary)",
-        "gradient-accent": "var(--gradient-accent)",
-        "gradient-glass": "var(--gradient-glass)",
-        "gradient-hero": "var(--gradient-hero)",
-        "glass-gradient": "radial-gradient(1200px 600px at 10% -10%, rgba(17,160,217,.22), transparent 60%), radial-gradient(1000px 500px at 110% 10%, rgba(9,106,147,.15), transparent 60%)",
-        "bg-soft": "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.05))",
+      backgroundImage:{
+        'bg-soft':'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.05))'
       },
-      boxShadow: {
-        glass: "0 8px 24px rgba(0,0,0,.08)",
-        card: "0 12px 30px rgba(0,0,0,.25)",
-        glow: "0 0 0 1px var(--border-subtle) inset, 0 8px 30px rgba(255,90,43,.15)",
+      boxShadow:{
+        card:'0 12px 30px rgba(0,0,0,.25)',
+        glow:'0 0 0 1px var(--border-subtle) inset, 0 8px 30px rgba(255,90,43,.15)'
       },
       backdropBlur: {
         xs: "2px",
