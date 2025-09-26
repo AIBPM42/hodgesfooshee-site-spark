@@ -13,6 +13,7 @@ serve(async (req) => {
   }
 
   try {
+    // Using lowercase environment variable names to match Supabase secrets
     const clientId = Deno.env.get('realtyna_client_id')
     const clientSecret = Deno.env.get('realtyna_client_secret')
     
