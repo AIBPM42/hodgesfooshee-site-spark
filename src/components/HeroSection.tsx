@@ -28,10 +28,10 @@ const HeroSection = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <Button variant="luxury" size="lg" className="text-lg px-8 py-3">
+            <Button variant="accent" size="lg" className="text-lg px-8 py-3">
               View Properties
             </Button>
-            <Button variant="hero" size="lg" className="text-lg px-8 py-3">
+            <Button variant="outline" size="lg" className="text-lg px-8 py-3">
               Free Consultation
             </Button>
           </div>

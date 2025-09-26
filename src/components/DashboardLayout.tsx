@@ -105,7 +105,7 @@ export default function DashboardLayout() {
                   className={`
                     flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                     ${isActive 
-                      ? 'bg-[var(--surface)] border-2 border-[var(--accent-orange)] text-[var(--text-primary)] hover:shadow-glow focus:shadow-glow' 
+                      ? 'bg-[var(--surface)] border-2 border-[var(--accent-orange)] text-[var(--text-primary)]' 
                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface)]/70'
                     }
                   `}
@@ -117,8 +117,8 @@ export default function DashboardLayout() {
                       variant="secondary" 
                       className={`ml-auto text-xs ${
                         module.badge === 'Active' 
-                          ? 'bg-[var(--state-success)]/16 text-[var(--state-success)] border border-[var(--state-success)]/30'
-                          : 'bg-[var(--accent-purple)]/16 text-[var(--accent-purple)] border border-[var(--accent-purple)]/30'
+                          ? 'badge--success'
+                          : 'badge--beta'
                       }`}
                     >
                       {module.badge}

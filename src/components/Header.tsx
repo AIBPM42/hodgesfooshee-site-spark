@@ -56,7 +56,7 @@ const Header = () => {
           </nav>
           
           <div className="flex items-center space-x-4">
-            <Button variant="premium" size="sm" className="hidden md:inline-flex">
+            <Button variant="accent" size="sm" className="hidden md:inline-flex">
               Schedule Consultation
             </Button>
             <Button variant="ghost" size="icon" className="md:hidden">

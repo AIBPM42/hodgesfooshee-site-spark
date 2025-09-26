@@ -75,162 +75,67 @@ body {
   min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1 { 
+  font-family: "Playfair Display", serif; 
+  font-weight: 700; 
+  letter-spacing: .2px; 
+}
+h2 { 
+  font-family: "Playfair Display", serif; 
+  font-weight: 600; 
+}
+h3, h4, h5, h6 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 600;
 }
-
-/* Glass morphism utilities */
-.glass, .bg-glass {
-  background: hsla(0, 0%, 100%, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+body, .copy { 
+  font-family: Inter, system-ui, sans-serif; 
+  font-weight: 400; 
 }
 
-.glass-light {
-  background: hsla(0, 0%, 100%, 0.15);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+/* Kill unintended glows & mismatched borders */
+.card, .panel, .tile {
+  box-shadow: none !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--border-subtle) !important;
+}
+.btn, .button, [role="button"] {
+  box-shadow: none !important;
 }
 
-.glass-dark {
-  background: hsla(0, 0%, 0%, 0.15);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Text gradients */
-.text-gradient {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.text-gradient-secondary {
-  background: var(--gradient-secondary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.text-gradient-accent {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Utilities aligned to spec */
-@layer utilities{
-  .page-wrap{ background:var(--background); color:var(--text-primary); }
-  .nav-wrap{ background:var(--bg-nav); }
-  .chart-surface{
-    background:var(--bg-soft);
-    border:1px solid var(--border-subtle);
-    border-radius:.75rem;
+/* FINAL Spec Implementation */
+@layer utilities {
+  .page-wrap { background: var(--bg); color: var(--text-primary); }
+  .sidebar { background: var(--sidebar); }
+  .card { 
+    background: var(--surface); 
+    border: 1px solid var(--border-subtle); 
+    border-radius: 14px; 
   }
-  .btn-accent{
-    border:1px solid var(--accent-orange);
-    background:color-mix(in srgb, var(--accent-orange) 12%, transparent);
+  .card .card-header { padding: 16px 18px; }
+  .card .card-body { padding: 18px; }
+  
+  /* Button CTA pattern */
+  .btn-accent {
+    color: var(--text-primary);
+    border: 1px solid var(--accent-orange);
+    background: color-mix(in srgb, var(--accent-orange) 12%, transparent);
   }
-  .btn-accent:hover{
-    background:color-mix(in srgb, var(--accent-orange) 18%, transparent);
+  .btn-accent:hover {
+    background: color-mix(in srgb, var(--accent-orange) 18%, transparent);
+  }
+  
+  /* Status pills (no glow, solid) */
+  .badge--success { background: var(--accent-green); color: #0E2B0E; }
+  .badge--beta { background: var(--accent-purple); color: #220A2B; }
+  .badge--warn { background: var(--accent-gold); color: #2B210A; }
+  .badge--info { background: #2D9CDB; color: #07131B; }
+  
+  /* Chart containers */
+  .chart-surface {
+    background: var(--bg-soft);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
   }
 }
 
-/* Remove any old blue button styles if they exist */
-
-/* Search tab styling */
-.search-tab {
-  @apply relative px-6 py-3 rounded-lg font-medium transition-all duration-300 backdrop-blur-sm;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.search-tab.active {
-  background: var(--gradient-primary);
-  border-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  box-shadow: var(--shadow-premium);
-}
-
-.search-tab:hover:not(.active) {
-  background: rgba(255, 120, 0, 0.1);
-  border-color: rgba(255, 120, 0, 0.3);
-}
-
-/* Card enhancements */
-.property-card {
-  @apply glass rounded-xl p-6 transition-all duration-500 hover:scale-105;
-  box-shadow: var(--shadow-glass);
-}
-
-.property-card:hover {
-  box-shadow: var(--shadow-glass), var(--shadow-premium);
-  border-color: rgba(255, 120, 0, 0.3);
-}
-
-.result-card {
-  @apply glass-light rounded-xl overflow-hidden transition-all duration-300;
-  box-shadow: var(--shadow-soft);
-}
-
-.result-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-glass), var(--shadow-premium);
-}
-
-/* Animation utilities */
-.animate-glass-float {
-  animation: glass-float 6s ease-in-out infinite;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: hsl(var(--secondary));
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, hsl(var(--primary)), hsl(var(--accent)));
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, hsl(var(--accent)), hsl(var(--primary)));
-}
-
-/* Loading shimmer effect */
-.loading-shimmer {
-  background: linear-gradient(
-    90deg,
-    hsl(var(--muted)) 25%, 
-    hsl(var(--muted-foreground) / 0.1) 50%, 
-    hsl(var(--muted)) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes glass-float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}

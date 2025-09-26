@@ -82,7 +82,7 @@ const Listings = () => {
         <section className="py-8 bg-secondary/30 border-b border-border">
           <div className="container mx-auto px-4">
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button variant="premium" className="text-sm">All Properties</Button>
+              <Button variant="accent" className="text-sm">All Properties</Button>
               <Button variant="ghost" className="text-sm">Single Family</Button>
               <Button variant="ghost" className="text-sm">Condominiums</Button>
               <Button variant="ghost" className="text-sm">Luxury Estates</Button>
@@ -161,7 +161,7 @@ const Listings = () => {
             </div>
             
             <div className="text-center mt-12">
-              <Button variant="premium" size="lg">
+              <Button variant="accent" size="lg">
                 Load More Properties
               </Button>
             </div>
