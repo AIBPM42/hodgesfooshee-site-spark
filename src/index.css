@@ -4,62 +4,61 @@
 @tailwind components;
 @tailwind utilities;
 
+/* === Hodges Backend Color Spec v1 === */
 :root {
-  /* Hodges Backend Color Spec - Professional Graphite Theme */
-  --background: 0 0% 23%;  /* #3a3a3a main */
-  --foreground: 0 0% 96%;  /* #f4f4f4 primary text */
-  --card: 0 0% 29%;        /* #4a4a4a */
-  --card-foreground: 0 0% 96%;
-  --popover: 0 0% 29%;
-  --popover-foreground: 0 0% 96%;
-  --primary: 14 100% 58%;   /* accent-orange #ff5a2b */
-  --primary-foreground: 0 0% 96%;
-  --secondary: 0 0% 18%;    /* nav background #2e2e2e */
-  --secondary-foreground: 0 0% 81%;  /* #cfcfcf */
-  --muted: 0 0% 18%;
-  --muted-foreground: 0 0% 81%;
-  --accent: 88 50% 53%;     /* accent-green #8bc34a */
-  --accent-foreground: 0 0% 96%;
-  --destructive: 4 90% 58%; /* accent-red #e53935 */
-  --destructive-foreground: 0 0% 96%;
-  --border: 0 0% 100% / 0.08;  /* subtle white with opacity */
-  --input: 0 0% 18%;
-  --ring: 14 100% 58%;
-  --radius: 0.75rem;
+  /* Core */
+  --bg-main: #3a3a3a;
+  --bg-nav: #2e2e2e;
+  --surface: #4a4a4a;           /* <-- new (same as old card) */
+  --border-subtle: #ffffff14;
 
-  /* Hodges Backend Core Colors */
-  --bg-main: 0 0% 23%;      /* #3a3a3a */
-  --bg-nav: 0 0% 18%;       /* #2e2e2e */
-  --textc-primary: 0 0% 96%; /* #f4f4f4 */
-  --textc-secondary: 0 0% 81%; /* #cfcfcf */
+  /* Text */
+  --text-primary: #f4f4f4;      /* <-- new (shorthand) */
+  --text-secondary: #cfcfcf;    /* <-- new (shorthand) */
 
-  /* Accent Colors - Strategic Usage */
-  --accent-orange: 14 100% 58%;  /* #ff5a2b - CTAs, primary actions */
-  --accent-green: 88 50% 53%;    /* #8bc34a - success, active states */
-  --accent-purple: 291 64% 42%;  /* #9c27b0 - AI/beta features */
-  --accent-red: 4 90% 58%;       /* #e53935 - errors only */
-  --accent-gold: 51 62% 52%;     /* #d4af37 - premium/executive */
+  /* Accents */
+  --accent-orange: #ff5a2b;
+  --accent-green:  #8bc34a;
+  --accent-purple: #9c27b0;
+  --accent-red:    #e53935;
+  --accent-gold:   #d4af37;
 
-  /* Chart Series Colors */
-  --series-a: 14 100% 61%;   /* #ff6a3d */
-  --series-b: 207 76% 62%;   /* #5aa9e6 */
-  --series-c: 88 50% 53%;    /* #8bc34a */
-  --series-d: 291 64% 42%;   /* #9c27b0 */
-  --series-e: 42 100% 67%;   /* #ffc857 */
+  /* Charts */
+  --series-a: #ff6a3d;
+  --series-b: #5aa9e6;
+  --series-c: #8bc34a;
+  --series-d: #9c27b0;
+  --series-e: #ffc857;
 
-  /* Borders */
-  --border-subtle: 0 0% 100% / 0.08; /* #ffffff14 */
+  /* Surfaces / textures */
+  --bg-soft: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.05)); /* <-- new */
 
-  /* Shadows - Professional Depth */
-  --shadow-card: 0 12px 30px rgba(0,0,0,.25);
-  --shadow-glow: 0 0 0 1px hsla(0, 0%, 100%, 0.08) inset, 0 8px 30px hsla(14, 100%, 58%, 0.15);
-  --shadow-premium: 0 20px 40px -12px hsla(14, 100%, 58%, 0.25);
-  --shadow-soft: 0 4px 20px -2px hsla(0, 0%, 0%, 0.15);
-
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, hsl(14, 100%, 58%), hsl(14, 100%, 61%));
-  --gradient-secondary: linear-gradient(135deg, hsl(0, 0%, 18%), hsl(0, 0%, 23%));
-  --gradient-accent: linear-gradient(135deg, hsl(88, 50%, 53%), hsl(207, 76%, 62%));
+  /* Legacy support (shadcn) */
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+  --radius: 0.5rem;
 }
 
 /* Dark mode inherits same professional theme */
@@ -90,8 +89,8 @@
 }
 
 body {
-  background-color: hsl(var(--bg-main));
-  color: hsl(var(--textc-primary));
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   min-height: 100vh;
 }
 
@@ -141,55 +140,29 @@ h1, h2, h3, h4, h5, h6 {
   background-clip: text;
 }
 
-/* Button styling */
-.btn-primary, .btn-brand {
-  background: #0a80b1;
-  color: white;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: scale(1);
-}
-
-.btn-primary:hover, .btn-brand:hover {
-  background: #096a93;
-  box-shadow: 0 20px 40px -12px rgba(10, 128, 177, 0.25);
-  transform: scale(1.05);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: #0a80b1;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  border: 1px solid #b7e3ff;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-ghost:hover {
-  background: #eef8ff;
-  color: #096a93;
-  border-color: #d8f0ff;
-}
-
-.btn-glass {
-  background: linear-gradient(135deg, hsla(0, 0%, 100%, 0.15), hsla(0, 0%, 100%, 0.05));
-  color: white;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: scale(1);
-}
-
-.btn-glass:hover {
-  background: #0a80b1;
-  box-shadow: 0 20px 40px -12px rgba(10, 128, 177, 0.25);
-  transform: scale(1.05);
+/* Utility patterns that match the Usage Rules */
+@layer utilities {
+  .card-surface {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    -webkit-backdrop-filter: saturate(120%) blur(20px);
+    backdrop-filter: saturate(120%) blur(20px);
+    box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  }
+  .chart-surface {
+    background: var(--bg-soft);
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.75rem;
+  }
+  .btn-accent {
+    border: 1px solid var(--accent-orange);
+    background: color-mix(in srgb, var(--accent-orange) 12%, transparent);
+  }
+  .btn-accent:hover {
+    background: color-mix(in srgb, var(--accent-orange) 18%, transparent);
+  }
+  .text-primary   { color: var(--text-primary); }
+  .text-secondary { color: var(--text-secondary); }
 }
 
 /* Search tab styling */
