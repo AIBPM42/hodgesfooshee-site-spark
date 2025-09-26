@@ -53,3 +53,6 @@ verify_jwt = false
 
 [functions.manual-test-sync]
 verify_jwt = false
+
+[functions.sync-mls-data]
+verify_jwt = false
