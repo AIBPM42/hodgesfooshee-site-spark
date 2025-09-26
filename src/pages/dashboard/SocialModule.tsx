@@ -53,13 +53,13 @@ export default function SocialModule() {
       </div>
 
       {/* Performance Leaderboard */}
-      <Card className="bg-white/5 backdrop-blur-xl border-white/10">
+      <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-neutral-100">
+          <CardTitle className="flex items-center gap-2 text-[var(--text-primary)]">
             <Trophy className="h-5 w-5" />
             Monthly Leaderboard
           </CardTitle>
-          <CardDescription className="text-neutral-300">
+          <CardDescription className="text-[var(--text-secondary)]">
             Top performing team members this month
           </CardDescription>
         </CardHeader>
@@ -72,10 +72,10 @@ export default function SocialModule() {
               { rank: 4, name: 'David Park', deals: 8, revenue: '$1.6M', score: 87, badge: null },
               { rank: 5, name: 'Lisa Thompson', deals: 7, revenue: '$1.4M', score: 84, badge: null }
             ].map((agent) => (
-              <div key={agent.rank} className="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/8 transition-colors">
+              <div key={agent.rank} className="flex items-center justify-between p-4 bg-[var(--bg-soft)] rounded-lg hover:bg-[var(--surface)]/70 transition-colors border border-[var(--border-subtle)]">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-lg font-bold text-neutral-100 w-6">{agent.rank}</span>
+                    <span className="text-lg font-bold text-[var(--text-primary)] w-6">{agent.rank}</span>
                     {agent.badge && (
                       <div className={`p-1 rounded-full ${
                         agent.badge === 'gold' ? 'bg-yellow-500/20' :
@@ -89,19 +89,19 @@ export default function SocialModule() {
                     )}
                   </div>
                   <Avatar>
-                    <AvatarFallback className="bg-gradient-to-br from-orange-500/20 to-blue-500/20 text-neutral-100">
+                    <AvatarFallback className="bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--accent-orange)]">
                       {agent.name.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium text-neutral-100">{agent.name}</p>
-                    <p className="text-sm text-neutral-400">{agent.deals} deals • {agent.revenue}</p>
+                    <p className="font-medium text-[var(--text-primary)]">{agent.name}</p>
+                    <p className="text-sm text-[var(--text-secondary)]">{agent.deals} deals • {agent.revenue}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <p className="font-bold text-neutral-100">{agent.score}%</p>
-                    <p className="text-xs text-neutral-400">Performance Score</p>
+                    <p className="font-bold text-[var(--text-primary)]">{agent.score}%</p>
+                    <p className="text-xs text-[var(--text-secondary)]">Performance Score</p>
                   </div>
                   <Star className="h-5 w-5 text-yellow-400" />
                 </div>
@@ -114,10 +114,10 @@ export default function SocialModule() {
       {/* Team Activities & Collaboration */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activities */}
-        <Card className="bg-white/5 backdrop-blur-xl border-white/10">
+        <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
           <CardHeader>
-            <CardTitle className="text-neutral-100">Team Activity Feed</CardTitle>
-            <CardDescription className="text-neutral-300">
+            <CardTitle className="text-[var(--text-primary)]">Team Activity Feed</CardTitle>
+            <CardDescription className="text-[var(--text-secondary)]">
               Recent team interactions and achievements
             </CardDescription>
           </CardHeader>
@@ -130,16 +130,16 @@ export default function SocialModule() {
                 { time: '1 hour ago', agent: 'David P.', action: 'scheduled showing', details: '3 properties for this weekend', icon: Calendar },
                 { time: '2 hours ago', agent: 'Lisa T.', action: 'received client feedback', details: '5-star review on service quality', icon: Star }
               ].map((activity, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 bg-white/3 rounded-lg">
-                  <div className="p-2 rounded-full bg-gradient-to-br from-orange-500/20 to-blue-500/20">
-                    <activity.icon className="h-4 w-4 text-orange-300" />
+                <div key={index} className="flex items-start gap-3 p-3 bg-[var(--bg-soft)] rounded-lg border border-[var(--border-subtle)]">
+                  <div className="p-2 rounded-full bg-[var(--accent-orange)]/20 border border-[var(--accent-orange)]/30">
+                    <activity.icon className="h-4 w-4 text-[var(--accent-orange)]" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-neutral-100">
+                    <p className="text-sm text-[var(--text-primary)]">
                       <span className="font-medium">{activity.agent}</span> {activity.action}
                     </p>
-                    <p className="text-xs text-neutral-400 mt-1">{activity.details}</p>
-                    <p className="text-xs text-neutral-500 mt-1">{activity.time}</p>
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">{activity.details}</p>
+                    <p className="text-xs text-[var(--text-muted)] mt-1">{activity.time}</p>
                   </div>
                 </div>
               ))}
@@ -148,10 +148,10 @@ export default function SocialModule() {
         </Card>
 
         {/* Success Tracking */}
-        <Card className="bg-white/5 backdrop-blur-xl border-white/10">
+        <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
           <CardHeader>
-            <CardTitle className="text-neutral-100">Success Metrics</CardTitle>
-            <CardDescription className="text-neutral-300">
+            <CardTitle className="text-[var(--text-primary)]">Success Metrics</CardTitle>
+            <CardDescription className="text-[var(--text-secondary)]">
               Key performance indicators and goals
             </CardDescription>
           </CardHeader>
@@ -160,37 +160,37 @@ export default function SocialModule() {
               {/* Monthly Goals */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium text-neutral-100">Monthly Goals Progress</h4>
-                  <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
+                  <h4 className="font-medium text-[var(--text-primary)]">Monthly Goals Progress</h4>
+                  <Badge className="bg-[var(--accent-green)]/20 text-[var(--accent-green)] border border-[var(--accent-green)]/30">
                     On Track
                   </Badge>
                 </div>
                 <div className="space-y-3">
                   <div>
                     <div className="flex justify-between text-sm mb-1">
-                      <span className="text-neutral-300">Revenue Target</span>
-                      <span className="text-neutral-100">$8.2M / $10M</span>
+                      <span className="text-[var(--text-secondary)]">Revenue Target</span>
+                      <span className="text-[var(--text-primary)]">$8.2M / $10M</span>
                     </div>
-                    <div className="w-full bg-neutral-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full" style={{ width: '82%' }}></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-neutral-300">Deal Volume</span>
-                      <span className="text-neutral-100">47 / 60</span>
-                    </div>
-                    <div className="w-full bg-neutral-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full" style={{ width: '78%' }}></div>
+                    <div className="w-full bg-[var(--bg-soft)] rounded-full h-2 border border-[var(--border-subtle)]">
+                      <div className="bg-[var(--accent-green)] h-2 rounded-full" style={{ width: '82%' }}></div>
                     </div>
                   </div>
                   <div>
                     <div className="flex justify-between text-sm mb-1">
-                      <span className="text-neutral-300">Client Satisfaction</span>
-                      <span className="text-neutral-100">94% / 90%</span>
+                      <span className="text-[var(--text-secondary)]">Deal Volume</span>
+                      <span className="text-[var(--text-primary)]">47 / 60</span>
                     </div>
-                    <div className="w-full bg-neutral-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full" style={{ width: '100%' }}></div>
+                    <div className="w-full bg-[var(--bg-soft)] rounded-full h-2 border border-[var(--border-subtle)]">
+                      <div className="bg-[var(--accent-purple)] h-2 rounded-full" style={{ width: '78%' }}></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-[var(--text-secondary)]">Client Satisfaction</span>
+                      <span className="text-[var(--text-primary)]">94% / 90%</span>
+                    </div>
+                    <div className="w-full bg-[var(--bg-soft)] rounded-full h-2 border border-[var(--border-subtle)]">
+                      <div className="bg-[var(--accent-gold)] h-2 rounded-full" style={{ width: '100%' }}></div>
                     </div>
                   </div>
                 </div>
@@ -198,21 +198,21 @@ export default function SocialModule() {
 
               {/* Quick Actions */}
               <div className="space-y-3">
-                <h4 className="font-medium text-neutral-100">Quick Actions</h4>
+                <h4 className="font-medium text-[var(--text-primary)]">Quick Actions</h4>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button size="sm" className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
+                  <Button size="sm" className="bg-[var(--accent-green)]/20 hover:bg-[var(--accent-green)]/30 text-[var(--accent-green)] border border-[var(--accent-green)]/40">
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Team Chat
                   </Button>
-                  <Button size="sm" className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
+                  <Button size="sm" className="bg-[var(--accent-purple)]/20 hover:bg-[var(--accent-purple)]/30 text-[var(--accent-purple)] border border-[var(--accent-purple)]/40">
                     <Calendar className="h-4 w-4 mr-2" />
                     Schedule
                   </Button>
-                  <Button size="sm" className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white">
+                  <Button size="sm" className="bg-[var(--accent-gold)]/20 hover:bg-[var(--accent-gold)]/30 text-[var(--accent-gold)] border border-[var(--accent-gold)]/40">
                     <Trophy className="h-4 w-4 mr-2" />
                     Awards
                   </Button>
-                  <Button size="sm" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white">
+                  <Button size="sm" className="bg-[var(--accent-orange)]/20 hover:bg-[var(--accent-orange)]/30 text-[var(--accent-orange)] border border-[var(--accent-orange)]/40">
                     <Zap className="h-4 w-4 mr-2" />
                     Training
                   </Button>
@@ -224,13 +224,13 @@ export default function SocialModule() {
       </div>
 
       {/* Coming Soon Alert */}
-      <Card className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-purple-500/30">
+      <Card className="bg-[var(--accent-purple)]/10 border border-[var(--accent-purple)]/30 rounded-xl">
         <CardContent className="p-6">
           <div className="flex items-center gap-4">
-            <Users className="h-8 w-8 text-purple-400" />
+            <Users className="h-8 w-8 text-[var(--accent-purple)]" />
             <div>
-              <h3 className="font-medium text-neutral-100 mb-1">Advanced Social Features Coming Soon</h3>
-              <p className="text-sm text-neutral-300">
+              <h3 className="font-medium text-[var(--text-primary)] mb-1">Advanced Social Features Coming Soon</h3>
+              <p className="text-sm text-[var(--text-secondary)]">
                 Team messaging, advanced collaboration tools, and custom performance dashboards are in development.
               </p>
             </div>

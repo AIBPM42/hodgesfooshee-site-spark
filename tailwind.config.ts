@@ -3,10 +3,16 @@ import type { Config } from "tailwindcss";
 export default {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
+    "./index.html",
+    "./src/**/*.{ts,tsx,js,jsx}"
+  ],
+  safelist: [
+    'bg-[var(--bg)]',
+    'bg-[var(--sidebar)]',
+    'bg-[var(--surface)]',
+    'text-[var(--text-primary)]',
+    'text-[var(--text-secondary)]',
+    'border-[var(--border-subtle)]'
   ],
   prefix: "",
   theme: {
@@ -60,7 +66,7 @@ export default {
         bg: 'var(--bg)',
         sidebar: 'var(--sidebar)',
         surface: 'var(--surface)',
-        soft: 'var(--bg-soft)',
+        bgsoft: 'var(--bg-soft)', 
         borderSubtle: 'var(--border-subtle)',
         text: {
           primary: 'var(--text-primary)',
@@ -81,7 +87,7 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        xl: '14px',
+        xl: '0.75rem',
         '2xl': '20px',
       },
       fontFamily: {
