@@ -44,3 +44,6 @@ verify_jwt = false
 
 [functions.sync_postalcodes]
 verify_jwt = false
+
+[functions.sync-orchestrator]
+verify_jwt = false
