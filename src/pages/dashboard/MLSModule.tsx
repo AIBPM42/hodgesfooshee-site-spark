@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useQueryClient } from '@tanstack/react-query';
 import { 
   Database, 
   RefreshCw, 
@@ -13,10 +16,52 @@ import {
   Building,
   Users,
   MapPin,
-  Calendar
+  Calendar,
+  Loader2
 } from 'lucide-react';
 
 export default function MLSModule() {
+  const [loading, setLoading] = useState<string | null>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  async function runSync(kind: 'listings' | 'members' | 'offices' | 'openhouses') {
+    setLoading(kind);
+    try {
+      // Step 1: Refresh OAuth token
+      await supabase.functions.invoke('manage-oauth-tokens', { method: 'POST' });
+      
+      // Step 2: Run specific sync function
+      const fn = kind === 'listings' ? 'sync_realtyna'
+                : kind === 'members' ? 'sync_members'  
+                : kind === 'offices' ? 'sync_offices'
+                : 'sync_openhouses';
+      
+      const { data, error } = await supabase.functions.invoke(fn, {
+        method: 'POST',
+        body: { top: 25, force: true }
+      });
+      
+      if (error) throw error;
+      toast({
+        title: "Sync Complete",
+        description: `Synced ${kind}: ${data?.total ?? data?.items_processed ?? 'OK'} items`,
+      });
+      
+      // Refresh dashboard stats
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      
+    } catch (e: any) {
+      toast({
+        title: "Sync Failed",
+        description: `Sync ${kind} failed: ${e.message ?? e}`,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(null);
+    }
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -93,21 +138,53 @@ export default function MLSModule() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button className="btn-accent">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Sync Listings
+            <Button 
+              className="btn-accent" 
+              onClick={() => runSync('listings')}
+              disabled={loading === 'listings'}
+            >
+              {loading === 'listings' ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <RefreshCw className="h-4 w-4 mr-2" />
+              )}
+              {loading === 'listings' ? 'Syncing...' : 'Sync Listings'}
             </Button>
-            <Button className="btn-accent">
-              <Building className="h-4 w-4 mr-2" />
-              Sync Offices
+            <Button 
+              className="btn-accent"
+              onClick={() => runSync('offices')}
+              disabled={loading === 'offices'}
+            >
+              {loading === 'offices' ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Building className="h-4 w-4 mr-2" />
+              )}
+              {loading === 'offices' ? 'Syncing...' : 'Sync Offices'}
             </Button>
-            <Button className="btn-accent">
-              <Users className="h-4 w-4 mr-2" />
-              Sync Members
+            <Button 
+              className="btn-accent"
+              onClick={() => runSync('members')}
+              disabled={loading === 'members'}
+            >
+              {loading === 'members' ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Users className="h-4 w-4 mr-2" />
+              )}
+              {loading === 'members' ? 'Syncing...' : 'Sync Members'}
             </Button>
-            <Button className="btn-accent">
-              <Calendar className="h-4 w-4 mr-2" />
-              Sync Open Houses
+            <Button 
+              className="btn-accent"
+              onClick={() => runSync('openhouses')}
+              disabled={loading === 'openhouses'}
+            >
+              {loading === 'openhouses' ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Calendar className="h-4 w-4 mr-2" />
+              )}
+              {loading === 'openhouses' ? 'Syncing...' : 'Sync Open Houses'}
             </Button>
           </div>
           

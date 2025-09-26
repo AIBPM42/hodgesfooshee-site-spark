@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Database, 
@@ -8,13 +8,17 @@ import {
   TrendingUp,
   Activity,
   Zap,
-  Globe
+  Globe,
+  Loader2
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useDashboardStats } from '@/hooks/useDashboardStats';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useQueryClient } from '@tanstack/react-query';
 
 const getModuleCards = (stats: any) => [
   {
@@ -105,10 +109,45 @@ const getSystemMetrics = (stats: any) => [
 ];
 
 export default function Overview() {
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { data: dashboardStats, isLoading } = useDashboardStats();
   
   const systemMetrics = getSystemMetrics(dashboardStats);
   const moduleCards = getModuleCards(dashboardStats);
+
+  async function runListingsSync() {
+    setLoading(true);
+    try {
+      // Step 1: Refresh OAuth token
+      await supabase.functions.invoke('manage-oauth-tokens', { method: 'POST' });
+      
+      // Step 2: Run listings sync
+      const { data, error } = await supabase.functions.invoke('sync_realtyna', {
+        method: 'POST',
+        body: { top: 25, force: true }
+      });
+      
+      if (error) throw error;
+      toast({
+        title: "Listings Sync Complete",
+        description: `Synced ${data?.total ?? data?.items_processed ?? 'OK'} listings`,
+      });
+      
+      // Refresh dashboard stats
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      
+    } catch (e: any) {
+      toast({
+        title: "Sync Failed",
+        description: `Listings sync failed: ${e.message ?? e}`,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="space-y-8">
@@ -185,14 +224,42 @@ export default function Overview() {
               </div>
               
               {/* Action Button */}
-              <Button 
-                asChild 
-                className="w-full btn-accent"
-              >
-                <Link to={module.href}>
-                  Open {module.title}
-                </Link>
-              </Button>
+              {module.title === 'MLS Data Sync' ? (
+                <div className="space-y-2">
+                  <Button 
+                    className="w-full btn-accent"
+                    onClick={runListingsSync}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Syncing Listings...
+                      </>
+                    ) : (
+                      'Sync Listings Now'
+                    )}
+                  </Button>
+                  <Button 
+                    asChild 
+                    variant="outline"
+                    className="w-full"
+                  >
+                    <Link to={module.href}>
+                      Open MLS Dashboard
+                    </Link>
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                  asChild 
+                  className="w-full btn-accent"
+                >
+                  <Link to={module.href}>
+                    Open {module.title}
+                  </Link>
+                </Button>
+              )}
             </CardContent>
           </Card>
         ))}
