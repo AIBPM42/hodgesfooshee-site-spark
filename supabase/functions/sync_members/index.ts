@@ -83,8 +83,7 @@ async function upsertBatch(items: any[]) {
   const rows = items
     .map((m: any) => ({
       member_key: m.MemberKey?.toString(),
-      member_id: m.MemberMlsId ?? null,
-      member_login_id: m.MemberLoginId ?? null,
+      member_id: m.MemberId ?? null,
       member_first_name: m.MemberFirstName ?? null,
       member_last_name: m.MemberLastName ?? null,
       member_full_name: m.MemberFullName ?? null,
@@ -95,6 +94,7 @@ async function upsertBatch(items: any[]) {
       office_name: m.OfficeName ?? null,
       member_status: m.MemberStatus ?? null,
       member_type: m.MemberType ?? null,
+      member_login_id: m.MemberLoginId ?? null,
       modification_timestamp: m.ModificationTimestamp
         ? new Date(m.ModificationTimestamp).toISOString()
         : null,
@@ -138,9 +138,9 @@ serve(async (req) => {
       nextUrl =
         `${RESO_BASE}/Member?` +
         `$top=200&` +
-        `$select=MemberKey,MemberMlsId,MemberLoginId,MemberFirstName,MemberLastName,` +
-        `MemberFullName,MemberEmail,MemberPhone,MemberMobilePhone,OfficeKey,OfficeName,` +
-        `MemberStatus,MemberType,ModificationTimestamp,RFModificationTimestamp` +
+        `$select=MemberKey,MemberId,MemberFirstName,MemberLastName,MemberFullName,` +
+        `MemberEmail,MemberPhone,MemberMobilePhone,OfficeKey,OfficeName,` +
+        `MemberStatus,MemberType,MemberLoginId,ModificationTimestamp,RFModificationTimestamp` +
         `${filter}&$orderby=RFModificationTimestamp asc`;
     }
 

@@ -85,7 +85,7 @@ async function upsertBatch(items: any[]) {
       open_house_key: oh.OpenHouseKey?.toString(),
       open_house_id: oh.OpenHouseId ?? null,
       listing_key: oh.ListingKey ?? null,
-      open_house_date: oh.OpenHouseDate ? oh.OpenHouseDate.split('T')[0] : null,
+      open_house_date: oh.OpenHouseDate ? new Date(oh.OpenHouseDate).toISOString().split('T')[0] : null,
       open_house_start_time: oh.OpenHouseStartTime ?? null,
       open_house_end_time: oh.OpenHouseEndTime ?? null,
       open_house_remarks: oh.OpenHouseRemarks ?? null,

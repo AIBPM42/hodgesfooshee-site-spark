@@ -21,6 +21,15 @@ verify_jwt = false
 [functions.sync_realtyna]
 verify_jwt = false
 
+[functions.sync_members]
+verify_jwt = false
+
+[functions.sync_offices]
+verify_jwt = false
+
+[functions.sync_openhouses]
+verify_jwt = false
+
 [functions.realtyna-mls-search]
 verify_jwt = false
 
@@ -31,15 +40,6 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.realtyna-selftest]
-verify_jwt = false
-
-[functions.sync_members]
-verify_jwt = false
-
-[functions.sync_offices]
-verify_jwt = false
-
-[functions.sync_openhouses]
 verify_jwt = false
 
 [functions.sync_postalcodes]
