@@ -13,19 +13,23 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useDashboardStats } from '@/hooks/useDashboardStats';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const moduleCards = [
+const getModuleCards = (stats: any) => [
   {
     title: 'MLS Data Sync',
     description: 'Real-time property data from RealTracs MLS. Sync listings, offices, members, and open houses.',
     href: '/admin/mls',
     icon: Database,
-    status: 'Active',
-    statusColor: 'bg-[color-mix(in_srgb,var(--accent-green)_20%,transparent)] text-accent-green border-accent-green',
+    status: stats?.apiHealth ? 'Active' : 'Syncing',
+    statusColor: stats?.apiHealth 
+      ? 'bg-[color-mix(in_srgb,var(--accent-green)_20%,transparent)] text-accent-green border-accent-green'
+      : 'bg-[color-mix(in_srgb,var(--accent-orange)_20%,transparent)] text-accent-orange border-accent-orange',
     stats: [
-      { label: 'Active Listings', value: '2,847' },
-      { label: 'Last Sync', value: '5m ago' },
-      { label: 'Success Rate', value: '99.8%' }
+      { label: 'Active Listings', value: stats?.activeListings?.toLocaleString() || '0' },
+      { label: 'Last Sync', value: stats?.lastSyncTime || 'Never' },
+      { label: 'Success Rate', value: stats?.successRate || '100%' }
     ]
   },
   {
@@ -69,38 +73,43 @@ const moduleCards = [
   }
 ];
 
-const systemMetrics = [
+const getSystemMetrics = (stats: any) => [
   {
     title: 'System Performance',
-    value: '99.9%',
-    change: '+0.2%',
+    value: stats?.systemPerformance || '95.2%',
+    change: stats?.apiHealth ? '+0.2%' : '-0.8%',
     icon: Activity,
-    color: 'text-accent-green'
+    color: stats?.apiHealth ? 'text-accent-green' : 'text-accent-orange'
   },
   {
     title: 'API Response Time',
-    value: '127ms',
+    value: stats?.apiResponseTime || '127ms',
     change: '-12ms',
     icon: Zap,
     color: 'text-series-b'
   },
   {
-    title: 'Data Processed',
-    value: '2.4TB',
-    change: '+124GB',
+    title: 'Active Listings',
+    value: stats?.activeListings?.toLocaleString() || '0',
+    change: '+' + (stats?.activeListings || 0),
     icon: TrendingUp,
     color: 'text-accent-orange'
   },
   {
-    title: 'Global Requests',
-    value: '847K',
-    change: '+12.3%',
+    title: 'Open Houses',
+    value: stats?.openHouses?.toLocaleString() || '0',
+    change: 'Today',
     icon: Globe,
     color: 'text-accent-purple'
   }
 ];
 
 export default function Overview() {
+  const { data: dashboardStats, isLoading } = useDashboardStats();
+  
+  const systemMetrics = getSystemMetrics(dashboardStats);
+  const moduleCards = getModuleCards(dashboardStats);
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -121,7 +130,11 @@ export default function Overview() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-[var(--text-secondary)] mb-1">{metric.title}</p>
-                  <p className="text-2xl font-bold text-[var(--text-primary)]">{metric.value}</p>
+                  {isLoading ? (
+                    <Skeleton className="h-8 w-20 mb-1" />
+                  ) : (
+                    <p className="text-2xl font-bold text-[var(--text-primary)]">{metric.value}</p>
+                  )}
                   <p className={`text-sm ${metric.color} font-medium`}>
                     {metric.change} from last period
                   </p>
@@ -161,7 +174,11 @@ export default function Overview() {
               <div className="grid grid-cols-3 gap-4">
                 {module.stats.map((stat) => (
                   <div key={stat.label} className="text-center">
-                    <p className="text-lg font-bold text-[var(--text-primary)]">{stat.value}</p>
+                    {isLoading ? (
+                      <Skeleton className="h-6 w-12 mx-auto mb-1" />
+                    ) : (
+                      <p className="text-lg font-bold text-[var(--text-primary)]">{stat.value}</p>
+                    )}
                     <p className="text-xs text-[var(--text-secondary)]">{stat.label}</p>
                   </div>
                 ))}

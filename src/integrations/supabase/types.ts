@@ -742,6 +742,39 @@ export type Database = {
         }
         Relationships: []
       }
+      sync_log: {
+        Row: {
+          completed_at: string | null
+          error_message: string | null
+          function_name: string
+          id: string
+          metadata: Json | null
+          records_processed: number | null
+          started_at: string | null
+          success: boolean | null
+        }
+        Insert: {
+          completed_at?: string | null
+          error_message?: string | null
+          function_name: string
+          id?: string
+          metadata?: Json | null
+          records_processed?: number | null
+          started_at?: string | null
+          success?: boolean | null
+        }
+        Update: {
+          completed_at?: string | null
+          error_message?: string | null
+          function_name?: string
+          id?: string
+          metadata?: Json | null
+          records_processed?: number | null
+          started_at?: string | null
+          success?: boolean | null
+        }
+        Relationships: []
+      }
       theme_tokens: {
         Row: {
           key: string
@@ -797,6 +830,10 @@ export type Database = {
           p_window_minutes: number
         }
         Returns: boolean
+      }
+      get_sync_counts: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
       }
       has_any_role: {
         Args: {
