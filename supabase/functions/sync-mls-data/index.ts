@@ -8,9 +8,28 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Environment variable helper with fallbacks
+function getEnv(name: string, aliases: string[] = []) {
+  for (const k of [name, ...aliases]) {
+    const v = Deno.env.get(k);
+    if (v && v.trim()) return v;
+  }
+  throw new Error(`Missing env: one of ${[name, ...aliases].join(", ")}`);
+}
+
+const MLS_CLIENT_ID     = getEnv("MLS_CLIENT_ID",     ["REALTYNA_CLIENT_ID","RF_CLIENT_ID"]);
+const MLS_CLIENT_SECRET = getEnv("MLS_CLIENT_SECRET", ["REALTYNA_CLIENT_SECRET","RF_CLIENT_SECRET"]);
+const REALTYNA_API_KEY  = getEnv("REALTYNA_API_KEY",  ["MLS_API_KEY","RF_API_KEY"]);
+
+console.log("[env] using", {
+  MLS_CLIENT_ID: MLS_CLIENT_ID.slice(0,4) + "...",
+  MLS_CLIENT_SECRET: "***",
+  REALTYNA_API_KEY: REALTYNA_API_KEY.slice(0,4) + "..."
+});
+
 async function getToken() {
-  const clientId = Deno.env.get('MLS_CLIENT_ID');
-  const clientSecret = Deno.env.get('MLS_CLIENT_SECRET');
+  const clientId = MLS_CLIENT_ID;
+  const clientSecret = MLS_CLIENT_SECRET;
   
   console.log('auth.attempt', { 
     hasClientId: !!clientId, 
@@ -67,10 +86,9 @@ async function fetchSampleListings(token: string, page = 1, pageSize = 25) {
     'Accept': 'application/json',
   };
   
-  const apiKey = Deno.env.get('MLS_API_KEY');
-  if (apiKey) {
-    headers['x-api-key'] = apiKey;
-    console.log('fetch.using_api_key', { hasApiKey: true });
+  if (REALTYNA_API_KEY) {
+    headers['x-api-key'] = REALTYNA_API_KEY;
+    console.log('fetch.using_api_key', { hasApiKey: true, keyPrefix: REALTYNA_API_KEY.slice(0,4) + "..." });
   }
 
   console.log('fetch.request', { 
@@ -119,7 +137,14 @@ async function fetchSampleListings(token: string, page = 1, pageSize = 25) {
 
   console.log('probe.status', res.status);
   console.log('probe.items_len', items.length);
-  if (items[0]) {
+  console.log('probe.raw_response_structure', {
+    topLevelKeys: typeof json === 'object' ? Object.keys(json) : 'not object',
+    jsonType: typeof json,
+    jsonValue: Array.isArray(json) ? `array[${json.length}]` : typeof json,
+    rawPreview: typeof json === 'object' ? JSON.stringify(json).slice(0, 300) : json
+  });
+  
+  if (items.length > 0) {
     console.log('probe.first_keys', Object.keys(items[0]).slice(0, 25));
     console.log('probe.first_item_sample', {
       ListingKey: items[0].ListingKey,
@@ -130,6 +155,11 @@ async function fetchSampleListings(token: string, page = 1, pageSize = 25) {
       City: items[0].City,
       StandardStatus: items[0].StandardStatus,
       status: items[0].status
+    });
+  } else {
+    console.log('probe.zero_items_debug', {
+      responseStructure: json,
+      possibleDataKeys: typeof json === 'object' ? Object.keys(json) : 'none'
     });
   }
 
