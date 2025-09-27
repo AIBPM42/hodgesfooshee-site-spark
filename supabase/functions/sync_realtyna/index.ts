@@ -2,15 +2,31 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+// Environment variable helper with fallbacks
+function getEnv(name: string, aliases: string[] = []) {
+  for (const k of [name, ...aliases]) {
+    const v = Deno.env.get(k);
+    if (v && v.trim()) return v;
+  }
+  throw new Error(`Missing env: one of ${[name, ...aliases].join(", ")}`);
+}
+
 // ====== ENV ======
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY   = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const sb = createClient(SUPABASE_URL, SERVICE_KEY);
 
-const BASE        = Deno.env.get("RF_BASE")!;            // e.g. https://api.realtyfeed.com
-const API_KEY     = Deno.env.get("REALTY_API_KEY")!;
-const CLIENT_ID   = Deno.env.get("MLS_CLIENT_ID")!;
-const CLIENT_SECRET = Deno.env.get("MLS_CLIENT_SECRET")!;
+const MLS_CLIENT_ID     = getEnv("MLS_CLIENT_ID",     ["REALTYNA_CLIENT_ID","RF_CLIENT_ID"]);
+const MLS_CLIENT_SECRET = getEnv("MLS_CLIENT_SECRET", ["REALTYNA_CLIENT_SECRET","RF_CLIENT_SECRET"]);
+const REALTYNA_API_KEY  = getEnv("REALTYNA_API_KEY",  ["MLS_API_KEY","RF_API_KEY", "REALTY_API_KEY"]);
+
+console.log("[env] using", {
+  MLS_CLIENT_ID: MLS_CLIENT_ID.slice(0,4) + "...",
+  MLS_CLIENT_SECRET: "***",
+  REALTYNA_API_KEY: REALTYNA_API_KEY.slice(0,4) + "..."
+});
+
+const BASE        = Deno.env.get("RF_BASE") ?? "https://api.realtyfeed.com";
 const SCOPE       = Deno.env.get("RF_SCOPE") ?? "api/read";
 
 const TOKEN_URL   = `${BASE}/v1/auth/token`;
@@ -26,18 +42,26 @@ const CORS_HEADERS = {
 
 // ====== Helpers ======
 async function getToken(): Promise<string> {
-  // Use the manage-oauth-tokens function to get a valid token
-  const tokenRes = await sb.functions.invoke('manage-oauth-tokens');
+  const tokenRes = await fetch("https://api.realtyfeed.com/v1/auth/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "client_credentials",
+      client_id: MLS_CLIENT_ID,
+      client_secret: MLS_CLIENT_SECRET,
+      scope: "api/read"
+    })
+  });
   
-  if (tokenRes.error) {
-    throw new Error(`Failed to get OAuth token: ${tokenRes.error.message}`);
+  if (!tokenRes.ok) {
+    const errorText = await tokenRes.text();
+    console.error("Token request failed:", tokenRes.status, errorText);
+    throw new Error(`token ${tokenRes.status}: ${errorText}`);
   }
   
-  if (!tokenRes.data?.access_token) {
-    throw new Error('No access token returned from manage-oauth-tokens');
-  }
-  
-  return tokenRes.data.access_token;
+  const { access_token } = await tokenRes.json();
+  console.log("Token acquired successfully");
+  return access_token;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -114,7 +138,7 @@ serve(async (req) => {
 
     const token = await getToken();
     const headers = {
-      "x-api-key": API_KEY,
+      "x-api-key": REALTYNA_API_KEY,
       "Accept": "application/json",
       "Authorization": `Bearer ${token}`,
       "Prefer": "odata.maxpagesize=200", // hint page size
