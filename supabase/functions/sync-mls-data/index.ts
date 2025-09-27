@@ -79,87 +79,52 @@ async function getToken() {
 }
 
 async function fetchSampleListings(token: string, page = 1, pageSize = 25) {
-  const url = `${REALTY_FEED_API_BASE}/v1/listings?page=${page}&page_size=${pageSize}`;
+  console.log('fetch.attempt', { page, pageSize, tokenPrefix: token.slice(0, 8) + "..." });
   
-  const headers: Record<string,string> = {
-    'Authorization': `Bearer ${token}`,
-    'Accept': 'application/json',
-  };
-  
-  if (REALTYNA_API_KEY) {
-    headers['x-api-key'] = REALTYNA_API_KEY;
-    console.log('fetch.using_api_key', { hasApiKey: true, keyPrefix: REALTYNA_API_KEY.slice(0,4) + "..." });
+  // Use OData (RESO) format as preferred
+  const resp = await fetch("https://api.realtyfeed.com/reso/odata/Property?$top=25&$select=*", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "x-api-key": REALTYNA_API_KEY,
+      Accept: "application/json"
+    }
+  });
+
+  console.log('fetch.response', { 
+    status: resp.status, 
+    statusText: resp.statusText,
+    contentType: resp.headers.get('content-type')
+  });
+
+  if (!resp.ok) {
+    const errorText = await resp.text();
+    console.log('fetch.error_details', { 
+      status: resp.status, 
+      errorText: errorText.slice(0, 500)
+    });
+    throw new Error(`odata ${resp.status}: ${errorText}`);
   }
 
-  console.log('fetch.request', { 
-    url, 
-    method: 'GET',
-    headerKeys: Object.keys(headers),
-    hasAuth: headers.Authorization?.startsWith('Bearer ')
-  });
+  const js = await resp.json();
+  const items = Array.isArray(js?.value) ? js.value : [];
 
-  const res = await fetch(url, { method: 'GET', headers });
-  const raw = await res.text();
-  
-  console.log('fetch.response', {
-    status: res.status,
-    statusText: res.statusText,
-    contentType: res.headers.get('content-type'),
-    responseLength: raw.length,
-    responsePreview: raw.slice(0, 500)
-  });
-  
-  if (!res.ok) throw new Error(`Listings failed: ${res.status} ${raw}`);
-
-  let json: any;
-  try { 
-    json = JSON.parse(raw); 
-  } catch { 
-    throw new Error(`Listings non-JSON: ${raw?.slice(0,300)}`); 
-  }
-
-  console.log('fetch.parsed', {
-    type: typeof json,
-    isArray: Array.isArray(json),
-    topLevelKeys: typeof json === 'object' ? Object.keys(json) : [],
-    hasData: !!json?.data,
-    hasValue: !!json?.value,
-    hasResults: !!json?.results,
-    dataLength: Array.isArray(json?.data) ? json.data.length : 'not array',
-    valueLength: Array.isArray(json?.value) ? json.value.length : 'not array'
-  });
-
-  // v1 commonly uses { data: [...] }; also tolerate OData { value: [...] }
-  const items: any[] = Array.isArray(json?.data) ? json.data :
-                       (Array.isArray(json?.value) ? json.value : 
-                       (Array.isArray(json?.results) ? json.results :
-                       (Array.isArray(json) ? json : [])));
-
-  console.log('probe.status', res.status);
   console.log('probe.items_len', items.length);
-  console.log('probe.raw_response_structure', {
-    topLevelKeys: typeof json === 'object' ? Object.keys(json) : 'not object',
-    jsonType: typeof json,
-    jsonValue: Array.isArray(json) ? `array[${json.length}]` : typeof json,
-    rawPreview: typeof json === 'object' ? JSON.stringify(json).slice(0, 300) : json
-  });
   
   if (items.length > 0) {
     console.log('probe.first_keys', Object.keys(items[0]).slice(0, 25));
     console.log('probe.first_item_sample', {
       ListingKey: items[0].ListingKey,
-      id: items[0].id,
-      listingKey: items[0].listingKey,
       ListPrice: items[0].ListPrice,
-      price: items[0].price,
+      BedroomsTotal: items[0].BedroomsTotal,
+      BathroomsTotalInteger: items[0].BathroomsTotalInteger,
+      LivingArea: items[0].LivingArea,
       City: items[0].City,
-      StandardStatus: items[0].StandardStatus,
-      status: items[0].status
+      StandardStatus: items[0].StandardStatus
     });
   } else {
     console.log('probe.zero_items_debug', {
-      responseStructure: json,
-      possibleDataKeys: typeof json === 'object' ? Object.keys(json) : 'none'
+      responseStructure: js,
+      possibleDataKeys: typeof js === 'object' ? Object.keys(js) : 'none'
     });
   }
 
@@ -195,32 +160,46 @@ function mapToDb(row: any) {
 }
 
 async function upsertSample(items: any[]) {
-  const payload = items.map(mapToDb).filter(r => r.listing_key);
-  
-  console.log('upsert.prepare', {
-    originalCount: items.length,
-    filteredCount: payload.length,
-    samplePayload: payload[0]
-  });
-  
-  if (!payload.length) {
-    console.log('upsert.skip_no_payload');
-    return { inserted: 0 };
+  if (!items?.length) {
+    console.log('upsert.skip', 'no items');
+    return 0;
   }
 
-  const { error } = await supabase
-    .from('mls_listings')
-    .upsert(payload, { onConflict: 'listing_key', ignoreDuplicates: false });
+  console.log('upsert.attempt', { itemCount: items.length });
 
-  const count = payload.length;
+  const rows = items.map((r: any) => ({
+    listing_key: String(r.ListingKey ?? r.id ?? r.listingKey ?? ""),
+    list_price: r.ListPrice ?? r.price ?? null,
+    bedrooms_total: r.BedroomsTotal ?? r.bedrooms ?? null,
+    bathrooms_total_integer: r.BathroomsTotalInteger ?? r.baths ?? null,
+    living_area: r.LivingArea ?? r.sqft ?? null,
+    city: r.City ?? null,
+    standard_status: r.StandardStatus ?? r.status ?? null,
+    modification_timestamp: r.ModificationTimestamp ?? r.updated_at ?? null,
+  })).filter(x => x.listing_key);
+
+  console.log('upsert.mapped', { 
+    originalCount: items.length, 
+    mappedCount: rows.length,
+    sampleKeys: rows.slice(0, 3).map(r => r.listing_key)
+  });
+
+  if (!rows.length) {
+    console.log('upsert.skip', 'no valid rows after mapping');
+    return 0;
+  }
+
+  const { error, count } = await supabase
+    .from("mls_listings")
+    .upsert(rows, { onConflict: "listing_key", count: "exact" });
 
   if (error) {
-    console.error('upsert.error', error);
+    console.log('upsert.error', error);
     throw error;
   }
-  
-  console.log('upsert.count', count ?? payload.length);
-  return { inserted: count ?? payload.length };
+
+  console.log("upsert.count", count ?? rows.length);
+  return count ?? rows.length;
 }
 
 // Main handler: tiny probe only; no filters; cap at 25 for proof
@@ -234,31 +213,24 @@ Deno.serve(async (req) => {
     console.log('sync.start', { timestamp: new Date().toISOString() });
     
     const token = await getToken();
-    const sample = await fetchSampleListings(token, 1, 25);
-    const result = await upsertSample(sample);
+    const listings = await fetchSampleListings(token, 1, 25);
+    const upserted = await upsertSample(listings);
 
-    const response = {
-      success: true,
-      message: 'MLS probe sync completed',
-      fetched: sample.length,
-      inserted: result.inserted,
-      ts: new Date().toISOString()
-    };
-    
-    console.log('sync.success', response);
-
-    return new Response(JSON.stringify(response), { 
+    return new Response(JSON.stringify({
+      ok: true,
+      fetched: listings.length,
+      inserted: upserted
+    }), { 
       headers: { 
-        'content-type': 'application/json',
+        "content-type": "application/json",
         ...corsHeaders
       }
     });
   } catch (e) {
     console.error('sync.error', String(e));
     return new Response(JSON.stringify({ 
-      success: false, 
-      error: String(e),
-      ts: new Date().toISOString()
+      ok: false, 
+      error: String(e)
     }), { 
       status: 500,
       headers: {
