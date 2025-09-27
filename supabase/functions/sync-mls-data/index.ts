@@ -17,9 +17,9 @@ function getEnv(name: string, aliases: string[] = []) {
   throw new Error(`Missing env: one of ${[name, ...aliases].join(", ")}`);
 }
 
-const MLS_CLIENT_ID     = getEnv("MLS_CLIENT_ID",     ["REALTYNA_CLIENT_ID","RF_CLIENT_ID"]);
-const MLS_CLIENT_SECRET = getEnv("MLS_CLIENT_SECRET", ["REALTYNA_CLIENT_SECRET","RF_CLIENT_SECRET"]);
-const REALTYNA_API_KEY  = getEnv("REALTYNA_API_KEY",  ["MLS_API_KEY","RF_API_KEY"]);
+const MLS_CLIENT_ID     = getEnv("MLS_CLIENT_ID",     ["realtyna_client_id"]);
+const MLS_CLIENT_SECRET = getEnv("MLS_CLIENT_SECRET", ["realtyna_client_secret"]);
+const REALTYNA_API_KEY  = getEnv("REALTYNA_API_KEY",  ["realtyna_api_key", "REALTY_API_KEY", "REALTYNA_API_KEY"]);
 
 console.log("[env] using", {
   MLS_CLIENT_ID: MLS_CLIENT_ID.slice(0,4) + "...",
