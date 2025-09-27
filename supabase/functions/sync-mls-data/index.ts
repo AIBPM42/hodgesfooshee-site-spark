@@ -5,7 +5,7 @@ const REALTY_FEED_API_BASE = 'https://api.realtyfeed.com';
 // CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-api-key, x-client-info, content-type',
 };
 
 // Environment variable helper with fallbacks
@@ -48,7 +48,8 @@ async function getToken() {
     body: new URLSearchParams({
       grant_type: 'client_credentials',
       client_id: clientId,
-      client_secret: clientSecret
+      client_secret: clientSecret,
+      scope: 'api/read'
     }),
   });
   
@@ -82,7 +83,7 @@ async function fetchSampleListings(token: string, page = 1, pageSize = 25) {
   console.log('fetch.attempt', { page, pageSize, tokenPrefix: token.slice(0, 8) + "..." });
   
   // Use OData (RESO) format as preferred
-  const resp = await fetch("https://api.realtyfeed.com/reso/odata/Property?$top=25&$select=*", {
+  const resp = await fetch("https://api.realtyfeed.com/reso/odata/Property?$top=25&$select=*&$orderby=ModificationTimestamp desc", {
     headers: {
       Authorization: `Bearer ${token}`,
       "x-api-key": REALTYNA_API_KEY,
