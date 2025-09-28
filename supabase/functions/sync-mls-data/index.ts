@@ -5,7 +5,7 @@ const REALTY_FEED_API_BASE = 'https://api.realtyfeed.com';
 // CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-api-key, x-client-info, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-api-key, x-client-info, content-type, x-run-source, x-user-id',
 };
 
 // Environment variable helper with fallbacks
@@ -137,6 +137,41 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 );
 
+// Sync logging helpers
+async function beginRun(functionName: string, runSource = 'manual', triggeredBy?: string) {
+  const { data, error } = await supabase
+    .from('sync_log')
+    .insert({
+      function_name: functionName,
+      run_source: runSource,
+      triggered_by: triggeredBy,
+      started_at: new Date().toISOString()
+    })
+    .select('id')
+    .single();
+  
+  if (error) console.error('beginRun error:', error);
+  return data?.id;
+}
+
+async function finishRun(runId: string, success: boolean, fetched = 0, inserted = 0, message?: string) {
+  if (!runId) return;
+  
+  const { error } = await supabase
+    .from('sync_log')
+    .update({
+      completed_at: new Date().toISOString(),
+      success,
+      fetched,
+      inserted,
+      records_processed: inserted,
+      message: message?.slice(0, 512) // Truncate to 512 chars
+    })
+    .eq('id', runId);
+    
+  if (error) console.error('finishRun error:', error);
+}
+
 // Adjust mapping once we see probe.first_keys in logs
 function mapToDb(row: any) {
   const mapped = {
@@ -210,12 +245,26 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Read optional headers for logging
+  const runSource = req.headers.get('x-run-source') || 'manual';
+  const triggeredBy = req.headers.get('x-user-id') || undefined;
+  
+  let runId: string | undefined;
+  
   try {
-    console.log('sync.start', { timestamp: new Date().toISOString() });
+    console.log('sync.start', { timestamp: new Date().toISOString(), runSource, triggeredBy });
+    
+    // Begin logging
+    runId = await beginRun('sync-mls-data', runSource, triggeredBy);
     
     const token = await getToken();
     const listings = await fetchSampleListings(token, 1, 25);
     const upserted = await upsertSample(listings);
+
+    // Log success
+    if (runId) {
+      await finishRun(runId, true, listings.length, upserted, 'Sync completed successfully');
+    }
 
     return new Response(JSON.stringify({
       ok: true,
@@ -228,10 +277,17 @@ Deno.serve(async (req) => {
       }
     });
   } catch (e) {
-    console.error('sync.error', String(e));
+    const errorMessage = String(e);
+    console.error('sync.error', errorMessage);
+    
+    // Log failure
+    if (runId) {
+      await finishRun(runId, false, 0, 0, errorMessage);
+    }
+    
     return new Response(JSON.stringify({ 
       ok: false, 
-      error: String(e)
+      error: errorMessage
     }), { 
       status: 500,
       headers: {

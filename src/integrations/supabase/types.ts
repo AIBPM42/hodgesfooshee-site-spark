@@ -760,33 +760,45 @@ export type Database = {
       sync_log: {
         Row: {
           completed_at: string | null
-          error_message: string | null
+          fetched: number | null
           function_name: string
           id: string
+          inserted: number | null
+          message: string | null
           metadata: Json | null
           records_processed: number | null
+          run_source: string | null
           started_at: string | null
           success: boolean | null
+          triggered_by: string | null
         }
         Insert: {
           completed_at?: string | null
-          error_message?: string | null
+          fetched?: number | null
           function_name: string
           id?: string
+          inserted?: number | null
+          message?: string | null
           metadata?: Json | null
           records_processed?: number | null
+          run_source?: string | null
           started_at?: string | null
           success?: boolean | null
+          triggered_by?: string | null
         }
         Update: {
           completed_at?: string | null
-          error_message?: string | null
+          fetched?: number | null
           function_name?: string
           id?: string
+          inserted?: number | null
+          message?: string | null
           metadata?: Json | null
           records_processed?: number | null
+          run_source?: string | null
           started_at?: string | null
           success?: boolean | null
+          triggered_by?: string | null
         }
         Relationships: []
       }

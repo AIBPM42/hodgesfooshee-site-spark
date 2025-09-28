@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { 
   Database, 
   RefreshCw, 
@@ -17,44 +17,108 @@ import {
   Users,
   MapPin,
   Calendar,
-  Loader2
+  Loader2,
+  History,
+  ExternalLink
 } from 'lucide-react';
 
 export default function MLSModule() {
   const [loading, setLoading] = useState<string | null>(null);
+  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Fetch real-time MLS stats
+  const { data: mlsStats } = useQuery({
+    queryKey: ['mls-stats'],
+    queryFn: async () => {
+      const [listingsResult, syncLogResult] = await Promise.all([
+        supabase
+          .from('mls_listings')
+          .select('*', { count: 'exact', head: true })
+          .in('standard_status', ['Active', 'Coming Soon']),
+        supabase
+          .from('sync_log')
+          .select('*')
+          .eq('function_name', 'sync-mls-data')
+          .eq('success', true)
+          .order('started_at', { ascending: false })
+          .limit(1)
+      ]);
+
+      return {
+        activeListings: listingsResult.count || 0,
+        lastSync: syncLogResult.data?.[0]
+      };
+    },
+    refetchInterval: 30000 // Refresh every 30 seconds
+  });
+
+  // Fetch sync history
+  const { data: syncHistory } = useQuery({
+    queryKey: ['sync-history'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('sync_log')
+        .select('*')
+        .eq('function_name', 'sync-mls-data')
+        .order('started_at', { ascending: false })
+        .limit(50);
+      return data || [];
+    },
+    refetchInterval: 10000 // Refresh every 10 seconds
+  });
+
   async function runSync(kind: 'listings' | 'members' | 'offices' | 'openhouses') {
+    if (kind !== 'listings') {
+      toast({
+        title: "Coming Soon",
+        description: `${kind} sync is not yet available`,
+        variant: "default",
+      });
+      return;
+    }
+
+    // Prevent rapid clicks
+    if (lastSyncTime && Date.now() - lastSyncTime.getTime() < 15000) {
+      toast({
+        title: "Please wait",
+        description: "Please wait 15 seconds between sync requests",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(kind);
+    setLastSyncTime(new Date());
+    
     try {
-      // Step 1: Refresh OAuth token
-      await supabase.functions.invoke('manage-oauth-tokens', { method: 'POST' });
+      const { data: user } = await supabase.auth.getUser();
       
-      // Step 2: Run specific sync function
-      const fn = kind === 'listings' ? 'sync_realtyna'
-                : kind === 'members' ? 'sync_members'  
-                : kind === 'offices' ? 'sync_offices'
-                : 'sync_openhouses';
-      
-      const { data, error } = await supabase.functions.invoke(fn, {
+      const { data, error } = await supabase.functions.invoke('sync-mls-data', {
         method: 'POST',
-        body: { top: 25, force: true }
+        headers: {
+          'x-run-source': 'manual',
+          'x-user-id': user.user?.id || ''
+        },
+        body: {}
       });
       
       if (error) throw error;
+      
       toast({
         title: "Sync Complete",
-        description: `Synced ${kind}: ${data?.total ?? data?.items_processed ?? 'OK'} items`,
+        description: `Fetched ${data?.fetched || 0}, inserted ${data?.inserted || 0}`,
       });
       
-      // Refresh dashboard stats
-      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      // Refresh data
+      queryClient.invalidateQueries({ queryKey: ['mls-stats'] });
+      queryClient.invalidateQueries({ queryKey: ['sync-history'] });
       
     } catch (e: any) {
       toast({
         title: "Sync Failed",
-        description: `Sync ${kind} failed: ${e.message ?? e}`,
+        description: `Sync failed: ${e.message ?? e}`,
         variant: "destructive",
       });
     } finally {
@@ -107,11 +171,27 @@ export default function MLSModule() {
 
       {/* Data Sync Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-[var(--text-secondary)] mb-1">Active Listings</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">
+                  {mlsStats?.activeListings || 0}
+                </p>
+                <p className="text-sm text-green-400 font-medium">
+                  {mlsStats?.lastSync ? `Last sync: ${new Date(mlsStats.lastSync.started_at).toLocaleTimeString()}` : 'No sync yet'}
+                </p>
+              </div>
+              <TrendingUp className="h-8 w-8 text-green-400" />
+            </div>
+          </CardContent>
+        </Card>
+        
         {[
-          { title: 'Active Listings', value: '2,847', icon: TrendingUp, change: '+23 today', color: 'text-green-400' },
-          { title: 'Offices', value: '156', icon: Building, change: '+2 this week', color: 'text-blue-400' },
-          { title: 'Members', value: '1,234', icon: Users, change: '+12 this month', color: 'text-purple-400' },
-          { title: 'Open Houses', value: '89', icon: Calendar, change: '+15 this weekend', color: 'text-orange-400' }
+          { title: 'Offices', value: '—', icon: Building, change: 'Coming soon', color: 'text-blue-400' },
+          { title: 'Members', value: '—', icon: Users, change: 'Coming soon', color: 'text-purple-400' },
+          { title: 'Open Houses', value: '—', icon: Calendar, change: 'Coming soon', color: 'text-orange-400' }
         ].map((metric) => (
           <Card key={metric.title} className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
             <CardContent className="p-6">
@@ -153,38 +233,29 @@ export default function MLSModule() {
             <Button 
               className="btn-accent"
               onClick={() => runSync('offices')}
-              disabled={loading === 'offices'}
+              disabled={true}
+              title="Coming soon"
             >
-              {loading === 'offices' ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Building className="h-4 w-4 mr-2" />
-              )}
-              {loading === 'offices' ? 'Syncing...' : 'Sync Offices'}
+              <Building className="h-4 w-4 mr-2" />
+              Sync Offices
             </Button>
             <Button 
               className="btn-accent"
               onClick={() => runSync('members')}
-              disabled={loading === 'members'}
+              disabled={true}
+              title="Coming soon"
             >
-              {loading === 'members' ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Users className="h-4 w-4 mr-2" />
-              )}
-              {loading === 'members' ? 'Syncing...' : 'Sync Members'}
+              <Users className="h-4 w-4 mr-2" />
+              Sync Members
             </Button>
             <Button 
               className="btn-accent"
               onClick={() => runSync('openhouses')}
-              disabled={loading === 'openhouses'}
+              disabled={true}
+              title="Coming soon"
             >
-              {loading === 'openhouses' ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Calendar className="h-4 w-4 mr-2" />
-              )}
-              {loading === 'openhouses' ? 'Syncing...' : 'Sync Open Houses'}
+              <Calendar className="h-4 w-4 mr-2" />
+              Sync Open Houses
             </Button>
           </div>
           
@@ -201,45 +272,78 @@ export default function MLSModule() {
         </CardContent>
       </Card>
 
-      {/* Recent Sync Activity */}
+      {/* Sync History */}
       <Card className="bg-[var(--surface)] border border-[var(--border-subtle)] rounded-xl">
         <CardHeader>
-          <CardTitle className="text-[var(--text-primary)]">Recent Sync Activity</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-[var(--text-primary)]">
+            <History className="h-5 w-5" />
+            Sync History
+          </CardTitle>
           <CardDescription className="text-[var(--text-secondary)]">
-            Latest synchronization results and system logs
+            Recent MLS data synchronization activity
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {[
-              { time: '2 minutes ago', action: 'Listings sync completed', status: 'success', details: '2,847 records processed, 23 new, 15 updated' },
-              { time: '17 minutes ago', action: 'Members sync completed', status: 'success', details: '1,234 members processed, 2 new profiles added' },
-              { time: '32 minutes ago', action: 'Offices sync completed', status: 'success', details: '156 offices processed, 1 status update' },
-              { time: '47 minutes ago', action: 'Open Houses sync completed', status: 'success', details: '89 open houses processed, 12 new events' },
-              { time: '1 hour ago', action: 'ZIP Codes sync completed', status: 'warning', details: '3,421 postal codes processed, 5 validation warnings' }
-            ].map((activity, index) => (
-              <div key={index} className="flex items-start gap-4 py-4 border-b border-[var(--border-subtle)] last:border-0">
-                  <div className={`p-2 rounded-full ${
-                    activity.status === 'success' ? 'bg-green-500/20' : 
-                    activity.status === 'warning' ? 'bg-yellow-500/20' : 'bg-red-500/20'
-                  }`}>
-                    {activity.status === 'success' ? (
-                      <CheckCircle className="h-4 w-4 text-green-400" />
-                    ) : activity.status === 'warning' ? (
-                      <AlertCircle className="h-4 w-4 text-yellow-400" />
-                    ) : (
-                      <AlertCircle className="h-4 w-4 text-red-400" />
-                    )}
+            {syncHistory && syncHistory.length > 0 ? (
+              syncHistory.map((run) => {
+                const startTime = new Date(run.started_at);
+                const endTime = run.completed_at ? new Date(run.completed_at) : null;
+                const duration = endTime ? Math.round((endTime.getTime() - startTime.getTime()) / 1000) : null;
+                
+                return (
+                  <div key={run.id} className="flex items-start gap-4 py-4 border-b border-[var(--border-subtle)] last:border-0">
+                    <div className={`p-2 rounded-full ${
+                      run.success ? 'bg-green-500/20' : 'bg-red-500/20'
+                    }`}>
+                      {run.success ? (
+                        <CheckCircle className="h-4 w-4 text-green-400" />
+                      ) : (
+                        <AlertCircle className="h-4 w-4 text-red-400" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium text-[var(--text-primary)]">
+                          {run.success ? 'Sync completed' : 'Sync failed'}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs text-[var(--text-secondary)]">
+                            {startTime.toLocaleString()}
+                          </p>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0"
+                            asChild
+                          >
+                            <a
+                              href={`https://supabase.com/dashboard/project/xhqwmtzawqfffepcqxwf/functions/sync-mls-data/logs`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="View logs in Supabase"
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                          </Button>
+                        </div>
+                      </div>
+                      <p className="text-sm text-[var(--text-secondary)] mt-1">
+                        {run.success ? (
+                          `Fetched: ${run.fetched || 0}, Inserted: ${run.inserted || 0}${duration ? `, Duration: ${duration}s` : ''} (${run.run_source})`
+                        ) : (
+                          run.message || 'Unknown error'
+                        )}
+                      </p>
+                    </div>
                   </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium text-[var(--text-primary)]">{activity.action}</p>
-                    <p className="text-xs text-[var(--text-secondary)]">{activity.time}</p>
-                  </div>
-                  <p className="text-sm text-[var(--text-secondary)] mt-1">{activity.details}</p>
-                </div>
-              </div>
-            ))}
+                );
+              })
+            ) : (
+              <p className="text-center text-[var(--text-secondary)] py-8">
+                No sync history yet. Run your first sync to see results here.
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
