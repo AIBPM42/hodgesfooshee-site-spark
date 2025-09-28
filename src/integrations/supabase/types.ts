@@ -14,6 +14,65 @@ export type Database = {
   }
   public: {
     Tables: {
+      agents: {
+        Row: {
+          brokerage_id: string
+          created_at: string | null
+          email: string | null
+          first_name: string | null
+          hire_date: string | null
+          id: string
+          last_name: string | null
+          license_number: string | null
+          office_id: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["agent_role"]
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          brokerage_id: string
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          hire_date?: string | null
+          id?: string
+          last_name?: string | null
+          license_number?: string | null
+          office_id?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["agent_role"]
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          brokerage_id?: string
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          hire_date?: string | null
+          id?: string
+          last_name?: string | null
+          license_number?: string | null
+          office_id?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["agent_role"]
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agents_brokerage_id_fkey"
+            columns: ["brokerage_id"]
+            isOneToOne: false
+            referencedRelation: "brokerages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_usage_logs: {
         Row: {
           created_at: string
@@ -119,6 +178,54 @@ export type Database = {
           id?: string
           name?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      brokerages: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          license_number: string | null
+          name: string
+          phone: string | null
+          state: string | null
+          status: string | null
+          updated_at: string | null
+          website: string | null
+          zip: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          license_number?: string | null
+          name: string
+          phone?: string | null
+          state?: string | null
+          status?: string | null
+          updated_at?: string | null
+          website?: string | null
+          zip?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          license_number?: string | null
+          name?: string
+          phone?: string | null
+          state?: string | null
+          status?: string | null
+          updated_at?: string | null
+          website?: string | null
+          zip?: string | null
         }
         Relationships: []
       }
@@ -282,14 +389,21 @@ export type Database = {
         Row: {
           bathrooms_total_integer: number | null
           bedrooms_total: number | null
+          brokerage_id: string | null
           city: string | null
           created_at: string | null
+          days_on_market: number | null
+          first_seen_at: string | null
           id: number
           list_price: number | null
+          listing_agent_key: string | null
           listing_id: string | null
           listing_key: string
+          listing_office_key: string | null
           living_area: number | null
           modification_timestamp: string | null
+          original_list_price: number | null
+          price_reduction_count: number | null
           rf_modification_timestamp: string | null
           standard_status: string | null
           updated_at: string | null
@@ -297,14 +411,21 @@ export type Database = {
         Insert: {
           bathrooms_total_integer?: number | null
           bedrooms_total?: number | null
+          brokerage_id?: string | null
           city?: string | null
           created_at?: string | null
+          days_on_market?: number | null
+          first_seen_at?: string | null
           id?: number
           list_price?: number | null
+          listing_agent_key?: string | null
           listing_id?: string | null
           listing_key: string
+          listing_office_key?: string | null
           living_area?: number | null
           modification_timestamp?: string | null
+          original_list_price?: number | null
+          price_reduction_count?: number | null
           rf_modification_timestamp?: string | null
           standard_status?: string | null
           updated_at?: string | null
@@ -312,19 +433,34 @@ export type Database = {
         Update: {
           bathrooms_total_integer?: number | null
           bedrooms_total?: number | null
+          brokerage_id?: string | null
           city?: string | null
           created_at?: string | null
+          days_on_market?: number | null
+          first_seen_at?: string | null
           id?: number
           list_price?: number | null
+          listing_agent_key?: string | null
           listing_id?: string | null
           listing_key?: string
+          listing_office_key?: string | null
           living_area?: number | null
           modification_timestamp?: string | null
+          original_list_price?: number | null
+          price_reduction_count?: number | null
           rf_modification_timestamp?: string | null
           standard_status?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "mls_listings_brokerage_id_fkey"
+            columns: ["brokerage_id"]
+            isOneToOne: false
+            referencedRelation: "brokerages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mls_members: {
         Row: {
@@ -918,6 +1054,16 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      get_user_agent_context: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          agent_id: string
+          brokerage_id: string
+          first_name: string
+          last_name: string
+          role: Database["public"]["Enums"]["agent_role"]
+        }[]
+      }
       has_any_role: {
         Args: {
           _roles: Database["public"]["Enums"]["app_role"][]
@@ -985,6 +1131,7 @@ export type Database = {
       }
     }
     Enums: {
+      agent_role: "broker" | "agent" | "staff" | "admin"
       app_role: "admin" | "agent" | "viewer"
     }
     CompositeTypes: {
@@ -1113,6 +1260,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      agent_role: ["broker", "agent", "staff", "admin"],
       app_role: ["admin", "agent", "viewer"],
     },
   },
