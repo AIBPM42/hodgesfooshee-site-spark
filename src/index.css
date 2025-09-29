@@ -235,6 +235,11 @@ body, .copy {
   .btn-ghost:hover {
     background: rgba(255, 255, 255, 0.10);
   }
+  
+  /* Page Surface */
+  .page-surface {
+    background: linear-gradient(180deg, var(--hf-charcoal-800) 0%, var(--hf-charcoal-900) 60%, var(--hf-charcoal-800) 100%);
+  }
 }
 
 /* Premium Glass Effects for Admin Dashboard */
