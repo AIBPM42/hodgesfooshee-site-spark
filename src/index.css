@@ -13,11 +13,23 @@
   --brand-400: 79 195 247;       /* #4fc3f7 - Light blue */
   --luxury-gold: 255 193 7;      /* #ffc107 - Gold accent */
   
+  /* === H&F Brand Tokens === */
+  --hf-orange: 255 106 42;       /* #FF6A2A - Primary CTA */
+  --hf-green: 111 191 75;        /* #6FBF4B - Success */
+  --hf-purple: 108 89 180;       /* #6C59B4 - Info */
+  --hf-red: 200 63 63;           /* #C83F3F - Danger */
+  --hf-charcoal-900: 37 39 41;   /* #252729 - Darkest */
+  --hf-charcoal-800: 43 45 48;   /* #2B2D30 - Dark */
+  --hf-text: 241 245 249;        /* #F1F5F9 - Text */
+  
   /* Glass Surfaces */
   --glass-primary: rgba(255, 255, 255, 0.1);
   --glass-secondary: rgba(255, 255, 255, 0.05);
   --glass-card: rgba(255, 255, 255, 0.12);
   --glass-nav: rgba(0, 0, 0, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.10);
+  --glass-stroke: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   
   /* Backgrounds */
   --bg-gradient: radial-gradient(ellipse at top, #0f0f23 0%, #000000 100%);
@@ -56,6 +68,12 @@
   --input: 240 6% 10%;               /* Input background */
   --ring: 199 89% 48%;               /* Focus ring */
   --radius: 12px;                    /* Border radius */
+  
+  /* App State Colors */
+  --hf-accent: var(--hf-orange);
+  --hf-success: var(--hf-green);
+  --hf-info: var(--hf-purple);
+  --hf-danger: var(--hf-red);
 }
 
 /* Premium Glassmorphism Base Styles */
@@ -154,6 +172,68 @@ body, .copy {
   
   .stats-glow {
     box-shadow: 0 0 30px rgba(17, 160, 217, 0.2);
+  }
+  
+  /* H&F Glass Utilities */
+  .nav-glass {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-stroke);
+    box-shadow: var(--glass-shadow);
+    border-radius: 9999px;
+  }
+  
+  .search-glass {
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-stroke);
+    box-shadow: var(--glass-shadow);
+    border-radius: 24px;
+  }
+  
+  .card-glass {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--glass-stroke);
+    border-radius: 18px;
+    box-shadow: var(--glass-shadow);
+  }
+  
+  /* CTA Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    height: 44px;
+    border-radius: 9999px;
+    font-weight: 600;
+    background: linear-gradient(180deg, rgb(var(--hf-orange)), #E45520);
+    color: #fff;
+    transition: filter 0.2s ease;
+  }
+  
+  .btn:hover {
+    filter: brightness(1.06);
+  }
+  
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    height: 44px;
+    border-radius: 9999px;
+    font-weight: 600;
+    border: 1px solid var(--glass-stroke);
+    background: rgba(255, 255, 255, 0.06);
+    color: #eee;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.10);
   }
 }
 

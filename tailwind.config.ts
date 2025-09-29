@@ -66,6 +66,16 @@ export default {
           700: "hsl(var(--brand-700))",
         },
         'luxury-gold': "hsl(var(--luxury-gold))",
+        // H&F Brand Colors
+        'hf-orange': "rgb(var(--hf-orange))",
+        'hf-green': "rgb(var(--hf-green))",
+        'hf-purple': "rgb(var(--hf-purple))",
+        'hf-red': "rgb(var(--hf-red))",
+        'hf-charcoal': {
+          800: "rgb(var(--hf-charcoal-800))",
+          900: "rgb(var(--hf-charcoal-900))",
+        },
+        'hf-text': "rgb(var(--hf-text))",
         // Glass Utilities
         glass: {
           primary: "var(--glass-primary)",
