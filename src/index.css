@@ -4,75 +4,71 @@
 @tailwind components;
 @tailwind utilities;
 
-/* === Hodges Backend — Ops Console (lighter graphite) === */
+/* === Hodges Glassmorphism Premium Design === */
 :root {
-  /* Surfaces */
-  --bg:            #3A3A3A;   /* app background (light graphite) */
-  --sidebar:       #2E2E2E;   /* left nav (charcoal gray) */
-  --surface:       #4A4A4A;   /* cards, modules, tiles */
-  --bg-soft:       #3F3F3F;   /* chart canvases / soft panels */
-  --border-subtle: #5A5A5A;   /* card borders / dividers */
-
-  /* Text */
-  --text-primary:   #FFFFFF;
-  --text-secondary: #D6D6D6;
-  --text-muted:     #B1B1B1;
-
-  /* Brand Accents (Hodges palette) */
-  --accent-orange:  #FF5A2B;
-  --accent-green:   #82BD3A;
-  --accent-purple:  #8E35B9;
-  --accent-red:     #E23B33;
-  --accent-gold:    #D4A828;
-
-  /* State Pills */
-  --state-success:  #1DB954;
-  --state-info:     #2D9CDB;
-  --state-warning:  #F2C94C;
-  --state-danger:   #EB5757;
-
-  /* Chart Series (do not reorder) */
-  --series-a: var(--accent-orange);
-  --series-b: var(--accent-green);
-  --series-c: var(--accent-purple);
-  --series-d: var(--accent-red);
-  --series-e: var(--accent-gold);
-
-  /* Shadcn variables mapped to Hodges spec */
-  --background: 58 58 58;        /* #3A3A3A */
-  --foreground: 255 255 255;     /* #FFFFFF */
-  --card: 74 74 74;              /* #4A4A4A */
-  --card-foreground: 255 255 255;
-  --popover: 74 74 74;
-  --popover-foreground: 255 255 255;
-  --primary: 255 90 43;          /* #FF5A2B orange */
-  --primary-foreground: 255 255 255;
-  --secondary: 46 46 46;         /* #2E2E2E */
-  --secondary-foreground: 214 214 214;  /* #D6D6D6 */
-  --muted: 46 46 46;
-  --muted-foreground: 177 177 177;  /* #B1B1B1 */
-  --accent: 255 90 43;           /* Orange accent */
-  --accent-foreground: 255 255 255;
-  --destructive: 226 59 51;      /* #E23B33 */
-  --destructive-foreground: 255 255 255;
-  --border: 90 90 90;            /* #5A5A5A */
-  --input: 46 46 46;
-  --ring: 255 90 43;
-  --radius: 0.5rem;
+  /* Premium Glassmorphism Palette */
+  --brand-600: 17 160 217;       /* #11a0d9 - Primary brand blue */
+  --brand-700: 10 128 177;       /* #0a80b1 - Darker blue */
+  --brand-500: 41 182 246;       /* #29b6f6 - Lighter blue */
+  --brand-400: 79 195 247;       /* #4fc3f7 - Light blue */
+  --luxury-gold: 255 193 7;      /* #ffc107 - Gold accent */
+  
+  /* Glass Surfaces */
+  --glass-primary: rgba(255, 255, 255, 0.1);
+  --glass-secondary: rgba(255, 255, 255, 0.05);
+  --glass-card: rgba(255, 255, 255, 0.12);
+  --glass-nav: rgba(0, 0, 0, 0.3);
+  
+  /* Backgrounds */
+  --bg-gradient: radial-gradient(ellipse at top, #0f0f23 0%, #000000 100%);
+  --bg-secondary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  --surface-glass: rgba(255, 255, 255, 0.08);
+  
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --text-accent: #29b6f6;
+  
+  /* Glass Effects */
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-glow: 0 8px 32px rgba(17, 160, 217, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  
+  /* Shadcn UI Variables (HSL format) */
+  --background: 240 10% 4%;          /* Deep dark blue */
+  --foreground: 0 0% 100%;           /* White text */
+  --card: 240 6% 10%;                /* Dark card background */
+  --card-foreground: 0 0% 100%;      /* White card text */
+  --popover: 240 6% 8%;              /* Popover background */
+  --popover-foreground: 0 0% 100%;   /* Popover text */
+  --primary: 199 89% 48%;            /* Brand blue #11a0d9 */
+  --primary-foreground: 0 0% 100%;   /* White on primary */
+  --secondary: 240 6% 10%;           /* Secondary background */
+  --secondary-foreground: 0 0% 90%;  /* Secondary text */
+  --muted: 240 6% 10%;               /* Muted background */
+  --muted-foreground: 0 0% 60%;      /* Muted text */
+  --accent: 199 89% 48%;             /* Accent color */
+  --accent-foreground: 0 0% 100%;    /* Accent text */
+  --destructive: 0 62% 30%;          /* Error red */
+  --destructive-foreground: 0 0% 100%; /* Error text */
+  --border: 240 6% 20%;              /* Border color */
+  --input: 240 6% 10%;               /* Input background */
+  --ring: 199 89% 48%;               /* Focus ring */
+  --radius: 12px;                    /* Border radius */
 }
 
-/* FORCE Light Graphite Background - Cache Bust: 2024-09-26-v2 */
+/* Premium Glassmorphism Base Styles */
 html, body { 
-  background: #3A3A3A !important; 
-  background: var(--bg) !important; 
+  background: var(--bg-gradient) !important; 
   color: var(--text-primary) !important; 
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* Dashboard Root Container Override */
-#root, [data-app="dashboard"], .dashboard-root {
-  background: #3A3A3A !important;
-  background: var(--bg) !important;
+/* Root Container with Glass Background */
+#root {
+  background: var(--bg-gradient) !important;
   min-height: 100vh !important;
 }
 
@@ -99,81 +95,110 @@ body, .copy {
   font-weight: 400; 
 }
 
-/* Kill unintended glows & mismatched borders */
-.card, .panel, .tile {
-  box-shadow: none !important;
-  background: var(--surface) !important;
-  border: 1px solid var(--border-subtle) !important;
-}
-.btn, .button, [role="button"] {
-  box-shadow: none !important;
-}
-
-/* FINAL Spec Implementation */
+/* Premium Glassmorphism Components */
 @layer utilities {
-  .page-wrap { background: var(--bg); color: var(--text-primary); }
-  .sidebar { background: var(--sidebar); }
-  .card { 
-    background: var(--surface); 
-    border: 1px solid var(--border-subtle); 
-    border-radius: 14px; 
-  }
-  .card .card-header { padding: 16px 18px; }
-  .card .card-body { padding: 18px; }
-  
-  /* Button CTA pattern */
-  .btn-accent {
-    color: var(--text-primary);
-    border: 1px solid var(--accent-orange);
-    background: color-mix(in srgb, var(--accent-orange) 12%, transparent);
-  }
-  .btn-accent:hover {
-    background: color-mix(in srgb, var(--accent-orange) 18%, transparent);
+  .bg-glass-gradient {
+    background: var(--bg-gradient);
   }
   
-  /* Status pills (no glow, solid) */
-  .badge--success { background: var(--accent-green); color: #0E2B0E; }
-  .badge--beta { background: var(--accent-purple); color: #220A2B; }
-  .badge--warn { background: var(--accent-gold); color: #2B210A; }
-  .badge--info { background: #2D9CDB; color: #07131B; }
+  .glass-card {
+    background: var(--glass-card);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+  }
   
-  /* Chart containers */
-  .chart-surface {
-    background: var(--bg-soft);
-    border: 1px solid var(--border-subtle);
-    border-radius: 14px;
+  .glass-nav {
+    background: var(--glass-nav);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--glass-border);
+  }
+  
+  .glass-button {
+    background: var(--glass-primary);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+  }
+  
+  .glass-button:hover {
+    background: var(--glass-card);
+    box-shadow: var(--glass-glow);
+    transform: translateY(-2px);
+  }
+  
+  .text-gradient-luxury {
+    background: linear-gradient(135deg, #29b6f6, #ffc107);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .gradient-hero {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(17, 160, 217, 0.3));
+  }
+  
+  .btn-premium {
+    background: linear-gradient(135deg, hsl(var(--brand-600)), hsl(var(--brand-700)));
+    color: white;
+    border: none;
+    box-shadow: 0 4px 20px rgba(17, 160, 217, 0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(17, 160, 217, 0.4);
+  }
+  
+  .stats-glow {
+    box-shadow: 0 0 30px rgba(17, 160, 217, 0.2);
   }
 }
 
-/* Hard overrides to keep the ops-console flat/premium */
-.card, .panel, .tile, .stat, .widget, .module,
-[class*="Card"], [data-role="card"] {
-  background: var(--surface) !important;
-  border: 1px solid var(--border-subtle) !important;
-  box-shadow: none !important;
-  outline: 0 !important;
+/* Premium Glass Effects for Admin Dashboard */
+.dashboard .card, .admin .card, [data-app="admin"] .card {
+  background: var(--glass-card) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
 }
 
-/* Remove rings/shadows globally inside admin */
-#root, .dashboard, .admin, [data-app="admin"] * {
-  --tw-ring-shadow: 0 0 #0000 !important;
-  --tw-ring-offset-shadow: 0 0 #0000 !important;
-  --tw-shadow: 0 0 #0000 !important;
+/* Premium Button Styling */
+.btn-accent, .glass-button {
+  background: var(--glass-primary) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--text-primary) !important;
+  transition: all 0.3s ease !important;
 }
 
-/* Kill any utility rings/shadows that slip in */
-.ring, [class*="ring-"], [class*="shadow-"] { box-shadow: none !important; }
-
-/* Chart trays */
-.chart-surface, [data-role="chart-surface"] {
-  background: var(--bg-soft) !important;
-  border: 1px solid var(--border-subtle) !important;
-  box-shadow: none !important;
+.btn-accent:hover, .glass-button:hover {
+  background: var(--glass-card) !important;
+  box-shadow: var(--glass-glow) !important;
+  transform: translateY(-2px) !important;
 }
 
-/* Badges: solid, no glow */
-.badge--success{ background: var(--accent-green) !important; color:#0E2B0E !important; }
-.badge--beta   { background: var(--accent-purple) !important; color:#220A2B !important; }
-.badge--warn   { background: var(--accent-gold) !important;   color:#2B210A !important; }
-.badge--info   { background: #2D9CDB !important;              color:#07131B !important; }
+/* Premium Status Badges */
+.badge--success { 
+  background: linear-gradient(135deg, #1DB954, #16a34a) !important; 
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.3) !important;
+}
+.badge--beta { 
+  background: linear-gradient(135deg, #8E35B9, #a855f7) !important; 
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(142, 53, 185, 0.3) !important;
+}
+.badge--warn { 
+  background: linear-gradient(135deg, #D4A828, #f59e0b) !important; 
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(212, 168, 40, 0.3) !important;
+}
+.badge--info { 
+  background: linear-gradient(135deg, #2D9CDB, #3b82f6) !important; 
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(45, 156, 219, 0.3) !important;
+}
 

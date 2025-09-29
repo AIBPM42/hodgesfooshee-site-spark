@@ -49,11 +49,6 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
-          orange: 'var(--accent-orange)',
-          green: 'var(--accent-green)',
-          purple: 'var(--accent-purple)',
-          red: 'var(--accent-red)',
-          gold: 'var(--accent-gold)',
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -63,25 +58,45 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        bg: 'var(--bg)',
-        sidebar: 'var(--sidebar)',
-        surface: 'var(--surface)',
-        bgsoft: 'var(--bg-soft)', 
-        borderSubtle: 'var(--border-subtle)',
+        // Premium Brand Colors
+        brand: {
+          400: "hsl(var(--brand-400))",
+          500: "hsl(var(--brand-500))",
+          600: "hsl(var(--brand-600))",
+          700: "hsl(var(--brand-700))",
+        },
+        'luxury-gold': "hsl(var(--luxury-gold))",
+        // Glass Utilities
+        glass: {
+          primary: "var(--glass-primary)",
+          secondary: "var(--glass-secondary)",
+          card: "var(--glass-card)",
+          nav: "var(--glass-nav)",
+          border: "var(--glass-border)",
+        },
+        // Text Colors
         text: {
-          primary: 'var(--text-primary)',
-          secondary: 'var(--text-secondary)',
-          muted: 'var(--text-muted)',
+          primary: "var(--text-primary)",
+          secondary: "var(--text-secondary)",
+          muted: "var(--text-muted)",
+          accent: "var(--text-accent)",
         },
-        state: {
-          success: 'var(--state-success)',
-          info: 'var(--state-info)',
-          warning: 'var(--state-warning)',
-          danger: 'var(--state-danger)',
-        },
+      },
+      boxShadow: {
+        glass: "var(--glass-shadow)",
+        'glass-glow': "var(--glass-glow)",
+        'premium': "0 8px 32px rgba(17, 160, 217, 0.15)",
+        'luxury': "0 20px 60px rgba(0, 0, 0, 0.4)",
       },
       backdropBlur: {
         xs: "2px",
+        glass: "20px",
+      },
+      backgroundImage: {
+        'glass-gradient': "var(--bg-gradient)",
+        'gradient-radial': "radial-gradient(ellipse at center, var(--tw-gradient-stops))",
+        'gradient-luxury': "linear-gradient(135deg, #29b6f6, #ffc107)",
+        'hero-gradient': "linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(17, 160, 217, 0.3))",
       },
       borderRadius: {
         lg: "var(--radius)",

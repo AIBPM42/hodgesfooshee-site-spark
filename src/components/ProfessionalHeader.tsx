@@ -5,39 +5,34 @@ import { Link } from "react-router-dom";
 
 const ProfessionalHeader: React.FC = () => {
   return (
-    <header className="glass-dark sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">HF</span>
+    <header className="sticky top-0 z-50 glass-nav">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-20">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 bg-gradient-luxury rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xl">H&F</span>
             </div>
-            <h1 className="text-xl font-display font-bold text-white">
-              Hodges & Fooshee
-            </h1>
+            <div>
+              <h1 className="text-2xl font-display font-bold text-white">
+                Hodges & Fooshee
+              </h1>
+              <p className="text-sm text-white/70">Premium Real Estate</p>
+            </div>
           </div>
           
-          {/* Navigation Menu */}
           <nav className="hidden lg:flex items-center space-x-8">
-            <Link to="/" className="text-white hover:text-brand-200 transition-colors">Home</Link>
-            <Link to="/listings" className="text-white hover:text-brand-200 transition-colors">Featured Listings</Link>
-            <Link to="/property-search" className="text-white hover:text-brand-200 transition-colors">Property Search</Link>
-            <Link to="/communities" className="text-white hover:text-brand-200 transition-colors">Communities</Link>
-            <Link to="/services" className="text-white hover:text-brand-200 transition-colors">Our Services</Link>
-            <Link to="/market-insights" className="text-white hover:text-brand-200 transition-colors">Market Insights</Link>
-            <Link to="/about" className="text-white hover:text-brand-200 transition-colors">About</Link>
-            <Link to="/contact" className="text-white hover:text-brand-200 transition-colors">Contact</Link>
-            <Link to="/admin" className="text-white hover:text-brand-200 transition-colors bg-orange-500/20 px-3 py-1 rounded-md font-semibold">Admin</Link>
+            <Link to="/" className="text-white/90 hover:text-white transition-colors font-medium">Home</Link>
+            <Link to="/mls" className="text-white/90 hover:text-white transition-colors font-medium">Properties</Link>
+            <Link to="/admin" className="text-white/90 hover:text-white transition-colors font-medium">Admin</Link>
           </nav>
           
-          {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" className="text-white hover:text-brand-200 hover:bg-white/10">
+            <button className="glass-button px-6 py-2 rounded-lg text-white font-medium">
               Login
-            </Button>
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold">
-              Register
-            </Button>
+            </button>
+            <button className="btn-premium px-6 py-2 rounded-lg text-white font-medium">
+              Get Started
+            </button>
           </div>
         </div>
       </div>
