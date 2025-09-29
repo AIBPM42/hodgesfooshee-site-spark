@@ -57,7 +57,7 @@ const exclusiveListings = [
 
 const NashvilleInsiderAccess = () => {
   return (
-    <section className="py-20 bg-background">
+    <section className="py-20">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
@@ -74,10 +74,10 @@ const NashvilleInsiderAccess = () => {
 
         {/* Exclusive Properties */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <Card className="overflow-hidden bg-card border-border relative group">
+          <Card className="overflow-hidden card-glass relative group">
             <div className="aspect-[4/3] bg-gradient-to-br from-gray-400 to-gray-600 relative">
               <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
-              <Badge className="absolute top-4 left-4 bg-orange-500 text-white">
+              <Badge className="absolute top-4 left-4 pill-orange">
                 COMING SOON
               </Badge>
               <div className="absolute inset-0 flex items-center justify-center">
@@ -102,16 +102,16 @@ const NashvilleInsiderAccess = () => {
               <p className="text-sm text-muted-foreground italic mb-4">
                 "Rare historic estate with modern updates"
               </p>
-              <Button className="w-full btn-orange">
+              <Button className="w-full btn">
                 Register for Full Details
               </Button>
             </div>
           </Card>
 
-          <Card className="overflow-hidden bg-card border-border relative group">
+          <Card className="overflow-hidden card-glass relative group">
             <div className="aspect-[4/3] bg-gradient-to-br from-blue-400 to-blue-600 relative">
               <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
-              <Badge className="absolute top-4 left-4 bg-red-500 text-white">
+              <Badge className="absolute top-4 left-4 pill-orange">
                 OFF-MARKET
               </Badge>
               <div className="absolute inset-0 flex items-center justify-center">
@@ -136,16 +136,16 @@ const NashvilleInsiderAccess = () => {
               <p className="text-sm text-muted-foreground italic mb-4">
                 "Brand new luxury townhome in top-rated district"
               </p>
-              <Button className="w-full btn-orange">
+              <Button className="w-full btn">
                 Register for Full Details
               </Button>
             </div>
           </Card>
 
-          <Card className="overflow-hidden bg-card border-border relative group">
+          <Card className="overflow-hidden card-glass relative group">
             <div className="aspect-[4/3] bg-gradient-to-br from-green-400 to-green-600 relative">
               <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
-              <Badge className="absolute top-4 left-4 bg-purple-500 text-white">
+              <Badge className="absolute top-4 left-4 pill-purple">
                 EXCLUSIVE
               </Badge>
               <div className="absolute inset-0 flex items-center justify-center">
@@ -170,7 +170,7 @@ const NashvilleInsiderAccess = () => {
               <p className="text-sm text-muted-foreground italic mb-4">
                 "Turnkey rental property with proven returns"
               </p>
-              <Button className="w-full btn-orange">
+              <Button className="w-full btn">
                 Register for Full Details
               </Button>
             </div>
@@ -178,7 +178,7 @@ const NashvilleInsiderAccess = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="text-center bg-muted/30 rounded-2xl p-12 border border-border/50">
+        <div className="text-center card-glass rounded-2xl p-12">
           <h3 className="text-3xl font-display font-bold text-foreground mb-4">
             Join Our Insider Network
           </h3>
@@ -186,10 +186,10 @@ const NashvilleInsiderAccess = () => {
             Get exclusive access to Nashville's hidden gems before they hit the public market. Our insider network gives you the competitive edge in today's fast-moving market.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="btn-orange px-8">
+            <Button size="lg" className="btn px-8">
               Get Instant Access
             </Button>
-            <Button size="lg" variant="outline" className="px-8">
+            <Button size="lg" className="btn-ghost px-8">
               Schedule Private Consultation
             </Button>
           </div>
@@ -211,9 +211,9 @@ const NashvilleInsiderAccess = () => {
 
           {/* County Cards */}
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-8 bg-card border-border relative overflow-hidden">
+            <Card className="p-8 card-glass relative overflow-hidden">
               <div className="absolute top-6 right-6">
-                <Badge className="bg-red-500 text-white">🔥 HOT</Badge>
+                <Badge className="pill-orange">🔥 HOT</Badge>
               </div>
               <h4 className="text-2xl font-semibold text-foreground mb-2">Davidson County</h4>
               <p className="text-muted-foreground mb-6">Nashville</p>
@@ -233,18 +233,18 @@ const NashvilleInsiderAccess = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Price Trend</p>
-                  <p className="text-xl font-bold text-green-500">📈 +8.1%</p>
+                  <p className="text-xl font-bold text-positive">📈 +8.1%</p>
                 </div>
               </div>
               
-              <Button className="w-full mt-6 btn-orange">
+              <Button className="w-full mt-6 btn">
                 View County Details
               </Button>
             </Card>
 
-            <Card className="p-8 bg-card border-border relative overflow-hidden">
+            <Card className="p-8 card-glass relative overflow-hidden">
               <div className="absolute top-6 right-6">
-                <Badge className="bg-orange-500 text-white">⚡ RISING</Badge>
+                <Badge className="pill-orange">⚡ RISING</Badge>
               </div>
               <h4 className="text-2xl font-semibold text-foreground mb-2">Williamson County</h4>
               <p className="text-muted-foreground mb-6">Franklin</p>
@@ -264,18 +264,18 @@ const NashvilleInsiderAccess = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Price Trend</p>
-                  <p className="text-xl font-bold text-green-500">📈 +6.3%</p>
+                  <p className="text-xl font-bold text-positive">📈 +6.3%</p>
                 </div>
               </div>
               
-              <Button className="w-full mt-6 btn-orange">
+              <Button className="w-full mt-6 btn">
                 View County Details
               </Button>
             </Card>
 
-            <Card className="p-8 bg-card border-border relative overflow-hidden">
+            <Card className="p-8 card-glass relative overflow-hidden">
               <div className="absolute top-6 right-6">
-                <Badge className="bg-blue-500 text-white">📊 STABLE</Badge>
+                <Badge className="pill-purple">📊 STABLE</Badge>
               </div>
               <h4 className="text-2xl font-semibold text-foreground mb-2">Rutherford County</h4>
               <p className="text-muted-foreground mb-6">Murfreesboro</p>
@@ -295,11 +295,11 @@ const NashvilleInsiderAccess = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Price Trend</p>
-                  <p className="text-xl font-bold text-green-500">📈 +3.2%</p>
+                  <p className="text-xl font-bold text-positive">📈 +3.2%</p>
                 </div>
               </div>
               
-              <Button className="w-full mt-6 btn-orange">
+              <Button className="w-full mt-6 btn">
                 View County Details
               </Button>
             </Card>

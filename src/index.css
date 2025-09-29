@@ -249,6 +249,17 @@ main, section, .section, .surface, .page-surface,
   background: transparent !important;
 }
 
+/* 3) Override Shadcn UI semantic colors to eliminate black spots */
+.bg-background, .bg-card, .bg-muted { background: transparent !important; }
+[class*="bg-card"], [class*="bg-background"], [class*="bg-muted"] { background: transparent !important; }
+
+/* 4) CSS custom property overrides for Shadcn UI variables */
+:root {
+  --background: transparent;
+  --card: transparent; 
+  --muted: rgba(255,255,255,0.05);
+}
+
 /* 3) Nav + panels should be light glass, not dark plates */
 .nav-glass{
   backdrop-filter: blur(24px);

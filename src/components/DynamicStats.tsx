@@ -62,17 +62,17 @@ interface StatCardProps {
 
 const StatCard = ({ icon: Icon, value, label }: StatCardProps) => (
   <div className="text-center group">
-    <div className="glass-card p-6 mb-4 hover:shadow-glass-glow transition-all duration-300 group-hover:scale-105">
+    <div className="card-glass p-6 mb-4 hover:shadow-glass-glow transition-all duration-300 group-hover:scale-105">
       <Icon className="h-10 w-10 text-luxury-gold mx-auto mb-2" />
-      <div className="text-3xl font-bold text-white mb-1">{value}</div>
-      <div className="text-white/80 text-sm font-medium">{label}</div>
+      <div className="text-3xl font-bold text-luxury-gold mb-1">{value}</div>
+      <div className="text-white/90 text-sm font-medium">{label}</div>
     </div>
   </div>
 );
 
 const StatCardSkeleton = () => (
   <div className="text-center">
-    <div className="glass-card p-6 mb-4">
+    <div className="card-glass p-6 mb-4">
       <Skeleton className="h-10 w-10 mx-auto mb-2 bg-white/20" />
       <Skeleton className="h-8 w-16 mx-auto mb-1 bg-white/20" />
       <Skeleton className="h-4 w-20 mx-auto bg-white/20" />
