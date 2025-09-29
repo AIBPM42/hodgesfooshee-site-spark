@@ -7,7 +7,7 @@ export default function HeroSection(){
       "
     >
       {/* Full-bleed background image */}
-      <img src="/hero-house.jpg" alt="" className="absolute inset-0 h-full w-full object-cover" />
+      <img src="/hodges-hero-bg.jpg" alt="" className="absolute inset-0 h-full w-full object-cover" />
 
       {/* Dark overlay for legibility (not charcoal page bg) */}
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.30)_0%,rgba(0,0,0,.55)_100%)]" />
