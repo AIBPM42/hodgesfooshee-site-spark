@@ -14,7 +14,7 @@ const FeaturedProperties = () => {
   }
 
   return (
-    <section className="py-20 px-4 bg-background">
+    <section className="py-20 px-4">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-6">
@@ -33,26 +33,26 @@ const FeaturedProperties = () => {
             ))
           ) : (
             listings?.map((listing) => (
-              <Card key={listing.id} className="group overflow-hidden border-border shadow-soft hover:shadow-premium transition-all duration-300 hover:scale-105">
+              <Card key={listing.id} className="card-glass p-0 group overflow-hidden hover:shadow-lg transition-all duration-300 hover:scale-105">
                 <div className="relative overflow-hidden">
                   <div className="w-full h-64 bg-muted animate-pulse" />
                   <Badge 
                     variant="secondary" 
-                    className="absolute top-4 left-4 bg-primary text-primary-foreground font-semibold"
+                    className="absolute top-4 left-4 pill-orange px-3 py-1 text-[12px] rounded-full font-semibold"
                   >
                     Active
                   </Badge>
                 </div>
                 
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-display font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-display font-semibold text-foreground mb-2 group-hover:text-[#FF6A2A] transition-colors">
                     Beautiful Home in {listing.city}
                   </h3>
                   <p className="text-muted-foreground mb-4 text-sm">
                     {listing.city}, TN
                   </p>
                   
-                  <div className="text-2xl font-bold text-primary mb-4">
+                  <div className="text-2xl font-bold text-positive mb-4">
                     ${Number(listing.list_price).toLocaleString()}
                   </div>
                   
@@ -72,7 +72,7 @@ const FeaturedProperties = () => {
                   </div>
                   
                   <Link to={`/property/${listing.listing_key}`}>
-                    <Button variant="outline" className="w-full group">
+                    <Button className="btn w-full group">
                       View Details
                       <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
@@ -85,7 +85,7 @@ const FeaturedProperties = () => {
 
         <div className="text-center">
           <Link to="/listings">
-            <Button size="lg" className="btn-primary">
+            <Button size="lg" className="btn">
               View All Properties
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>

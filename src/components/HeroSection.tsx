@@ -15,7 +15,7 @@ export default function HeroSection(){
       {/* Content */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-28 text-center">
         <h1 className="text-5xl md:text-7xl font-extrabold leading-tight text-white">
-          Your Source for <span className="text-[var(--accent)]">Nashville Real Estate</span> Excellence
+          Your Source for <span className="text-[#FF6A2A]">Nashville Real Estate</span> Excellence
         </h1>
         <p className="mt-4 text-white/85 max-w-3xl mx-auto">
           Discover exceptional properties across Middle Tennessee with Nashville's most trusted real estate experts

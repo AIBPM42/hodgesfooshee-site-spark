@@ -15,7 +15,7 @@ const Index = () => {
       <HeroSection /> {/* full-bleed, no container around it */}
 
       {/* Rest of sections with subtle dark surface */}
-      <main className="page-surface">
+      <main className="bg-transparent">
         <div className="mx-auto max-w-7xl px-4 py-20 space-y-20">
           {/* Premium Stats Section */}
           <section>

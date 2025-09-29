@@ -236,11 +236,64 @@ body, .copy {
     background: rgba(255, 255, 255, 0.10);
   }
   
-  /* Page Surface */
-  .page-surface {
-    background: linear-gradient(180deg, var(--hf-charcoal-800) 0%, var(--hf-charcoal-900) 60%, var(--hf-charcoal-800) 100%);
-  }
 }
+
+/* ===== H&F NO-CHARCOAL OVERRIDES ===== */
+
+/* 1) Never paint the page background dark */
+html, body, #root { background: transparent !important; }
+
+/* 2) Nuke any section/main dark fills that slipped in from Tailwind classes */
+main, section, .section, .surface, .page-surface,
+.bg-black, .bg-neutral-900, .bg-gray-900, .bg-[#0b0b0b], .bg-[#111], .bg-[#131313] {
+  background: transparent !important;
+}
+
+/* 3) Nav + panels should be light glass, not dark plates */
+.nav-glass{
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: rgba(255,255,255,.10) !important;
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+  border-radius: 9999px;
+}
+
+/* Search bar & content cards use subtle glass */
+.search-glass, .card-glass {
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  background: rgba(255,255,255,.10) !important;
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+  border-radius: 18px;
+}
+
+/* 4) Brand CTAs (orange) */
+.btn, .btn-primary, .cta-primary {
+  display:inline-flex; align-items:center; justify-content:center;
+  height:44px; padding:0 20px; border-radius:9999px; font-weight:700;
+  background: linear-gradient(180deg, #FF6A2A, #E45520) !important;
+  color:#fff !important;
+}
+.btn:hover, .btn-primary:hover, .cta-primary:hover { filter:brightness(1.06) }
+
+/* Secondary/ghost buttons */
+.btn-ghost, .cta-ghost {
+  display:inline-flex; align-items:center; justify-content:center;
+  height:44px; padding:0 20px; border-radius:9999px; font-weight:700;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  color: #eee;
+}
+
+/* 5) Positive metric color (green), badges */
+.text-positive, .metric-up { color: #6FBF4B !important; }
+.pill-orange { background:#FF6A2A !important; color:#fff !important; }
+.pill-purple { background:#6C59B4 !important; color:#fff !important; }
+
+/* 6) Insight card top band (warm brown like screenshot) */
+.insight-band { background: linear-gradient(180deg,#4b352a,#3b2a22) !important; }
 
 /* Premium Glass Effects for Admin Dashboard */
 .dashboard .card, .admin .card, [data-app="admin"] .card {
