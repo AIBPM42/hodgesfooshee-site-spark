@@ -21,6 +21,8 @@ import AnalyticsModule from "./pages/dashboard/AnalyticsModule";
 import SocialModule from "./pages/dashboard/SocialModule";
 import RealtynaSelftest from "./pages/RealtynaSelftest";
 import AdminSync from "./pages/AdminSync";
+import MLSSync from "./pages/admin/MLSSync";
+import BrokerDashboard from "./pages/admin/BrokerDashboard";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,6 +52,8 @@ const App = () => (
             </Route>
             <Route path="/mls" element={<MLS />} />
             <Route path="/admin-sync" element={<AdminSync />} />
+            <Route path="/admin/mls-sync" element={<MLSSync />} />
+            <Route path="/admin/broker" element={<BrokerDashboard />} />
             <Route path="/realtyna-test" element={<RealtynaSelftest />} />
             <Route path="/search/properties" element={<PropertySearchResults />} />
             <Route path="/search/open-houses" element={<OpenHouseResults />} />

@@ -6,6 +6,9 @@ import LatestMarketInsights from "@/components/LatestMarketInsights";
 import NashvilleInsiderAccess from "@/components/NashvilleInsiderAccess";
 import Footer from "@/components/Footer";
 import DynamicStats from "@/components/DynamicStats";
+import { NewThisWeekSection } from "@/components/NewThisWeekSection";
+import { UpcomingOpenHousesSection } from "@/components/UpcomingOpenHousesSection";
+import { ExploreCitiesSection } from "@/components/ExploreCitiesSection";
 
 
 const Index = () => {
@@ -42,6 +45,11 @@ const Index = () => {
             <LatestMarketInsights />
           </section>
         </div>
+
+        {/* Live Data Sections - Full Width */}
+        <NewThisWeekSection />
+        <UpcomingOpenHousesSection />
+        <ExploreCitiesSection />
       </main>
       
       {/* Premium Footer */}

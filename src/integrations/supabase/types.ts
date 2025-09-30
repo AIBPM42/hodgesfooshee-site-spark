@@ -705,6 +705,33 @@ export type Database = {
         }
         Relationships: []
       }
+      mls_sync_state: {
+        Row: {
+          created_at: string | null
+          last_mod: string | null
+          last_run: string | null
+          notes: string | null
+          resource: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          last_mod?: string | null
+          last_run?: string | null
+          notes?: string | null
+          resource: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          last_mod?: string | null
+          last_run?: string | null
+          notes?: string | null
+          resource?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       oauth_tokens: {
         Row: {
           access_token: string

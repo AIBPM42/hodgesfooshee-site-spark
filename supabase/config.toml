@@ -3,7 +3,34 @@ project_id = "xhqwmtzawqfffepcqxwf"
 [functions.search-properties]
 verify_jwt = false
 
-[functions.search-openhouses] 
+[functions.sync-mls-listings]
+verify_jwt = false
+
+[functions.sync-mls-members]
+verify_jwt = false
+
+[functions.sync-mls-offices]
+verify_jwt = false
+
+[functions.sync-mls-openhouses]
+verify_jwt = false
+
+[functions.api-properties]
+verify_jwt = false
+
+[functions.api-property-detail]
+verify_jwt = false
+
+[functions.api-open-houses]
+verify_jwt = false
+
+[functions.api-agents]
+verify_jwt = false
+
+[functions.api-offices]
+verify_jwt = false
+
+[functions.search-openhouses]
 verify_jwt = false
 
 [functions.manage-oauth-tokens]
