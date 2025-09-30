@@ -150,14 +150,15 @@ serve(async (req) => {
     // Build initial page if not resuming via @odata.nextLink
     if (!nextUrl) {
       const since = state.lastRFModified as string | undefined;
-      const filter = since ? `&$filter=RFModificationTimestamp gt ${since}` : "";
-      console.log("Building initial URL with filter:", filter);
+      const filter = since ? `RFModificationTimestamp gt ${since}` : "";
+      const filterParam = filter ? `&$filter=${filter}` : "";
+      console.log("Building initial URL with filter:", filterParam);
       nextUrl =
         `${RESO_BASE}/Property?` +
         `$top=200&` +
         `$select=ListingKey,ListingId,ListPrice,City,StandardStatus,BedroomsTotal,` +
         `BathroomsTotalInteger,LivingArea,ModificationTimestamp,RFModificationTimestamp` +
-        `${filter}&$orderby=RFModificationTimestamp asc`;
+        `${filterParam}&$orderby=RFModificationTimestamp asc`;
       console.log("Initial URL:", nextUrl);
     }
 

@@ -29,37 +29,27 @@ const PropertySearchResults: React.FC = () => {
   const { data: propertiesData, isLoading, error } = useQuery({
     queryKey: ['properties', searchParams.toString()],
     queryFn: async () => {
-      const response = await fetch(`https://xhqwmtzawqfffepcqxwf.supabase.co/functions/v1/realtyna-mls-search?${searchParams}`, {
+      const response = await fetch(`https://xhqwmtzawqfffepcqxwf.supabase.co/functions/v1/search-properties?${searchParams}`, {
         headers: {
           'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhocXdtdHphd3FmZmZlcGNxeHdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2MDQwODEsImV4cCI6MjA3MDE4MDA4MX0.gihIkhLS_pwr9Mz6uG6vm7BXPzfa2TcpvIrRECRfxfg`,
           'Content-Type': 'application/json'
         }
       });
+
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error:', response.status, errorText);
-        throw new Error(`API Error: ${response.status} - ${errorText}`);
+        setAuthStatus('error');
+        throw new Error(`API Error: ${response.status}`);
       }
       const data = await response.json();
       setAuthStatus('ready');
-      
-      // Transform database response to Property format
-      const properties = data.items?.map((item: any) => ({
-        id: item.listing_key || item.id?.toString(),
-        title: `${item.beds || 0}BR/${item.baths || 0}BA ${item.city || 'Property'}`,
-        address: `${item.address || ''}, ${item.city || ''}, ${item.state || 'TN'} ${item.zip || ''}`.trim(),
-        price: item.price || 0,
-        beds: item.beds || 0,
-        baths: item.baths || 0,
-        sqft: item.sqft || 0,
-        image: item.photos?.[0] || '/placeholder.svg',
-        status: item.status || 'Active',
-        listingType: 'For Sale'
-      })) || [];
-      
-      return { properties, total: data.count || properties.length };
+      return data;
     },
-    retry: 1
+    retry: (failureCount, error) => {
+      // Retry up to 2 times for OAuth token errors
+      const errorMessage = error?.message || '';
+      if (errorMessage.includes('OAuth') && failureCount < 2) return true;
+      return false;
+    }
   });
 
   React.useEffect(() => {
