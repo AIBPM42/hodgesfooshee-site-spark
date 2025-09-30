@@ -151,14 +151,15 @@ serve(async (req) => {
     if (!nextUrl) {
       const since = state.lastRFModified as string | undefined;
       const filter = since ? `RFModificationTimestamp gt ${since}` : "";
-      const filterParam = filter ? `&$filter=${filter}` : "";
+      const filterParam = filter ? `&$filter=${encodeURIComponent(filter)}` : "";
       console.log("Building initial URL with filter:", filterParam);
       nextUrl =
         `${RESO_BASE}/Property?` +
         `$top=200&` +
         `$select=ListingKey,ListingId,ListPrice,City,StandardStatus,BedroomsTotal,` +
         `BathroomsTotalInteger,LivingArea,ModificationTimestamp,RFModificationTimestamp` +
-        `${filterParam}&$orderby=RFModificationTimestamp asc`;
+        filterParam +
+        `&$orderby=RFModificationTimestamp asc`;
       console.log("Initial URL:", nextUrl);
     }
 

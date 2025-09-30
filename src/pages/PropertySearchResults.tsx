@@ -29,7 +29,7 @@ const PropertySearchResults: React.FC = () => {
   const { data: propertiesData, isLoading, error } = useQuery({
     queryKey: ['properties', searchParams.toString()],
     queryFn: async () => {
-      const response = await fetch(`https://xhqwmtzawqfffepcqxwf.supabase.co/functions/v1/search-properties?${searchParams}`, {
+      const response = await fetch(`https://xhqwmtzawqfffepcqxwf.supabase.co/functions/v1/mls-search?${searchParams}`, {
         headers: {
           'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhocXdtdHphd3FmZmZlcGNxeHdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2MDQwODEsImV4cCI6MjA3MDE4MDA4MX0.gihIkhLS_pwr9Mz6uG6vm7BXPzfa2TcpvIrRECRfxfg`,
           'Content-Type': 'application/json'
@@ -38,18 +38,31 @@ const PropertySearchResults: React.FC = () => {
 
       if (!response.ok) {
         setAuthStatus('error');
-        throw new Error(`API Error: ${response.status}`);
+        const errorData = await response.json();
+        console.error('Realtyna API Error:', errorData);
+        throw new Error(errorData.error || `API Error: ${response.status}`);
       }
+      
       const data = await response.json();
       setAuthStatus('ready');
-      return data;
+      
+      // Transform Realtyna RESO data to Property format
+      const properties = data.properties?.map((p: any) => ({
+        id: p.ListingKey || p.ListingId,
+        title: `${p.BedroomsTotal || 0}BR/${p.BathroomsTotalInteger || 0}BA ${p.City || 'Property'}`,
+        address: `${p.City || ''}, ${p.StateOrProvince || 'TN'}`,
+        price: p.ListPrice || 0,
+        beds: p.BedroomsTotal || 0,
+        baths: p.BathroomsTotalInteger || 0,
+        sqft: p.LivingArea || 0,
+        image: p.Media?.[0]?.MediaURL || '/placeholder.svg',
+        status: p.StandardStatus || 'Active',
+        listingType: 'For Sale'
+      })) || [];
+
+      return { properties, total: data.total || 0, source: data.source };
     },
-    retry: (failureCount, error) => {
-      // Retry up to 2 times for OAuth token errors
-      const errorMessage = error?.message || '';
-      if (errorMessage.includes('OAuth') && failureCount < 2) return true;
-      return false;
-    }
+    retry: 1
   });
 
   React.useEffect(() => {
