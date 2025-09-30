@@ -1,4 +1,14 @@
+import { useNavigate } from "react-router-dom";
+import SmartSearchBar from "./SmartSearchBar";
+
 export default function HeroSection(){
+  const navigate = useNavigate();
+
+  const handleSearch = (params: Record<string, string>) => {
+    const searchParams = new URLSearchParams(params);
+    navigate(`/search/properties?${searchParams.toString()}`);
+  };
+
   return (
     <section
       className="
@@ -21,23 +31,9 @@ export default function HeroSection(){
           Discover exceptional properties across Middle Tennessee with Nashville's most trusted real estate experts
         </p>
 
-        {/* Glass search panel (keep your inputs; this is just style) */}
-        <div className="search-glass mt-8 p-4 md:p-6">
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
-            <button className="h-12 rounded-full px-4 bg-white/85 text-[#111] text-left">Any Type</button>
-            <button className="h-12 rounded-full px-4 bg-white/85 text-[#111] text-left">All Counties</button>
-            <button className="h-12 rounded-full px-4 bg-white/85 text-[#111] text-left">Min Beds</button>
-            <button className="h-12 rounded-full px-4 bg-white/85 text-[#111] text-left">Min Baths</button>
-            <div className="col-span-2 md:col-span-1 flex">
-              <button className="btn w-full md:w-auto">Search Properties</button>
-            </div>
-          </div>
-
-          {/* Price stripe */}
-          <div className="mt-5 h-[4px] w-full bg-white/30 rounded-full">
-            <div className="h-full w-1/2 bg-white rounded-full"></div>
-          </div>
-          <div className="mt-2 text-right text-white/80">$100,000 – $1,000,000</div>
+        {/* Smart Search Bar */}
+        <div className="mt-8">
+          <SmartSearchBar onGo={handleSearch} variant="full" />
         </div>
       </div>
     </section>
