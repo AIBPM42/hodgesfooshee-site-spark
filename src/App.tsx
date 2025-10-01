@@ -24,6 +24,7 @@ import AdminSync from "./pages/AdminSync";
 import MLSSync from "./pages/admin/MLSSync";
 import BrokerDashboard from "./pages/admin/BrokerDashboard";
 import MLSSyncDashboard from "./pages/admin/MLSSyncDashboard";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,7 +45,8 @@ const App = () => (
           <BrowserRouter>
             <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/admin" element={<DashboardLayout />}>
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<Overview />} />
               <Route path="mls" element={<MLSModule />} />
               <Route path="ai" element={<AIModule />} />
