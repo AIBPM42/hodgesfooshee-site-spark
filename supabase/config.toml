@@ -1,5 +1,17 @@
 project_id = "xhqwmtzawqfffepcqxwf"
 
+[functions.site-settings]
+verify_jwt = false
+
+[functions.insights]
+verify_jwt = false
+
+[functions.track]
+verify_jwt = false
+
+[functions.ai-hot-properties]
+verify_jwt = false
+
 [functions.search-properties]
 verify_jwt = false
 

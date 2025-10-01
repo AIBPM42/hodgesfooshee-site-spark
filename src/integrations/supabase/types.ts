@@ -73,6 +73,105 @@ export type Database = {
           },
         ]
       }
+      ai_hot_properties: {
+        Row: {
+          address: string
+          baths: number | null
+          beds: number | null
+          city: string | null
+          county: string | null
+          created_at: string | null
+          hidden: boolean | null
+          id: string
+          lead_email: string | null
+          lead_name: string | null
+          lead_phone: string | null
+          price_high: number | null
+          price_low: number | null
+          score: number | null
+          source: string | null
+          sqft: number | null
+          summary: string | null
+          updated_at: string | null
+          verified: boolean | null
+        }
+        Insert: {
+          address: string
+          baths?: number | null
+          beds?: number | null
+          city?: string | null
+          county?: string | null
+          created_at?: string | null
+          hidden?: boolean | null
+          id?: string
+          lead_email?: string | null
+          lead_name?: string | null
+          lead_phone?: string | null
+          price_high?: number | null
+          price_low?: number | null
+          score?: number | null
+          source?: string | null
+          sqft?: number | null
+          summary?: string | null
+          updated_at?: string | null
+          verified?: boolean | null
+        }
+        Update: {
+          address?: string
+          baths?: number | null
+          beds?: number | null
+          city?: string | null
+          county?: string | null
+          created_at?: string | null
+          hidden?: boolean | null
+          id?: string
+          lead_email?: string | null
+          lead_name?: string | null
+          lead_phone?: string | null
+          price_high?: number | null
+          price_low?: number | null
+          score?: number | null
+          source?: string | null
+          sqft?: number | null
+          summary?: string | null
+          updated_at?: string | null
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
+      analytics_events: {
+        Row: {
+          event: string
+          id: number
+          meta: Json | null
+          path: string | null
+          referrer: string | null
+          ts: string | null
+          ua: string | null
+          uid: string | null
+        }
+        Insert: {
+          event: string
+          id?: number
+          meta?: Json | null
+          path?: string | null
+          referrer?: string | null
+          ts?: string | null
+          ua?: string | null
+          uid?: string | null
+        }
+        Update: {
+          event?: string
+          id?: number
+          meta?: Json | null
+          path?: string | null
+          referrer?: string | null
+          ts?: string | null
+          ua?: string | null
+          uid?: string | null
+        }
+        Relationships: []
+      }
       api_usage_logs: {
         Row: {
           created_at: string
@@ -361,6 +460,48 @@ export type Database = {
         }
         Relationships: []
       }
+      insights_posts: {
+        Row: {
+          content_md: string | null
+          created_at: string | null
+          hero_image: string | null
+          id: string
+          pinned: boolean | null
+          publish_at: string | null
+          slug: string
+          tags: string[] | null
+          teaser: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content_md?: string | null
+          created_at?: string | null
+          hero_image?: string | null
+          id?: string
+          pinned?: boolean | null
+          publish_at?: string | null
+          slug: string
+          tags?: string[] | null
+          teaser?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content_md?: string | null
+          created_at?: string | null
+          hero_image?: string | null
+          id?: string
+          pinned?: boolean | null
+          publish_at?: string | null
+          slug?: string
+          tags?: string[] | null
+          teaser?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           created_at: string | null
@@ -403,7 +544,9 @@ export type Database = {
           living_area: number | null
           modification_timestamp: string | null
           original_list_price: number | null
+          photos: Json | null
           price_reduction_count: number | null
+          primary_photo_url: string | null
           rf_modification_timestamp: string | null
           standard_status: string | null
           updated_at: string | null
@@ -425,7 +568,9 @@ export type Database = {
           living_area?: number | null
           modification_timestamp?: string | null
           original_list_price?: number | null
+          photos?: Json | null
           price_reduction_count?: number | null
+          primary_photo_url?: string | null
           rf_modification_timestamp?: string | null
           standard_status?: string | null
           updated_at?: string | null
@@ -447,12 +592,28 @@ export type Database = {
           living_area?: number | null
           modification_timestamp?: string | null
           original_list_price?: number | null
+          photos?: Json | null
           price_reduction_count?: number | null
+          primary_photo_url?: string | null
           rf_modification_timestamp?: string | null
           standard_status?: string | null
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_listing_agent"
+            columns: ["listing_agent_key"]
+            isOneToOne: false
+            referencedRelation: "mls_members"
+            referencedColumns: ["member_key"]
+          },
+          {
+            foreignKeyName: "fk_listing_office"
+            columns: ["listing_office_key"]
+            isOneToOne: false
+            referencedRelation: "mls_offices"
+            referencedColumns: ["office_key"]
+          },
           {
             foreignKeyName: "mls_listings_brokerage_id_fkey"
             columns: ["brokerage_id"]
@@ -523,7 +684,15 @@ export type Database = {
           rf_modification_timestamp?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_member_office"
+            columns: ["office_key"]
+            isOneToOne: false
+            referencedRelation: "mls_offices"
+            referencedColumns: ["office_key"]
+          },
+        ]
       }
       mls_offices: {
         Row: {
@@ -634,7 +803,29 @@ export type Database = {
           showing_agent_last_name?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_open_house_listing"
+            columns: ["listing_key"]
+            isOneToOne: false
+            referencedRelation: "mls_listings"
+            referencedColumns: ["listing_key"]
+          },
+          {
+            foreignKeyName: "fk_open_house_listing"
+            columns: ["listing_key"]
+            isOneToOne: false
+            referencedRelation: "mls_listings_view"
+            referencedColumns: ["listing_key"]
+          },
+          {
+            foreignKeyName: "fk_open_house_listing"
+            columns: ["listing_key"]
+            isOneToOne: false
+            referencedRelation: "mls_listings_view"
+            referencedColumns: ["mls_id"]
+          },
+        ]
       }
       mls_postal_codes: {
         Row: {
@@ -916,6 +1107,63 @@ export type Database = {
           refresh_token?: string | null
           scope?: string | null
           token_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          benefit_bullets: Json | null
+          cta_primary_text: string | null
+          cta_secondary_text: string | null
+          default_city: string | null
+          headline: string | null
+          hero_mode: string | null
+          id: string
+          price_max: number | null
+          price_min: number | null
+          published: boolean | null
+          show_explore_cities: boolean | null
+          show_hot_ai: boolean | null
+          show_new_this_week: boolean | null
+          show_open_houses: boolean | null
+          subheadline: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          benefit_bullets?: Json | null
+          cta_primary_text?: string | null
+          cta_secondary_text?: string | null
+          default_city?: string | null
+          headline?: string | null
+          hero_mode?: string | null
+          id?: string
+          price_max?: number | null
+          price_min?: number | null
+          published?: boolean | null
+          show_explore_cities?: boolean | null
+          show_hot_ai?: boolean | null
+          show_new_this_week?: boolean | null
+          show_open_houses?: boolean | null
+          subheadline?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          benefit_bullets?: Json | null
+          cta_primary_text?: string | null
+          cta_secondary_text?: string | null
+          default_city?: string | null
+          headline?: string | null
+          hero_mode?: string | null
+          id?: string
+          price_max?: number | null
+          price_min?: number | null
+          published?: boolean | null
+          show_explore_cities?: boolean | null
+          show_hot_ai?: boolean | null
+          show_new_this_week?: boolean | null
+          show_open_houses?: boolean | null
+          subheadline?: string | null
           updated_at?: string | null
         }
         Relationships: []
