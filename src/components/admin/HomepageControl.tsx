@@ -60,9 +60,9 @@ export default function HomepageControl() {
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="border-border/50 bg-card/50 backdrop-blur shadow-xl hover:shadow-2xl transition-shadow">
         <CardHeader>
-          <CardTitle>Hero Section</CardTitle>
+          <CardTitle className="text-2xl">Hero Section</CardTitle>
           <CardDescription>Control the main hero banner on your homepage</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -93,9 +93,9 @@ export default function HomepageControl() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border-border/50 bg-card/50 backdrop-blur shadow-xl hover:shadow-2xl transition-shadow">
         <CardHeader>
-          <CardTitle>Search Defaults</CardTitle>
+          <CardTitle className="text-2xl">Search Defaults</CardTitle>
           <CardDescription>Set default search parameters</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -122,9 +122,9 @@ export default function HomepageControl() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border-border/50 bg-card/50 backdrop-blur shadow-xl hover:shadow-2xl transition-shadow">
         <CardHeader>
-          <CardTitle>Section Visibility</CardTitle>
+          <CardTitle className="text-2xl">Section Visibility</CardTitle>
           <CardDescription>Toggle homepage sections on/off</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

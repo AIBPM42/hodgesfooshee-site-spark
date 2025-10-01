@@ -52,7 +52,7 @@ export default function AnalyticsDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="border-border/50 bg-card/50 backdrop-blur shadow-lg hover:shadow-xl hover-scale transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Page Views</CardTitle>
             <Eye className="h-4 w-4 text-muted-foreground" />
@@ -65,7 +65,7 @@ export default function AnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/50 bg-card/50 backdrop-blur shadow-lg hover:shadow-xl hover-scale transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Unique Pages</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -78,7 +78,7 @@ export default function AnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/50 bg-card/50 backdrop-blur shadow-lg hover:shadow-xl hover-scale transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Clicks</CardTitle>
             <MousePointer className="h-4 w-4 text-muted-foreground" />
@@ -91,7 +91,7 @@ export default function AnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/50 bg-card/50 backdrop-blur shadow-lg hover:shadow-xl hover-scale transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Events</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -105,9 +105,9 @@ export default function AnalyticsDashboard() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="border-border/50 bg-card/50 backdrop-blur shadow-xl">
         <CardHeader>
-          <CardTitle>Daily Activity</CardTitle>
+          <CardTitle className="text-2xl">Daily Activity</CardTitle>
           <CardDescription>Events per day for the last 7 days</CardDescription>
         </CardHeader>
         <CardContent>

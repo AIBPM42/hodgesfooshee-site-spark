@@ -280,7 +280,7 @@ export default function AIHotProperties() {
 
       <div className="grid gap-4">
         {properties?.map((property: any) => (
-          <Card key={property.id} className={property.hidden ? "opacity-60" : ""}>
+          <Card key={property.id} className={`border-border/50 bg-card/50 backdrop-blur shadow-lg hover:shadow-xl hover-scale transition-all ${property.hidden ? "opacity-60" : ""}`}>
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div className="space-y-1">

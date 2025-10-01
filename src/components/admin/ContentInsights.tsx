@@ -194,7 +194,7 @@ export default function ContentInsights() {
 
       <div className="grid gap-4">
         {posts?.map((post: any) => (
-          <Card key={post.id}>
+          <Card key={post.id} className="border-border/50 bg-card/50 backdrop-blur shadow-lg hover:shadow-xl hover-scale transition-all">
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div className="space-y-1">
