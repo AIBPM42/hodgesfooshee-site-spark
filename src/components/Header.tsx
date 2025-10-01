@@ -1,4 +1,19 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Header() {
+  const navigate = useNavigate();
+  // TODO: replace preview bypass with real auth
+  const ENABLE_BYPASS = import.meta.env.VITE_ENABLE_ADMIN_BYPASS === 'true';
+
+  const handleLoginClick = () => {
+    if (ENABLE_BYPASS) {
+      navigate('/admin/mls-sync-dashboard');
+    } else {
+      // (future) real auth flow
+      navigate('/login');
+    }
+  };
+
   return (
     <header className="fixed top-3 left-0 right-0 z-50">
       <div className="mx-auto max-w-7xl px-4">
@@ -14,7 +29,7 @@ export default function Header() {
           </div>
           {/* Right: auth */}
           <div className="flex items-center gap-2">
-            <button className="btn-ghost">Login</button>
+            <button className="btn-ghost" onClick={handleLoginClick}>Login</button>
             <button className="btn">Register</button>
           </div>
         </div>

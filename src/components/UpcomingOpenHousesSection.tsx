@@ -1,3 +1,4 @@
+import { useUpcomingOpenHousesRealtyna } from "@/hooks/useUpcomingOpenHousesRealtyna";
 import { useUpcomingOpenHouses } from "@/hooks/useUpcomingOpenHouses";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,16 @@ import { ArrowRight, Calendar, Clock, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const UpcomingOpenHousesSection = () => {
-  const { data: openHouses, isLoading } = useUpcomingOpenHouses(7, 8);
+  // Realtyna-first, local-fallback pattern
+  const { data: realtynaOpenHouses, isLoading: realtynaLoading, error: realtynaError } = useUpcomingOpenHousesRealtyna(8);
+  const { data: localOpenHouses, isLoading: localLoading } = useUpcomingOpenHouses(7, 8);
+
+  const openHouses = realtynaError ? localOpenHouses : realtynaOpenHouses;
+  const isLoading = realtynaLoading || (realtynaError && localLoading);
+
+  if (realtynaError) {
+    console.warn('[UpcomingOpenHouses] Realtyna failed, using local fallback:', realtynaError);
+  }
 
   if (isLoading) {
     return (
@@ -41,40 +51,51 @@ export const UpcomingOpenHousesSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {openHouses.slice(0, 8).map((oh) => {
+            // Handle both Realtyna (PascalCase) and local (snake_case) formats
             const listing = oh.mls_listings as any;
+            const openHouseKey = oh.OpenHouseKey || oh.open_house_key;
+            const openHouseDate = oh.OpenHouseDate || oh.open_house_date;
+            const startTime = oh.OpenHouseStartTime || oh.open_house_start_time;
+            const endTime = oh.OpenHouseEndTime || oh.open_house_end_time;
+            const listingKey = oh.ListingKey || oh.listing_key;
+            const city = listing?.City || listing?.city || oh.City || 'N/A';
+            const listPrice = listing?.ListPrice || listing?.list_price || oh.ListPrice || 0;
+            const bedrooms = listing?.BedroomsTotal || listing?.bedrooms_total || oh.BedroomsTotal || 0;
+            const bathrooms = listing?.BathroomsTotalInteger || listing?.bathrooms_total_integer || oh.BathroomsTotalInteger || 0;
+
             return (
-              <Card key={oh.open_house_key} className="card-glass p-5">
+              <Card key={openHouseKey} className="card-glass p-5">
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 text-luxury-gold">
                     <Calendar className="h-4 w-4" />
                     <span className="font-semibold">
-                      {new Date(oh.open_house_date).toLocaleDateString()}
+                      {new Date(openHouseDate).toLocaleDateString()}
                     </span>
                   </div>
 
-                  {oh.open_house_start_time && (
+                  {startTime && (
                     <div className="flex items-center gap-2 text-sm text-white/80">
                       <Clock className="h-4 w-4" />
-                      <span>{oh.open_house_start_time} - {oh.open_house_end_time}</span>
+                      <span>{startTime} - {endTime}</span>
                     </div>
                   )}
 
                   <div className="flex items-center gap-2 text-sm text-white/80">
                     <MapPin className="h-4 w-4" />
-                    <span>{listing?.city || 'N/A'}</span>
+                    <span>{city}</span>
                   </div>
 
                   <div className="pt-3 border-t border-white/10">
                     <div className="text-2xl font-bold text-luxury-gold mb-1">
-                      ${(listing?.list_price || 0).toLocaleString()}
+                      ${listPrice.toLocaleString()}
                     </div>
                     <div className="text-sm text-white/60">
-                      {listing?.bedrooms_total || 0} bed • {listing?.bathrooms_total_integer || 0} bath
+                      {bedrooms} bed • {bathrooms} bath
                     </div>
                   </div>
 
                   <Button asChild size="sm" className="w-full btn">
-                    <Link to={`/listing/${oh.listing_key}`}>
+                    <Link to={`/listing/${listingKey}`}>
                       View Details
                     </Link>
                   </Button>

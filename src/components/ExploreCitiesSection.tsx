@@ -1,3 +1,4 @@
+import { useTopCitiesRealtyna } from "@/hooks/useTopCitiesRealtyna";
 import { useTopCities } from "@/hooks/useTopCities";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,16 @@ import { MapPin, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const ExploreCitiesSection = () => {
-  const { data: cities, isLoading } = useTopCities(6);
+  // Realtyna-first, local-fallback pattern
+  const { data: realtynaCities, isLoading: realtynaLoading, error: realtynaError } = useTopCitiesRealtyna(6);
+  const { data: localCities, isLoading: localLoading } = useTopCities(6);
+
+  const cities = realtynaError ? localCities : realtynaCities;
+  const isLoading = realtynaLoading || (realtynaError && localLoading);
+
+  if (realtynaError) {
+    console.warn('[ExploreCities] Realtyna failed, using local fallback:', realtynaError);
+  }
 
   if (isLoading) {
     return (

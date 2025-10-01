@@ -1,3 +1,4 @@
+import { useNewListingsRealtyna } from "@/hooks/useNewListingsRealtyna";
 import { useNewListings } from "@/hooks/useNewListings";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,16 @@ import { ArrowRight, Home, Bed, Bath, Square } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const NewThisWeekSection = () => {
-  const { data: listings, isLoading } = useNewListings(12);
+  // Realtyna-first, local-fallback pattern
+  const { data: realtynaListings, isLoading: realtynaLoading, error: realtynaError } = useNewListingsRealtyna(12);
+  const { data: localListings, isLoading: localLoading } = useNewListings(12);
+
+  const listings = realtynaError ? localListings : realtynaListings;
+  const isLoading = realtynaLoading || (realtynaError && localLoading);
+
+  if (realtynaError) {
+    console.warn('[NewThisWeek] Realtyna failed, using local fallback:', realtynaError);
+  }
 
   if (isLoading) {
     return (
@@ -41,33 +51,33 @@ export const NewThisWeekSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {listings.slice(0, 12).map((listing) => (
-            <Card key={listing.listing_key} className="card-glass overflow-hidden group cursor-pointer hover:scale-105 transition-transform">
-              <Link to={`/listing/${listing.listing_key}`}>
+            <Card key={listing.ListingKey || listing.listing_key} className="card-glass overflow-hidden group cursor-pointer hover:scale-105 transition-transform">
+              <Link to={`/listing/${listing.ListingKey || listing.listing_key}`}>
                 <div className="aspect-video bg-gradient-to-br from-luxury-gold/20 to-luxury-gold/5 flex items-center justify-center">
                   <Home className="h-12 w-12 text-luxury-gold/40" />
                 </div>
                 <div className="p-4">
                   <div className="text-2xl font-bold text-luxury-gold mb-2">
-                    ${(listing.list_price || 0).toLocaleString()}
+                    ${(listing.ListPrice || listing.list_price || 0).toLocaleString()}
                   </div>
-                  <div className="text-sm text-white/80 mb-3">{listing.city || 'N/A'}</div>
+                  <div className="text-sm text-white/80 mb-3">{listing.City || listing.city || 'N/A'}</div>
                   <div className="flex items-center gap-4 text-sm text-white/60">
-                    {listing.bedrooms_total && (
+                    {(listing.BedroomsTotal || listing.bedrooms_total) && (
                       <div className="flex items-center gap-1">
                         <Bed className="h-4 w-4" />
-                        {listing.bedrooms_total}
+                        {listing.BedroomsTotal || listing.bedrooms_total}
                       </div>
                     )}
-                    {listing.bathrooms_total_integer && (
+                    {(listing.BathroomsTotalInteger || listing.bathrooms_total_integer) && (
                       <div className="flex items-center gap-1">
                         <Bath className="h-4 w-4" />
-                        {listing.bathrooms_total_integer}
+                        {listing.BathroomsTotalInteger || listing.bathrooms_total_integer}
                       </div>
                     )}
-                    {listing.living_area && (
+                    {(listing.LivingArea || listing.living_area) && (
                       <div className="flex items-center gap-1">
                         <Square className="h-4 w-4" />
-                        {listing.living_area.toLocaleString()} sqft
+                        {(listing.LivingArea || listing.living_area).toLocaleString()} sqft
                       </div>
                     )}
                   </div>

@@ -90,6 +90,24 @@ export default function MLSSyncDashboard() {
 
   return (
     <div className="container mx-auto p-8 space-y-8">
+      {/* Preview mode banner */}
+      {import.meta.env.VITE_ENABLE_ADMIN_BYPASS === 'true' && (
+        <div style={{
+          position: 'fixed',
+          bottom: 12,
+          right: 12,
+          background: '#ffe8a3',
+          color: '#000',
+          padding: '6px 10px',
+          borderRadius: 8,
+          fontSize: 12,
+          zIndex: 9999,
+          fontWeight: 500
+        }}>
+          Preview mode: Admin open (no auth)
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold mb-2">MLS Sync Dashboard</h1>
