@@ -95,3 +95,9 @@ verify_jwt = false
 
 [functions.sync-mls-data]
 verify_jwt = false
+
+[functions.mls-search]
+verify_jwt = false
+
+[functions.mls-openhouses]
+verify_jwt = false

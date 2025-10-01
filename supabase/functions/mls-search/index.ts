@@ -30,6 +30,7 @@ serve(async (req) => {
     const bathrooms = searchParams.get("bathrooms");
     const minSqft = searchParams.get("minSqft");
     const status = searchParams.get("status") || "Active";
+    const modifiedSince = searchParams.get("modifiedSince");
 
     if (city) filters.push(`City eq '${city}'`);
     if (minPrice) filters.push(`ListPrice ge ${minPrice}`);
@@ -38,11 +39,12 @@ serve(async (req) => {
     if (bathrooms) filters.push(`BathroomsTotalInteger ge ${bathrooms}`);
     if (minSqft) filters.push(`LivingArea ge ${minSqft}`);
     filters.push(`StandardStatus eq '${status}'`);
+    if (modifiedSince) filters.push(`ModificationTimestamp ge ${modifiedSince}`);
 
     const filterStr = filters.join(" and ");
-    const top = searchParams.get("$top") || "50";
+    const top = searchParams.get("limit") || searchParams.get("$top") || "50";
     const skip = searchParams.get("$skip") || "0";
-    const orderby = searchParams.get("$orderby") || "ModificationTimestamp desc";
+    const orderby = searchParams.get("orderby") || searchParams.get("$orderby") || "ModificationTimestamp desc";
 
     const queryParams = new URLSearchParams({
       "$filter": filterStr,

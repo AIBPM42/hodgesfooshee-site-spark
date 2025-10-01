@@ -21,8 +21,9 @@ serve(async (req) => {
 
     const filters: string[] = [];
     
-    const fromDate = searchParams.get("fromDate") || new Date().toISOString().split("T")[0];
-    const toDate = searchParams.get("toDate");
+    // Accept both 'start'/'end' and 'fromDate'/'toDate' for flexibility
+    const fromDate = searchParams.get("start") || searchParams.get("fromDate") || new Date().toISOString().split("T")[0];
+    const toDate = searchParams.get("end") || searchParams.get("toDate");
     const city = searchParams.get("city");
 
     filters.push(`OpenHouseDate ge ${fromDate}`);
@@ -30,7 +31,7 @@ serve(async (req) => {
     if (city) filters.push(`contains(City,'${city}')`);
 
     const filterStr = filters.join(" and ");
-    const top = searchParams.get("$top") || "50";
+    const top = searchParams.get("limit") || searchParams.get("$top") || "50";
 
     const queryParams = new URLSearchParams({
       "$filter": filterStr,
