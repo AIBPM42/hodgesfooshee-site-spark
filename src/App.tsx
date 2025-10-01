@@ -23,6 +23,7 @@ import RealtynaSelftest from "./pages/RealtynaSelftest";
 import AdminSync from "./pages/AdminSync";
 import MLSSync from "./pages/admin/MLSSync";
 import BrokerDashboard from "./pages/admin/BrokerDashboard";
+import MLSSyncDashboard from "./pages/admin/MLSSyncDashboard";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,6 +54,7 @@ const App = () => (
             <Route path="/mls" element={<MLS />} />
             <Route path="/admin-sync" element={<AdminSync />} />
             <Route path="/admin/mls-sync" element={<MLSSync />} />
+            <Route path="/admin/mls-sync-dashboard" element={<MLSSyncDashboard />} />
             <Route path="/admin/broker" element={<BrokerDashboard />} />
             <Route path="/realtyna-test" element={<RealtynaSelftest />} />
             <Route path="/search/properties" element={<PropertySearchResults />} />
