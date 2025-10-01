@@ -9,13 +9,28 @@ import DynamicStats from "@/components/DynamicStats";
 import { NewThisWeekSection } from "@/components/NewThisWeekSection";
 import { UpcomingOpenHousesSection } from "@/components/UpcomingOpenHousesSection";
 import { ExploreCitiesSection } from "@/components/ExploreCitiesSection";
+import AIHotPropertiesSection from "@/components/AIHotPropertiesSection";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { Loader2 } from "lucide-react";
 
 
 const Index = () => {
+  const { data: settings, isLoading } = useSiteSettings();
+  useAnalytics(); // Track page views
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <>
       <Header />
-      <HeroSection /> {/* full-bleed, no container around it */}
+      <HeroSection settings={settings} />
 
       {/* Rest of sections with subtle dark surface */}
       <main className="bg-transparent">
@@ -46,10 +61,11 @@ const Index = () => {
           </section>
         </div>
 
-        {/* Live Data Sections - Full Width */}
-        <NewThisWeekSection />
-        <UpcomingOpenHousesSection />
-        <ExploreCitiesSection />
+        {/* Conditional Dynamic Sections */}
+        {settings?.show_hot_ai && <AIHotPropertiesSection />}
+        {settings?.show_new_this_week && <NewThisWeekSection />}
+        {settings?.show_open_houses && <UpcomingOpenHousesSection />}
+        {settings?.show_explore_cities && <ExploreCitiesSection />}
       </main>
       
       {/* Premium Footer */}

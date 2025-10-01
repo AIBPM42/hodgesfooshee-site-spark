@@ -25,6 +25,9 @@ export default function Header() {
               {['Home','Featured Listings','Property Search','Communities','Our Services','Market Insights','About','Contact'].map(x=>(
                 <a key={x} href="#" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">{x}</a>
               ))}
+              <button onClick={() => navigate('/admin')} className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">
+                Admin
+              </button>
             </nav>
           </div>
           {/* Right: auth */}
