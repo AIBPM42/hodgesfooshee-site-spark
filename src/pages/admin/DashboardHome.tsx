@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Home, DollarSign, Calendar, TrendingUp, Users, Activity, Settings, FileText, Database, ArrowRight } from "lucide-react";
+import { Home, DollarSign, Calendar, TrendingUp, Users, Activity, Settings, FileText, Database, ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,8 +8,9 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getRole, setRole, type UserRole } from "@/lib/role";
+import { getRole, type UserRole } from "@/lib/role";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { RoleSwitcher } from "@/components/RoleSwitcher";
 
 export default function DashboardHome() {
   const { data: kpis, isLoading } = useDashboardKPIs();
@@ -21,12 +22,6 @@ export default function DashboardHome() {
     window.addEventListener('roleChanged', handleRoleChange);
     return () => window.removeEventListener('roleChanged', handleRoleChange);
   }, []);
-
-  const handleRoleToggle = () => {
-    const newRole = role === 'owner' ? 'agent' : 'owner';
-    setRole(newRole);
-    setRoleState(newRole);
-  };
 
   // Mock data for charts (will be real once we have historical data)
   const newVsSoldData = [
@@ -50,13 +45,13 @@ export default function DashboardHome() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <Header />
-      <main className="pt-24 pb-12">
+      <main className="pt-24 pb-12 animate-fade-in">
         <div className="mx-auto max-w-7xl px-4">
-          {/* Premium Header with Role Toggle */}
+          {/* Premium Header with Role Switcher */}
           <div className="mb-8 flex items-center justify-between">
             <div className="animate-fade-in">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
-                <Activity className="h-4 w-4 text-primary" />
+                <Sparkles className="h-4 w-4 text-primary" />
                 <span className="text-sm font-medium text-primary">Live Dashboard</span>
               </div>
               <h1 className="text-5xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
@@ -67,14 +62,9 @@ export default function DashboardHome() {
               </p>
             </div>
 
-            {/* Role Toggle */}
-            <div className="flex items-center gap-3">
-              <Badge variant={role === 'owner' ? 'default' : 'outline'} className="text-sm">
-                {role === 'owner' ? 'Owner View' : 'Agent View'}
-              </Badge>
-              <Button onClick={handleRoleToggle} variant="outline" size="sm">
-                Switch to {role === 'owner' ? 'Agent' : 'Owner'}
-              </Button>
+            {/* Role Switcher */}
+            <div className="flex items-center gap-3 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+              <RoleSwitcher />
             </div>
           </div>
 
@@ -86,6 +76,7 @@ export default function DashboardHome() {
               value={kpis?.activeListings}
               isLoading={isLoading}
               color="text-blue-500"
+              delay="0.1s"
             />
             <KPITile
               icon={<DollarSign className="h-5 w-5" />}
@@ -94,6 +85,7 @@ export default function DashboardHome() {
               isLoading={isLoading}
               format="currency"
               color="text-green-500"
+              delay="0.2s"
             />
             <KPITile
               icon={<Calendar className="h-5 w-5" />}
@@ -101,6 +93,7 @@ export default function DashboardHome() {
               value={kpis?.openHouses14d}
               isLoading={isLoading}
               color="text-orange-500"
+              delay="0.3s"
             />
             <KPITile
               icon={<TrendingUp className="h-5 w-5" />}
@@ -108,12 +101,13 @@ export default function DashboardHome() {
               value={kpis?.newThisWeek}
               isLoading={isLoading}
               color="text-purple-500"
+              delay="0.4s"
             />
           </div>
 
           {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <Card className="backdrop-blur-xl bg-card/50 border-border/50 p-6">
+            <Card className="backdrop-blur-xl bg-card/50 border-border/50 p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-fade-in" style={{ animationDelay: "0.5s" }}>
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-primary" />
                 New vs Sold (Weekly)
@@ -130,7 +124,7 @@ export default function DashboardHome() {
               </ResponsiveContainer>
             </Card>
 
-            <Card className="backdrop-blur-xl bg-card/50 border-border/50 p-6">
+            <Card className="backdrop-blur-xl bg-card/50 border-border/50 p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-fade-in" style={{ animationDelay: "0.6s" }}>
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Home className="h-5 w-5 text-primary" />
                 Top Cities by Active Inventory
@@ -209,7 +203,8 @@ export default function DashboardHome() {
           {/* Quick Links */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
             <Card 
-              className="backdrop-blur-xl bg-card/50 border-border/50 p-6 cursor-pointer hover:shadow-lg transition-all hover:scale-105"
+              className="backdrop-blur-xl bg-card/50 border-border/50 p-6 cursor-pointer hover:shadow-lg transition-all hover:scale-105 animate-fade-in"
+              style={{ animationDelay: "0.7s" }}
               onClick={() => navigate('/admin/content')}
             >
               <div className="flex items-center justify-between">
@@ -225,7 +220,8 @@ export default function DashboardHome() {
             </Card>
 
             <Card 
-              className="backdrop-blur-xl bg-card/50 border-border/50 p-6 cursor-pointer hover:shadow-lg transition-all hover:scale-105"
+              className="backdrop-blur-xl bg-card/50 border-border/50 p-6 cursor-pointer hover:shadow-lg transition-all hover:scale-105 animate-fade-in"
+              style={{ animationDelay: "0.8s" }}
               onClick={() => navigate('/admin/mls-sync-dashboard')}
             >
               <div className="flex items-center justify-between">
@@ -241,7 +237,8 @@ export default function DashboardHome() {
             </Card>
 
             <Card 
-              className="backdrop-blur-xl bg-card/50 border-border/50 p-6 cursor-pointer hover:shadow-lg transition-all hover:scale-105"
+              className="backdrop-blur-xl bg-card/50 border-border/50 p-6 cursor-pointer hover:shadow-lg transition-all hover:scale-105 animate-fade-in"
+              style={{ animationDelay: "0.9s" }}
               onClick={() => navigate('/admin/analytics')}
             >
               <div className="flex items-center justify-between">
@@ -330,9 +327,10 @@ interface KPITileProps {
   isLoading?: boolean;
   format?: 'number' | 'currency';
   color?: string;
+  delay?: string;
 }
 
-function KPITile({ icon, label, value, isLoading, format = 'number', color = 'text-primary' }: KPITileProps) {
+function KPITile({ icon, label, value, isLoading, format = 'number', color = 'text-primary', delay = '0s' }: KPITileProps) {
   const formattedValue = value
     ? format === 'currency'
       ? `$${(value / 1000).toFixed(0)}k`
@@ -340,7 +338,10 @@ function KPITile({ icon, label, value, isLoading, format = 'number', color = 'te
     : '—';
 
   return (
-    <Card className="backdrop-blur-xl bg-card/50 border-border/50 p-6 hover:shadow-lg transition-shadow">
+    <Card 
+      className="backdrop-blur-xl bg-card/50 border-border/50 p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-fade-in"
+      style={{ animationDelay: delay }}
+    >
       <div className="flex items-center gap-4">
         <div className={`p-3 rounded-xl bg-primary/10 ${color}`}>
           {icon}
