@@ -22,9 +22,12 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <img src="/logo-hf.png" alt="Hodges & Fooshee" className="h-8 w-8 rounded-md" />
             <nav className="hidden md:flex items-center gap-2">
-              {['Home','Featured Listings','Property Search','Communities','Our Services','Market Insights','About','Contact'].map(x=>(
-                <a key={x} href="#" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">{x}</a>
-              ))}
+              <a href="/" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Home</a>
+              <a href="#featured" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Featured Listings</a>
+              <a href="/search/properties" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Property Search</a>
+              <a href="#cities" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Communities</a>
+              <a href="/services" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Services</a>
+              <a href="#insights" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Market Insights</a>
               <button onClick={() => navigate('/admin')} className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">
                 Admin
               </button>

@@ -82,12 +82,17 @@ async function getToken() {
 async function fetchSampleListings(token: string, page = 1, pageSize = 25) {
   console.log('fetch.attempt', { page, pageSize, tokenPrefix: token.slice(0, 8) + "..." });
   
-  // Use OData (RESO) format as preferred
+  const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+  const REALTYFEED_ORIGIN = Deno.env.get("REALTYFEED_ORIGIN") || SUPABASE_URL;
+  
+  // Use OData (RESO) format - first run probe with top 25
   const resp = await fetch("https://api.realtyfeed.com/reso/odata/Property?$top=25&$select=*&$orderby=ModificationTimestamp desc", {
     headers: {
       Authorization: `Bearer ${token}`,
       "x-api-key": REALTYNA_API_KEY,
-      Accept: "application/json"
+      Accept: "application/json",
+      "Origin": REALTYFEED_ORIGIN,
+      "Referer": REALTYFEED_ORIGIN
     }
   });
 

@@ -47,9 +47,55 @@ const PropertyDetail: React.FC = () => {
   const { data: property, isLoading, error } = useQuery({
     queryKey: ['property', id],
     queryFn: async (): Promise<PropertyDetails> => {
-      const response = await fetch(`${API_BASE}/api/property/${id}`);
-      if (!response.ok) throw new Error('Failed to fetch property');
-      return response.json();
+      // Fetch property detail
+      const detailResponse = await fetch(
+        `https://xhqwmtzawqfffepcqxwf.supabase.co/functions/v1/mls-detail?listingKey=${id}`,
+        {
+          headers: {
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhocXdtdHphd3FmZmZlcGNxeHdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2MDQwODEsImV4cCI6MjA3MDE4MDA4MX0.gihIkhLS_pwr9Mz6uG6vm7BXPzfa2TcpvIrRECRfxfg'
+          }
+        }
+      );
+      if (!detailResponse.ok) throw new Error('Failed to fetch property');
+      const detailData = await detailResponse.json();
+      const prop = detailData.property;
+
+      // Fetch media
+      const mediaResponse = await fetch(
+        `https://xhqwmtzawqfffepcqxwf.supabase.co/functions/v1/mls-media?listingKey=${id}`,
+        {
+          headers: {
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhocXdtdHphd3FmZmZlcGNxeHdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2MDQwODEsImV4cCI6MjA3MDE4MDA4MX0.gihIkhLS_pwr9Mz6uG6vm7BXPzfa2TcpvIrRECRfxfg'
+          }
+        }
+      );
+      const mediaData = await mediaResponse.json();
+      const media = mediaData.media || [];
+
+      // Transform to PropertyDetails format
+      return {
+        id: prop.ListingKey,
+        title: `${prop.BedroomsTotal || 0}BR/${prop.BathroomsTotalInteger || 0}BA in ${prop.City}`,
+        address: `${prop.UnparsedAddress || prop.City}, ${prop.StateOrProvince || 'TN'} ${prop.PostalCode || ''}`,
+        price: prop.ListPrice || 0,
+        beds: prop.BedroomsTotal || 0,
+        baths: prop.BathroomsTotalInteger || 0,
+        sqft: prop.LivingArea || 0,
+        lotSize: prop.LotSizeArea ? `${prop.LotSizeArea} sq ft` : 'N/A',
+        yearBuilt: prop.YearBuilt || 0,
+        propertyType: prop.PropertyType || 'Residential',
+        status: prop.StandardStatus || 'Active',
+        listingDate: prop.ListingContractDate || new Date().toISOString(),
+        description: prop.PublicRemarks || 'No description available',
+        features: [],
+        images: media.map((m: any) => m.MediaURL).filter(Boolean),
+        agent: {
+          name: prop.ListAgentFullName || 'Agent',
+          phone: prop.ListAgentDirectPhone || '',
+          email: prop.ListAgentEmail || '',
+          image: '/placeholder.svg'
+        }
+      };
     },
   });
 

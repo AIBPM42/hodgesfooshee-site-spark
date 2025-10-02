@@ -28,9 +28,12 @@ console.log("[env] using", {
 
 const BASE        = Deno.env.get("RF_BASE") ?? "https://api.realtyfeed.com";
 const SCOPE       = Deno.env.get("RF_SCOPE") ?? "api/read";
+const REALTYFEED_ORIGIN = Deno.env.get("REALTYFEED_ORIGIN") || SUPABASE_URL;
 
 const TOKEN_URL   = `${BASE}/v1/auth/token`;
-const RESO_BASE   = `${BASE}/reso/odata`;
+// Fix: Remove stray ) and handle duplicate /reso/odata
+const cleanBase = BASE.replace(/\)+$/, '').replace(/\/+$/, '');
+const RESO_BASE = cleanBase.includes('/reso/odata') ? cleanBase : `${cleanBase}/reso/odata`;
 
 // ====== CORS ======
 const CORS_HEADERS = {
@@ -141,7 +144,9 @@ serve(async (req) => {
       "x-api-key": REALTYNA_API_KEY,
       "Accept": "application/json",
       "Authorization": `Bearer ${token}`,
-      "Prefer": "odata.maxpagesize=200", // hint page size
+      "Prefer": "odata.maxpagesize=200",
+      "Origin": REALTYFEED_ORIGIN,
+      "Referer": REALTYFEED_ORIGIN
     };
 
     let state = await getState();

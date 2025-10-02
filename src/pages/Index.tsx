@@ -57,11 +57,6 @@ const Index = () => {
             <FeaturedProperties />
           </section>
           
-          {/* Services Section with Glass Design */}
-          <section>
-            <ServicesSection />
-          </section>
-          
           {/* Market Insights with Premium Cards */}
           <section>
             <LatestMarketInsights />

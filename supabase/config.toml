@@ -102,5 +102,17 @@ verify_jwt = false
 [functions.mls-openhouses]
 verify_jwt = false
 
+[functions.mls-detail]
+verify_jwt = false
+
+[functions.mls-media]
+verify_jwt = false
+
+[functions.mls-members]
+verify_jwt = false
+
+[functions.mls-offices]
+verify_jwt = false
+
 [functions.log-event]
 verify_jwt = false
