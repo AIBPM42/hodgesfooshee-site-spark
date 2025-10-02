@@ -10,7 +10,7 @@ export const ProtectedRoute = ({ children, allowedRoles = ['admin', 'agent'] }: 
   const { userRole, isLoading } = useAuth();
 
   // Allow bypass in preview mode
-  const isPreview = window.location.hostname.includes('lovableproject.com');
+  const isPreview = window.location.hostname.includes('lovable.app') || window.location.hostname.includes('lovableproject.com');
   
   if (isLoading) {
     return (
