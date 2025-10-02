@@ -7,10 +7,16 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ children, allowedRoles = ['admin', 'agent'] }: ProtectedRouteProps) => {
-  const { userRole, isLoading } = useAuth();
+  // 1) Check preview FIRST - no auth needed
+  const host = window.location.hostname;
+  const isPreview = host.includes('lovable.app') || host.includes('lovableproject.com');
+  
+  if (isPreview) {
+    return <>{children}</>;
+  }
 
-  // Allow bypass in preview mode
-  const isPreview = window.location.hostname.includes('lovable.app') || window.location.hostname.includes('lovableproject.com');
+  // 2) Now check auth state for production
+  const { userRole, isLoading } = useAuth();
   
   if (isLoading) {
     return (
@@ -20,14 +26,9 @@ export const ProtectedRoute = ({ children, allowedRoles = ['admin', 'agent'] }: 
     );
   }
 
-  // In preview, allow access
-  if (isPreview) {
-    return <>{children}</>;
-  }
-
-  // Check if user has required role
+  // 3) Redirect to /login (not /) if unauthorized
   if (!allowedRoles.includes(userRole as any)) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;

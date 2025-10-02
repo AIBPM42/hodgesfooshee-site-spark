@@ -1,7 +1,6 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 export default function Header() {
-  const location = useLocation();
   const navigate = useNavigate();
 
   const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -12,7 +11,8 @@ export default function Header() {
     }
   };
 
-  const isActive = (path: string) => location.pathname.startsWith(path);
+  const linkClass = ({ isActive }: { isActive: boolean }) => 
+    `px-3 py-2 rounded-full hover:bg-white/10 text-white/90 transition ${isActive ? 'bg-white/10' : ''}`;
 
   return (
     <header className="fixed top-3 left-0 right-0 z-50">
@@ -22,13 +22,13 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <img src="/logo-hf.png" alt="Hodges & Fooshee" className="h-8 w-8 rounded-md" />
             <nav className="hidden md:flex items-center gap-2">
-              <Link to="/" className={`px-3 py-2 rounded-full hover:bg-white/10 text-white/90 ${isActive('/') && location.pathname === '/' ? 'bg-white/10' : ''}`}>Home</Link>
+              <NavLink to="/" end className={linkClass}>Home</NavLink>
               <a href="#featured" onClick={(e) => handleHashClick(e, 'featured')} className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Featured Listings</a>
-              <Link to="/search/properties" className={`px-3 py-2 rounded-full hover:bg-white/10 text-white/90 ${isActive('/search/properties') ? 'bg-white/10' : ''}`}>Property Search</Link>
+              <NavLink to="/search/properties" className={linkClass}>Property Search</NavLink>
               <a href="#cities" onClick={(e) => handleHashClick(e, 'cities')} className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Communities</a>
-              <Link to="/services" className={`px-3 py-2 rounded-full hover:bg-white/10 text-white/90 ${isActive('/services') ? 'bg-white/10' : ''}`}>Services</Link>
+              <NavLink to="/services" className={linkClass}>Services</NavLink>
               <a href="#insights" onClick={(e) => handleHashClick(e, 'insights')} className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Market Insights</a>
-              <Link to="/admin" className={`px-3 py-2 rounded-full hover:bg-white/10 text-white/90 ${isActive('/admin') ? 'bg-white/10' : ''}`}>Admin</Link>
+              <NavLink to="/admin" className={linkClass}>Admin</NavLink>
             </nav>
           </div>
           {/* Right: auth */}
