@@ -33,8 +33,10 @@ import AnalyticsPage from "./pages/admin/AnalyticsPage";
 import AdminDashboard from "./pages/admin/Dashboard";
 import Analytics from "./pages/admin/Analytics";
 import Content from "./pages/admin/Content";
+import CountyManagement from "./pages/admin/CountyManagement";
 import Services from "./pages/Services";
 import Login from "./pages/Login";
+import CountyPage from "./pages/CountyPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,6 +65,7 @@ const App = () => (
               <Route path="/admin/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
               <Route path="/admin/mls-sync" element={<ProtectedRoute allowedRoles={['admin']}><MLSSync /></ProtectedRoute>} />
               <Route path="/admin/content" element={<ProtectedRoute allowedRoles={['admin']}><Content /></ProtectedRoute>} />
+              <Route path="/admin/counties" element={<ProtectedRoute allowedRoles={['admin']}><CountyManagement /></ProtectedRoute>} />
               <Route path="/admin/connections/realtyna" element={<ProtectedRoute allowedRoles={['admin']}><RealtynaConnection /></ProtectedRoute>} />
               <Route path="/admin/content-legacy" element={<AdminContent />} />
               <Route path="/admin/analytics-legacy" element={<AnalyticsPage />} />
@@ -84,6 +87,7 @@ const App = () => (
               <Route path="/search/agents" element={<AgentResults />} />
               <Route path="/search/offices" element={<OfficeResults />} />
               <Route path="/property/:id" element={<PropertyDetail />} />
+              <Route path="/market/:countySlug" element={<CountyPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

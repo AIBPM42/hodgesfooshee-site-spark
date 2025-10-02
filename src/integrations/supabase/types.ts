@@ -73,6 +73,77 @@ export type Database = {
           },
         ]
       }
+      ai_county_insights: {
+        Row: {
+          affordability: Json | null
+          agent_takeaways: Json | null
+          biggest_price_cuts: Json | null
+          buyer_tips: Json | null
+          citations: Json | null
+          county_slug: string
+          created_at: string | null
+          disclaimers: Json | null
+          expires_at: string | null
+          faq: Json | null
+          generated_at: string | null
+          hot_cities_wow: Json | null
+          migration_flow: Json | null
+          provider_meta: Json | null
+          rent_vs_buy: Json | null
+          seller_playbook: Json | null
+          summary: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          affordability?: Json | null
+          agent_takeaways?: Json | null
+          biggest_price_cuts?: Json | null
+          buyer_tips?: Json | null
+          citations?: Json | null
+          county_slug: string
+          created_at?: string | null
+          disclaimers?: Json | null
+          expires_at?: string | null
+          faq?: Json | null
+          generated_at?: string | null
+          hot_cities_wow?: Json | null
+          migration_flow?: Json | null
+          provider_meta?: Json | null
+          rent_vs_buy?: Json | null
+          seller_playbook?: Json | null
+          summary?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          affordability?: Json | null
+          agent_takeaways?: Json | null
+          biggest_price_cuts?: Json | null
+          buyer_tips?: Json | null
+          citations?: Json | null
+          county_slug?: string
+          created_at?: string | null
+          disclaimers?: Json | null
+          expires_at?: string | null
+          faq?: Json | null
+          generated_at?: string | null
+          hot_cities_wow?: Json | null
+          migration_flow?: Json | null
+          provider_meta?: Json | null
+          rent_vs_buy?: Json | null
+          seller_playbook?: Json | null
+          summary?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_county_insights_county_slug_fkey"
+            columns: ["county_slug"]
+            isOneToOne: true
+            referencedRelation: "county_stats"
+            referencedColumns: ["county_slug"]
+          },
+        ]
+      }
       ai_hot_properties: {
         Row: {
           address: string
@@ -360,6 +431,165 @@ export type Database = {
           state?: string | null
         }
         Relationships: []
+      }
+      city_stats: {
+        Row: {
+          active_listings: number | null
+          avg_ppsf: number | null
+          city: string
+          county_slug: string | null
+          created_at: string | null
+          id: string
+          median_price: number | null
+        }
+        Insert: {
+          active_listings?: number | null
+          avg_ppsf?: number | null
+          city: string
+          county_slug?: string | null
+          created_at?: string | null
+          id?: string
+          median_price?: number | null
+        }
+        Update: {
+          active_listings?: number | null
+          avg_ppsf?: number | null
+          city?: string
+          county_slug?: string | null
+          created_at?: string | null
+          id?: string
+          median_price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "city_stats_county_slug_fkey"
+            columns: ["county_slug"]
+            isOneToOne: false
+            referencedRelation: "county_stats"
+            referencedColumns: ["county_slug"]
+          },
+        ]
+      }
+      county_price_bands: {
+        Row: {
+          active_count: number
+          band: string
+          county_slug: string | null
+          created_at: string | null
+          id: string
+        }
+        Insert: {
+          active_count: number
+          band: string
+          county_slug?: string | null
+          created_at?: string | null
+          id?: string
+        }
+        Update: {
+          active_count?: number
+          band?: string
+          county_slug?: string | null
+          created_at?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "county_price_bands_county_slug_fkey"
+            columns: ["county_slug"]
+            isOneToOne: false
+            referencedRelation: "county_stats"
+            referencedColumns: ["county_slug"]
+          },
+        ]
+      }
+      county_stats: {
+        Row: {
+          avg_ppsf: number | null
+          county_name: string
+          county_slug: string
+          created_at: string | null
+          days_on_market: number | null
+          hero_image_url: string | null
+          inventory_active: number | null
+          last_updated: string | null
+          median_price: number | null
+          months_of_supply: number | null
+          new_listings_7d: number | null
+          price_change_yoy: number | null
+          price_cuts_7d: number | null
+          state: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avg_ppsf?: number | null
+          county_name: string
+          county_slug: string
+          created_at?: string | null
+          days_on_market?: number | null
+          hero_image_url?: string | null
+          inventory_active?: number | null
+          last_updated?: string | null
+          median_price?: number | null
+          months_of_supply?: number | null
+          new_listings_7d?: number | null
+          price_change_yoy?: number | null
+          price_cuts_7d?: number | null
+          state?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avg_ppsf?: number | null
+          county_name?: string
+          county_slug?: string
+          created_at?: string | null
+          days_on_market?: number | null
+          hero_image_url?: string | null
+          inventory_active?: number | null
+          last_updated?: string | null
+          median_price?: number | null
+          months_of_supply?: number | null
+          new_listings_7d?: number | null
+          price_change_yoy?: number | null
+          price_cuts_7d?: number | null
+          state?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      county_trends: {
+        Row: {
+          county_slug: string | null
+          created_at: string | null
+          id: string
+          period: string
+          trend_type: string
+          value: Json
+        }
+        Insert: {
+          county_slug?: string | null
+          created_at?: string | null
+          id?: string
+          period: string
+          trend_type: string
+          value: Json
+        }
+        Update: {
+          county_slug?: string | null
+          created_at?: string | null
+          id?: string
+          period?: string
+          trend_type?: string
+          value?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "county_trends_county_slug_fkey"
+            columns: ["county_slug"]
+            isOneToOne: false
+            referencedRelation: "county_stats"
+            referencedColumns: ["county_slug"]
+          },
+        ]
       }
       feature_flags: {
         Row: {

@@ -125,3 +125,9 @@ verify_jwt = false
 
 [functions.realtyna_sync_incremental]
 verify_jwt = false
+
+[functions.get_county_page_data]
+verify_jwt = false
+
+[functions.refresh_ai_county_insights]
+verify_jwt = false
