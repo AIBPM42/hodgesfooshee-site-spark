@@ -1,22 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { RefreshCw, PlayCircle, Database } from "lucide-react";
+import { RefreshCw, PlayCircle, Database, Activity, AlertCircle, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 export default function MLSSync() {
   const [loading, setLoading] = useState(false);
   const [lastResponse, setLastResponse] = useState<any>(null);
-  const [listingsCount, setListingsCount] = useState<number | null>(null);
+  const [counts, setCounts] = useState<any>({});
   const { toast } = useToast();
 
-  const refreshCount = async () => {
-    const { count } = await supabase
-      .from('mls_listings')
-      .select('*', { count: 'exact', head: true });
-    setListingsCount(count || 0);
+  const refreshCounts = async () => {
+    const [listings, members, offices, openhouses] = await Promise.all([
+      supabase.from('mls_listings').select('*', { count: 'exact', head: true }),
+      supabase.from('mls_members').select('*', { count: 'exact', head: true }),
+      supabase.from('mls_offices').select('*', { count: 'exact', head: true }),
+      supabase.from('mls_open_houses').select('*', { count: 'exact', head: true })
+    ]);
+    
+    setCounts({
+      listings: listings.count || 0,
+      members: members.count || 0,
+      offices: offices.count || 0,
+      openhouses: openhouses.count || 0
+    });
   };
+
+  useEffect(() => {
+    refreshCounts();
+  }, []);
 
   const handleRefreshToken = async () => {
     setLoading(true);
@@ -47,7 +62,7 @@ export default function MLSSync() {
           title: "Test sync successful",
           description: `Fetched: ${data.fetched}, Inserted: ${data.inserted}`
         });
-        await refreshCount();
+        await refreshCounts();
       } else {
         toast({
           title: "Test sync failed",
@@ -88,7 +103,7 @@ export default function MLSSync() {
           title: "Incremental sync successful",
           description: `Processed: ${data.total}, Pages: ${data.pages_fetched}`
         });
-        await refreshCount();
+        await refreshCounts();
       } else {
         toast({
           title: "Incremental sync failed",
@@ -109,9 +124,17 @@ export default function MLSSync() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-display font-bold text-gradient mb-2">MLS Sync Control</h1>
-        <p className="text-muted-foreground">Manage Realtyna MLS data synchronization</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-display font-bold text-gradient mb-2">MLS Sync Control</h1>
+          <p className="text-muted-foreground">Manage Realtyna MLS data synchronization</p>
+        </div>
+        <Link to="/admin">
+          <Badge variant="outline" className="text-xs cursor-pointer hover:bg-accent">
+            <Activity className="h-3 w-3 mr-1" />
+            Live Dashboard
+          </Badge>
+        </Link>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
@@ -182,30 +205,93 @@ export default function MLSSync() {
       </div>
 
       {lastResponse && (
-        <Card className="card-glass">
+        <Card className={`card-glass ${lastResponse.ok ? 'border-green-500/50' : 'border-red-500/50'}`}>
           <CardHeader>
-            <CardTitle>Last Response</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              {lastResponse.ok ? (
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              ) : (
+                <AlertCircle className="h-5 w-5 text-red-500" />
+              )}
+              Last Run: {lastResponse.ok ? 'Success' : 'Error'}
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <pre className="text-xs overflow-auto p-4 bg-muted/50 rounded-lg">
-              {JSON.stringify(lastResponse, null, 2)}
-            </pre>
+          <CardContent className="space-y-4">
+            {lastResponse.ok ? (
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <div className="text-xs text-muted-foreground">Status</div>
+                  <Badge variant="outline" className="mt-1">200 OK</Badge>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Fetched</div>
+                  <div className="text-2xl font-bold">{lastResponse.fetched || 0}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Inserted</div>
+                  <div className="text-2xl font-bold">{lastResponse.inserted || 0}</div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">Error:</span>
+                  <Badge variant="destructive">Failed</Badge>
+                </div>
+                <pre className="text-xs overflow-auto p-4 bg-destructive/10 rounded-lg">
+                  {lastResponse.error || 'Unknown error'}
+                </pre>
+                {lastResponse.error_detail && (
+                  <div className="text-xs text-muted-foreground">
+                    {lastResponse.error_detail}
+                  </div>
+                )}
+              </div>
+            )}
+            <details className="text-xs">
+              <summary className="cursor-pointer text-muted-foreground">View Full Response</summary>
+              <pre className="mt-2 overflow-auto p-4 bg-muted/50 rounded-lg">
+                {JSON.stringify(lastResponse, null, 2)}
+              </pre>
+            </details>
           </CardContent>
         </Card>
       )}
 
       <Card className="card-glass">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Database Count</CardTitle>
-          <Button size="sm" variant="outline" onClick={refreshCount}>
+          <CardTitle>Database Counts</CardTitle>
+          <Button size="sm" variant="outline" onClick={refreshCounts}>
             <RefreshCw className="h-4 w-4" />
           </Button>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">
-            {listingsCount !== null ? listingsCount.toLocaleString() : 'Click to load'}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <div className="text-xs text-muted-foreground">Listings</div>
+              <div className="text-2xl font-bold">
+                {counts.listings?.toLocaleString() || '—'}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">Members</div>
+              <div className="text-2xl font-bold">
+                {counts.members?.toLocaleString() || '—'}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">Offices</div>
+              <div className="text-2xl font-bold">
+                {counts.offices?.toLocaleString() || '—'}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">Open Houses</div>
+              <div className="text-2xl font-bold">
+                {counts.openhouses?.toLocaleString() || '—'}
+              </div>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground">Total mls_listings records</p>
         </CardContent>
       </Card>
     </div>

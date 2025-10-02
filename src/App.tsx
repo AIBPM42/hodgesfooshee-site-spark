@@ -28,6 +28,8 @@ import DashboardHome from "./pages/admin/DashboardHome";
 import AdminContent from "./pages/admin/AdminContent";
 import AnalyticsPage from "./pages/admin/AnalyticsPage";
 import AdminDashboard from "./pages/admin/Dashboard";
+import Analytics from "./pages/admin/Analytics";
+import Content from "./pages/admin/Content";
 import Services from "./pages/Services";
 
 const queryClient = new QueryClient({
@@ -51,8 +53,10 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/services" element={<Services />} />
             <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/content" element={<AdminContent />} />
-            <Route path="/admin/analytics" element={<AnalyticsPage />} />
+            <Route path="/admin/analytics" element={<Analytics />} />
+            <Route path="/admin/content" element={<Content />} />
+            <Route path="/admin/content-legacy" element={<AdminContent />} />
+            <Route path="/admin/analytics-legacy" element={<AnalyticsPage />} />
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<Overview />} />
               <Route path="mls" element={<MLSModule />} />
