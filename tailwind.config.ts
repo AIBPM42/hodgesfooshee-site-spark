@@ -66,16 +66,20 @@ export default {
           700: "hsl(var(--brand-700))",
         },
         'luxury-gold': "hsl(var(--luxury-gold))",
-        // H&F Brand Colors
-        'hf-orange': "rgb(var(--hf-orange))",
-        'hf-green': "rgb(var(--hf-green))",
-        'hf-purple': "rgb(var(--hf-purple))",
-        'hf-red': "rgb(var(--hf-red))",
+        // H&F Brand Colors (HSL)
+        'hf-orange': "hsl(var(--hf-orange))",
+        'hf-orange-dark': "hsl(var(--hf-orange-dark))",
+        'hf-orange-light': "hsl(var(--hf-orange-light))",
+        'hf-green': "hsl(var(--hf-green))",
+        'hf-green-dark': "hsl(var(--hf-green-dark))",
+        'hf-purple': "hsl(var(--hf-purple))",
+        'hf-purple-dark': "hsl(var(--hf-purple-dark))",
+        'hf-red': "hsl(var(--hf-red))",
         'hf-charcoal': {
-          800: "rgb(var(--hf-charcoal-800))",
-          900: "rgb(var(--hf-charcoal-900))",
+          800: "hsl(var(--hf-charcoal-800))",
+          900: "hsl(var(--hf-charcoal-900))",
         },
-        'hf-text': "rgb(var(--hf-text))",
+        'hf-text': "hsl(var(--hf-text-primary))",
         // Glass Utilities
         glass: {
           primary: "var(--glass-primary)",
@@ -116,7 +120,7 @@ export default {
         '2xl': '20px',
       },
       fontFamily: {
-        display: ["Playfair Display", "Georgia", "serif"],
+        display: ["Fraunces", "Playfair Display", "Georgia", "serif"],
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
       },
       keyframes: {

@@ -107,59 +107,59 @@ export default function SmartSearchBar({
   }
 
   return (
-    <div className="w-full rounded-3xl border border-gray-300 bg-white/95 p-4 md:p-6 shadow-lg">
-      <div className="flex flex-col gap-3">
-        {/* main free-text */}
+    <div className="w-full rounded-3xl border border-white/20 bg-white/8 backdrop-blur-xl p-6 md:p-8 shadow-glass">
+      <div className="flex flex-col gap-4">
+        {/* main free-text with premium styling */}
         <input
           value={smart}
           onChange={e=>setSmart(e.target.value)}
           onKeyDown={(e)=>{ if(e.key==='Enter') go(); }}
           placeholder="Try: Franklin 3bd 2ba 400k-800k house"
-          className="w-full rounded-2xl px-4 py-3 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none"
+          className="w-full rounded-2xl px-5 py-4 bg-white/95 text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-hf-orange focus:ring-2 focus:ring-hf-orange/20 focus:outline-none text-base transition-all"
         />
 
-        {/* structured row */}
+        {/* structured row with better spacing */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-          <input value={minPrice} onChange={e=>setMinPrice(e.target.value)} placeholder="Min $" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
-          <input value={maxPrice} onChange={e=>setMaxPrice(e.target.value)} placeholder="Max $" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
-          <input value={beds} onChange={e=>setBeds(e.target.value)} placeholder="Beds" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
-          <input value={baths} onChange={e=>setBaths(e.target.value)} placeholder="Baths" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
-          <input value={city} onChange={e=>setCity(e.target.value)} placeholder="City" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
-          <input value={county} onChange={e=>setCounty(e.target.value)} placeholder="County" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
+          <input value={minPrice} onChange={e=>setMinPrice(e.target.value)} placeholder="Min $" className="rounded-xl px-4 py-3 bg-white/90 text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-hf-orange focus:ring-1 focus:ring-hf-orange/20 focus:outline-none transition-all" />
+          <input value={maxPrice} onChange={e=>setMaxPrice(e.target.value)} placeholder="Max $" className="rounded-xl px-4 py-3 bg-white/90 text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-hf-orange focus:ring-1 focus:ring-hf-orange/20 focus:outline-none transition-all" />
+          <input value={beds} onChange={e=>setBeds(e.target.value)} placeholder="Beds" className="rounded-xl px-4 py-3 bg-white/90 text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-hf-orange focus:ring-1 focus:ring-hf-orange/20 focus:outline-none transition-all" />
+          <input value={baths} onChange={e=>setBaths(e.target.value)} placeholder="Baths" className="rounded-xl px-4 py-3 bg-white/90 text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-hf-orange focus:ring-1 focus:ring-hf-orange/20 focus:outline-none transition-all" />
+          <input value={city} onChange={e=>setCity(e.target.value)} placeholder="City" className="rounded-xl px-4 py-3 bg-white/90 text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-hf-orange focus:ring-1 focus:ring-hf-orange/20 focus:outline-none transition-all" />
+          <input value={county} onChange={e=>setCounty(e.target.value)} placeholder="County" className="rounded-xl px-4 py-3 bg-white/90 text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-hf-orange focus:ring-1 focus:ring-hf-orange/20 focus:outline-none transition-all" />
         </div>
 
-        {/* advanced toggle (keep functional, no visual flare) */}
-        <button onClick={()=>setAdvancedOpen(v=>!v)} className="text-sm underline self-start text-gray-800">
+        {/* advanced toggle with premium styling */}
+        <button onClick={()=>setAdvancedOpen(v=>!v)} className="text-sm font-medium underline self-start text-white/90 hover:text-white transition-colors">
           {advancedOpen ? "Hide Advanced" : "Advanced Filters"}
         </button>
         {advancedOpen && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <input value={type} onChange={e=>setType(e.target.value)} placeholder="Property Type (e.g., Single Family, Condo)" className="rounded-xl px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-gray-500 focus:outline-none" />
+            <input value={type} onChange={e=>setType(e.target.value)} placeholder="Property Type (e.g., Single Family, Condo)" className="rounded-xl px-4 py-3 bg-white/90 text-gray-900 placeholder-gray-500 border border-gray-300 focus:border-hf-orange focus:ring-1 focus:ring-hf-orange/20 focus:outline-none transition-all" />
           </div>
         )}
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mt-2">
           <button
             onClick={go}
-            className="px-5 py-3 rounded-2xl bg-orange-500 text-white font-semibold hover:brightness-110 focus:outline-none"
+            className="btn-premium px-8 py-4 rounded-full font-semibold text-base shadow-lg hover:shadow-xl transition-all"
           >
             Search Properties
           </button>
-          <div className="text-xs text-gray-700">
-            {parsed.city && `Searching in ${parsed.city}`} 
-            {parsed.beds && ` • ${parsed.beds} bd`} 
-            {parsed.baths && ` • ${parsed.baths} ba`} 
-            {parsed.min_price && ` • $${Number(parsed.min_price).toLocaleString()}+`}
+          <div className="text-sm text-white/80 font-medium">
+            {parsed.city && `🏙️ ${parsed.city}`} 
+            {parsed.beds && ` • 🛏️ ${parsed.beds} bd`} 
+            {parsed.baths && ` • 🚿 ${parsed.baths} ba`} 
+            {parsed.min_price && ` • 💰 $${Number(parsed.min_price).toLocaleString()}+`}
             {parsed.max_price && ` – $${Number(parsed.max_price).toLocaleString()}`}
-            {parsed.type && ` • ${parsed.type}`}
+            {parsed.type && ` • 🏠 ${parsed.type}`}
           </div>
         </div>
         
-        {/* Debug info when there's input but no matches */}
+        {/* Enhanced search tip */}
         {smart && !parsed.city && !parsed.beds && !parsed.baths && !parsed.min_price && !parsed.type && (
-          <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
-              💡 <strong>Search tip:</strong> Try "Nashville 3 bed 2 bath 400k-800k house" or use the individual fields below.
+          <div className="mt-2 p-4 bg-hf-orange/10 border border-hf-orange/30 rounded-xl backdrop-blur-sm">
+            <p className="text-sm text-white font-medium">
+              💡 <strong>Search tip:</strong> Try "Nashville 3 bed 2 bath 400k-800k house" or use the individual fields above.
             </p>
           </div>
         )}
