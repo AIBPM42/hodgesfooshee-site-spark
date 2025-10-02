@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Bed, Bath, Square, MapPin, Calendar, Heart, Share2, Phone, Mail } from 'lucide-react';
+import { logPageView, logListingView } from '@/lib/analytics';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'https://your-backend-domain.com';
 
@@ -34,6 +35,14 @@ interface PropertyDetails {
 
 const PropertyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  
+  // Track page view and listing view
+  React.useEffect(() => {
+    logPageView(`/property/${id}`);
+    if (id) {
+      logListingView(id);
+    }
+  }, [id]);
   
   const { data: property, isLoading, error } = useQuery({
     queryKey: ['property', id],

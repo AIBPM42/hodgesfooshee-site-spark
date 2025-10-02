@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Calendar, Clock, MapPin, Home } from 'lucide-react';
+import { logPageView } from '@/lib/analytics';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'https://your-backend-domain.com';
 
@@ -24,6 +25,11 @@ interface OpenHouse {
 
 const OpenHouseResults: React.FC = () => {
   const [searchParams] = useSearchParams();
+  
+  // Track page view
+  React.useEffect(() => {
+    logPageView('/search/openhouses');
+  }, []);
   
   const { data: openHousesData, isLoading, error } = useQuery({
     queryKey: ['openhouses', searchParams.toString()],

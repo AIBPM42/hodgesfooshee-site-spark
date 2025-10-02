@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Bed, Bath, Square, MapPin, Heart, Phone } from "lucide-react";
+import { logPageView } from "@/lib/analytics";
 
 // Mock data - replace with MLS API integration
 const properties = [
@@ -58,6 +60,11 @@ const properties = [
 ];
 
 const Listings = () => {
+  // Track page view
+  useEffect(() => {
+    logPageView('/listings');
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />

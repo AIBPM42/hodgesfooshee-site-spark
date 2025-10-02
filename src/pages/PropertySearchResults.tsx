@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Bed, Bath, Square, MapPin, DollarSign } from 'lucide-react';
+import { logPageView, logSearch } from '@/lib/analytics';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'https://your-backend-domain.com';
 
@@ -26,6 +27,11 @@ const PropertySearchResults: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [authStatus, setAuthStatus] = React.useState<'loading' | 'ready' | 'error'>('loading');
   
+  // Track page view
+  React.useEffect(() => {
+    logPageView('/search/properties');
+  }, []);
+  
   const { data: propertiesData, isLoading, error } = useQuery({
     queryKey: ['properties', searchParams.toString()],
     queryFn: async () => {
@@ -45,6 +51,10 @@ const PropertySearchResults: React.FC = () => {
       
       const data = await response.json();
       setAuthStatus('ready');
+      
+      // Log search event
+      const queryParams = Object.fromEntries(searchParams.entries());
+      logSearch(queryParams, data.properties?.length || 0);
       
       // Transform Realtyna RESO data to Property format
       const properties = data.properties?.map((p: any) => ({
