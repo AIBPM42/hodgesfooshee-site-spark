@@ -333,9 +333,18 @@ export default function AdminDashboard() {
                     <div className={`h-2 w-2 rounded-full ${service.ok ? 'bg-green-500' : 'bg-red-500'}`} />
                     <span className="text-sm capitalize">{key}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    {service.ok ? `${service.t}ms | Count: ${service.countProbe || 0}` : `Status: ${service.status || 'Error'}`}
-                  </p>
+                  {service.ok ? (
+                    <p className="text-xs text-muted-foreground">
+                      {service.t}ms | Count: {service.countProbe || 0}
+                    </p>
+                  ) : (
+                    <div className="space-y-1">
+                      <p className="text-xs text-red-400">Status: {service.status || 'Error'}</p>
+                      {service.error && (
+                        <p className="text-xs text-muted-foreground">{service.error}</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

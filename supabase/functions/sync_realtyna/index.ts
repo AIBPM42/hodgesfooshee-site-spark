@@ -44,41 +44,10 @@ const CORS_HEADERS = {
 };
 
 // ====== Helpers ======
-async function getToken(): Promise<string> {
-  const tokenRes = await fetch("https://api.realtyfeed.com/v1/auth/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "client_credentials",
-      client_id: MLS_CLIENT_ID,
-      client_secret: MLS_CLIENT_SECRET,
-      scope: "api/read"
-    })
-  });
-  
-  if (!tokenRes.ok) {
-    const errorText = await tokenRes.text();
-    console.error("Token request failed:", tokenRes.status, errorText);
-    throw new Error(`token ${tokenRes.status}: ${errorText}`);
-  }
-  
-  const { access_token } = await tokenRes.json();
-  console.log("Token acquired successfully");
-  return access_token;
-}
+import { getRealtynaToken } from '../_shared/realtyna-auth.ts';
+import { getRealtynaHeaders, fetchWithRetry } from '../_shared/realtyna-client.ts';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-async function fetchWithBackoff(url: string, headers: HeadersInit, tries = 5) {
-  let delay = 250;
-  for (let i = 0; i < tries; i++) {
-    const res = await fetch(url, { headers });
-    if (res.status !== 429) return res;
-    await sleep(delay);
-    delay = Math.min(4000, delay * 2); // 250 → 500 → 1000 → 2000 → 4000
-  }
-  return fetch(url, { headers }); // final attempt
-}
 
 async function getState() {
   const { data } = await sb
@@ -139,14 +108,10 @@ serve(async (req) => {
     const reset = url.searchParams.get("reset") === "true";
     if (reset) await clearState();
 
-    const token = await getToken();
+    const token = await getRealtynaToken();
     const headers = {
-      "x-api-key": REALTYNA_API_KEY,
-      "Accept": "application/json",
-      "Authorization": `Bearer ${token}`,
+      ...getRealtynaHeaders(token, REALTYFEED_ORIGIN),
       "Prefer": "odata.maxpagesize=200",
-      "Origin": REALTYFEED_ORIGIN,
-      "Referer": REALTYFEED_ORIGIN
     };
 
     let state = await getState();
@@ -179,7 +144,7 @@ serve(async (req) => {
     
     for (let i = 0; i < MAX_PAGES; i++) {
       console.log(`Fetching page ${i + 1}, URL: ${nextUrl}`);
-      const res = await fetchWithBackoff(nextUrl!, headers);
+      const res = await fetchWithRetry(nextUrl!, { headers });
       
       console.log(`API Response - Status: ${res.status}, Headers:`, Object.fromEntries(res.headers.entries()));
       

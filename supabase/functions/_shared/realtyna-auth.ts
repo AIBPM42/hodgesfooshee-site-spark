@@ -6,7 +6,17 @@ export interface RealtynaToken {
   expires_in: number;
 }
 
+// Token cache with expiration
+let cachedToken: { token: string; expiresAt: number } | null = null;
+
 export async function getRealtynaToken(): Promise<string> {
+  // Check cache first
+  if (cachedToken && Date.now() < cachedToken.expiresAt) {
+    console.log('[realtyna-auth] Using cached token');
+    return cachedToken.token;
+  }
+
+  console.log('[realtyna-auth] Fetching new token');
   const clientId = Deno.env.get("MLS_CLIENT_ID");
   const clientSecret = Deno.env.get("MLS_CLIENT_SECRET");
   
@@ -32,28 +42,22 @@ export async function getRealtynaToken(): Promise<string> {
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error(`Token request failed: ${response.status}`, errorText);
-    throw new Error(`Failed to get token: ${response.status} - ${errorText}`);
+    console.error(`[realtyna-auth] Token request failed: ${response.status}`, errorText.substring(0, 300));
+    throw new Error(`Failed to get token: ${response.status} - ${errorText.substring(0, 200)}`);
   }
 
   const data: RealtynaToken = await response.json();
+  
+  // Cache token (expires_in is in seconds, subtract 5min buffer)
+  const expiresAt = Date.now() + ((data.expires_in - 300) * 1000);
+  cachedToken = { token: data.access_token, expiresAt };
+  
+  console.log(`[realtyna-auth] Token cached, expires in ${data.expires_in}s`);
   return data.access_token;
 }
 
-export function getRealtynaHeaders(accessToken: string) {
-  const apiKey = Deno.env.get("REALTYNA_API_KEY");
-  const supabaseRef = Deno.env.get("SUPABASE_URL")?.match(/https:\/\/([^.]+)/)?.[1];
-  
-  if (!apiKey) {
-    throw new Error("Missing REALTYNA_API_KEY");
-  }
-
-  return {
-    "Authorization": `Bearer ${accessToken}`,
-    "x-api-key": apiKey,
-    "Accept": "application/json",
-    "Content-Type": "application/json",
-    "Origin": `https://${supabaseRef}.functions.supabase.co`,
-    "Referer": `https://${supabaseRef}.functions.supabase.co`
-  };
+// Clear cache (for 401 retries)
+export function clearTokenCache() {
+  console.log('[realtyna-auth] Clearing token cache');
+  cachedToken = null;
 }

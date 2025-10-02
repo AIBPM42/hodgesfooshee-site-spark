@@ -1,10 +1,6 @@
 import { corsHeaders } from '../_shared/cors.ts';
-
-const REALTYNA_API_KEY = Deno.env.get('REALTYNA_API_KEY') || '';
-const MLS_CLIENT_ID = Deno.env.get('MLS_CLIENT_ID') || '';
-const MLS_CLIENT_SECRET = Deno.env.get('MLS_CLIENT_SECRET') || '';
-const RF_TOKEN_URL = 'https://api.realtyfeed.com/reso/oauth2/token';
-const RF_BASE = 'https://api.realtyfeed.com/reso/odata';
+import { getRealtynaToken } from '../_shared/realtyna-auth.ts';
+import { getRealtynaBaseUrl, getRealtynaHeaders, fetchWithRetry } from '../_shared/realtyna-client.ts';
 
 Deno.serve(async (req) => {
   // Handle CORS preflight
@@ -14,30 +10,28 @@ Deno.serve(async (req) => {
 
   try {
     const timestamp = new Date().toISOString();
+    console.log('[mls-health] Health check started');
     
-    // Get OAuth token
+    // Get OAuth token with caching
     let token = '';
     try {
-      const tokenResponse = await fetch(RF_TOKEN_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'x-api-key': REALTYNA_API_KEY,
-        },
-        body: new URLSearchParams({
-          client_id: MLS_CLIENT_ID,
-          client_secret: MLS_CLIENT_SECRET,
-          grant_type: 'client_credentials',
-          scope: 'OData',
-        }),
-      });
-
-      if (tokenResponse.ok) {
-        const tokenData = await tokenResponse.json();
-        token = tokenData.access_token;
-      }
+      token = await getRealtynaToken();
+      console.log('[mls-health] Token obtained successfully');
     } catch (error) {
-      console.error('Token fetch failed:', error);
+      console.error('[mls-health] Token fetch failed:', error);
+      return new Response(
+        JSON.stringify({ 
+          services: {
+            properties: { ok: false, status: 0, t: 0, error: 'Token fetch failed', countProbe: 0 },
+            openHouses: { ok: false, status: 0, t: 0, error: 'Token fetch failed', countProbe: 0 },
+            members: { ok: false, status: 0, t: 0, error: 'Token fetch failed', countProbe: 0 },
+            offices: { ok: false, status: 0, t: 0, error: 'Token fetch failed', countProbe: 0 },
+          }, 
+          timestamp, 
+          error: 'Failed to obtain token' 
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 503 }
+      );
     }
 
     const services = {
@@ -47,12 +41,8 @@ Deno.serve(async (req) => {
       offices: { ok: false, status: 0, t: 0, error: '', countProbe: 0 },
     };
 
-    if (!token) {
-      return new Response(
-        JSON.stringify({ services, timestamp, error: 'Failed to obtain token' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 503 }
-      );
-    }
+    const RF_BASE = getRealtynaBaseUrl();
+    const headers = getRealtynaHeaders(token);
 
     // Check each service
     const checks = [
@@ -66,12 +56,8 @@ Deno.serve(async (req) => {
       checks.map(async ({ key, url }) => {
         const start = Date.now();
         try {
-          const response = await fetch(url, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'x-api-key': REALTYNA_API_KEY,
-            },
-          });
+          console.log(`[mls-health] Checking ${key}: ${url}`);
+          const response = await fetchWithRetry(url, { headers }, 2);
           const t = Date.now() - start;
           
           if (response.ok) {
@@ -84,29 +70,30 @@ Deno.serve(async (req) => {
               error: '',
               countProbe: count,
             };
+            console.log(`[mls-health] ${key} OK: ${count} items in ${t}ms`);
           } else {
+            const errorBody = await response.text();
+            const errorMsg = `${response.status} ${response.statusText}`;
             services[key as keyof typeof services] = {
               ok: false,
               status: response.status,
               t,
-              error: `${response.status} ${response.statusText}`,
+              error: errorMsg,
               countProbe: 0,
             };
-          }
-          
-          if (!response.ok) {
-            console.error(`[${key}] Failed: ${url} -> ${response.status}`);
+            console.error(`[mls-health] ${key} failed: ${errorMsg}`, errorBody.substring(0, 200));
           }
         } catch (error) {
           const t = Date.now() - start;
+          const errorMsg = error.message || 'Network error';
           services[key as keyof typeof services] = {
             ok: false,
             status: 0,
             t,
-            error: error.message || 'Network error',
+            error: errorMsg,
             countProbe: 0,
           };
-          console.error(`[${key}] Error: ${url}`, error);
+          console.error(`[mls-health] ${key} error:`, errorMsg);
         }
       })
     );
