@@ -1,18 +1,18 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const location = useLocation();
   const navigate = useNavigate();
-  // TODO: replace preview bypass with real auth
-  const ENABLE_BYPASS = import.meta.env.VITE_ENABLE_ADMIN_BYPASS === 'true';
 
-  const handleLoginClick = () => {
-    if (ENABLE_BYPASS) {
-      navigate('/admin/mls-sync-dashboard');
-    } else {
-      // (future) real auth flow
-      navigate('/login');
+  const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const isActive = (path: string) => location.pathname.startsWith(path);
 
   return (
     <header className="fixed top-3 left-0 right-0 z-50">
@@ -22,20 +22,18 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <img src="/logo-hf.png" alt="Hodges & Fooshee" className="h-8 w-8 rounded-md" />
             <nav className="hidden md:flex items-center gap-2">
-              <a href="/" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Home</a>
-              <a href="#featured" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Featured Listings</a>
-              <a href="/search/properties" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Property Search</a>
-              <a href="#cities" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Communities</a>
-              <a href="/services" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Services</a>
-              <a href="#insights" className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Market Insights</a>
-              <button onClick={() => navigate('/admin')} className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">
-                Admin
-              </button>
+              <Link to="/" className={`px-3 py-2 rounded-full hover:bg-white/10 text-white/90 ${isActive('/') && location.pathname === '/' ? 'bg-white/10' : ''}`}>Home</Link>
+              <a href="#featured" onClick={(e) => handleHashClick(e, 'featured')} className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Featured Listings</a>
+              <Link to="/search/properties" className={`px-3 py-2 rounded-full hover:bg-white/10 text-white/90 ${isActive('/search/properties') ? 'bg-white/10' : ''}`}>Property Search</Link>
+              <a href="#cities" onClick={(e) => handleHashClick(e, 'cities')} className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Communities</a>
+              <Link to="/services" className={`px-3 py-2 rounded-full hover:bg-white/10 text-white/90 ${isActive('/services') ? 'bg-white/10' : ''}`}>Services</Link>
+              <a href="#insights" onClick={(e) => handleHashClick(e, 'insights')} className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Market Insights</a>
+              <Link to="/admin" className={`px-3 py-2 rounded-full hover:bg-white/10 text-white/90 ${isActive('/admin') ? 'bg-white/10' : ''}`}>Admin</Link>
             </nav>
           </div>
           {/* Right: auth */}
           <div className="flex items-center gap-2">
-            <button className="btn-ghost" onClick={handleLoginClick}>Login</button>
+            <button className="btn-ghost" onClick={() => navigate('/login')}>Login</button>
             <button className="btn">Register</button>
           </div>
         </div>

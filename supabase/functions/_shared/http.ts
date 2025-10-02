@@ -8,7 +8,11 @@ export interface FetchOptions {
   body?: any;
 }
 
-export async function realtynaFetch(url: string, options: FetchOptions) {
+async function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export async function realtynaFetch(url: string, options: FetchOptions, retries = 3) {
   const { token, apiKey, origin, method = 'GET', body } = options;
   
   // Clean base URL
@@ -37,30 +41,49 @@ export async function realtynaFetch(url: string, options: FetchOptions) {
   
   console.log('http.request', { url: cleanUrl, method, headers: Object.keys(headers) });
   
-  const response = await fetch(cleanUrl, fetchOptions);
-  
-  console.log('http.response', { 
-    status: response.status, 
-    statusText: response.statusText,
-    contentType: response.headers.get('content-type')
-  });
-  
-  const data = await response.json();
-  
-  if (!response.ok) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const response = await fetch(cleanUrl, fetchOptions);
+    
+    console.log('http.response', { 
+      status: response.status, 
+      statusText: response.statusText,
+      contentType: response.headers.get('content-type'),
+      attempt: attempt + 1
+    });
+    
+    // Handle 429 rate limit with exponential backoff
+    if (response.status === 429 && attempt < retries) {
+      const backoffMs = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
+      console.log(`Rate limited. Retrying in ${backoffMs}ms...`);
+      await sleep(backoffMs);
+      continue;
+    }
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      return {
+        ok: false,
+        status: response.status,
+        message: data.error || data.message || 'Request failed',
+        error_detail: JSON.stringify(data),
+        data: null
+      };
+    }
+    
     return {
-      ok: false,
+      ok: true,
       status: response.status,
-      message: data.error || data.message || 'Request failed',
-      error_detail: JSON.stringify(data),
-      data: null
+      message: 'Success',
+      data
     };
   }
   
   return {
-    ok: true,
-    status: response.status,
-    message: 'Success',
-    data
+    ok: false,
+    status: 429,
+    message: 'Rate limit exceeded after retries',
+    error_detail: 'Max retries reached',
+    data: null
   };
 }

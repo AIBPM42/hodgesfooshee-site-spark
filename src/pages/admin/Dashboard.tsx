@@ -6,8 +6,11 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import RecentActivityWidget from "@/components/admin/RecentActivityWidget";
 import SyncHealthWidget from "@/components/admin/SyncHealthWidget";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function AdminDashboard() {
+  const { userRole } = useAuth();
+
   const { data: stats, isLoading } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
@@ -36,23 +39,42 @@ export default function AdminDashboard() {
         .gte('open_house_date', today)
         .lte('open_house_date', future);
 
-      // Get last sync time
-      const { data: syncData } = await supabase
-        .from('mls_sync_state')
-        .select('last_run')
-        .eq('resource', 'Property')
+      // Get last sync time from sync_log
+      const { data: syncLog } = await supabase
+        .from('sync_log')
+        .select('completed_at, success')
+        .eq('success', true)
+        .order('completed_at', { ascending: false })
+        .limit(1)
         .single();
 
       return {
         activeListings: activeCount || 0,
         newListings: newCount || 0,
         openHouses: openHousesCount || 0,
-        priceCuts: 0, // TODO: implement price cuts logic
-        backOnMarket: 0, // TODO: implement back on market logic
-        lastSync: syncData?.last_run || null
+        priceCuts: 0,
+        backOnMarket: 0,
+        lastSync: syncLog?.completed_at || null
       };
     }
   });
+
+  const getTimeDiff = (timestamp: string | null) => {
+    if (!timestamp) return { text: 'Never', color: 'text-red-500' };
+    const now = new Date();
+    const then = new Date(timestamp);
+    const diffMs = now.getTime() - then.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 60) return { text: `${diffMins} min ago`, color: 'text-green-500' };
+    if (diffHours < 24) return { text: `${diffHours}h ago`, color: diffHours < 2 ? 'text-green-500' : 'text-yellow-500' };
+    if (diffDays < 7) return { text: `${diffDays}d ago`, color: 'text-yellow-500' };
+    return { text: `${diffDays}d ago`, color: 'text-red-500' };
+  };
+
+  const timeDiff = getTimeDiff(stats?.lastSync || null);
 
   const tiles = [
     {
@@ -90,13 +112,13 @@ export default function AdminDashboard() {
       color: "text-pink-500",
       link: "/admin/analytics?tab=listings&filter=back_on_7d"
     },
-    {
+    ...(userRole === 'admin' ? [{
       title: "Last Sync",
-      value: stats?.lastSync ? new Date(stats.lastSync).toLocaleTimeString() : 'Never',
+      value: timeDiff.text,
       icon: Clock,
-      color: "text-gray-500",
+      color: timeDiff.color,
       link: "/admin/mls-sync"
-    }
+    }] : [])
   ];
 
   return (

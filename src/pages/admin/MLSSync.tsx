@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { RefreshCw, PlayCircle, Database, Activity, AlertCircle, CheckCircle } from "lucide-react";
+import { RefreshCw, PlayCircle, Database, Activity, AlertCircle, CheckCircle, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 
@@ -11,6 +11,8 @@ export default function MLSSync() {
   const [loading, setLoading] = useState(false);
   const [lastResponse, setLastResponse] = useState<any>(null);
   const [counts, setCounts] = useState<any>({});
+  const [healthCheck, setHealthCheck] = useState<any>(null);
+  const [isCheckingHealth, setIsCheckingHealth] = useState(false);
   const { toast } = useToast();
 
   const refreshCounts = async () => {
@@ -119,6 +121,31 @@ export default function MLSSync() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleHealthCheck = async () => {
+    setIsCheckingHealth(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('mls-health');
+
+      if (error) throw error;
+      
+      setHealthCheck(data);
+      toast({
+        title: data.ok ? "Health check passed" : "Health check failed",
+        description: data.ok ? "All systems operational" : data.error,
+        variant: data.ok ? "default" : "destructive"
+      });
+    } catch (error) {
+      toast({
+        title: "Health check failed",
+        description: String(error),
+        variant: "destructive"
+      });
+      setHealthCheck({ ok: false, error: String(error) });
+    } finally {
+      setIsCheckingHealth(false);
     }
   };
 
@@ -231,6 +258,14 @@ export default function MLSSync() {
                   <div className="text-xs text-muted-foreground">Inserted</div>
                   <div className="text-2xl font-bold">{lastResponse.inserted || 0}</div>
                 </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.open('https://supabase.com/dashboard/project/xhqwmtzawqfffepcqxwf/editor', '_blank')}
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  View in Database
+                </Button>
               </div>
             ) : (
               <div className="space-y-2">
@@ -292,6 +327,70 @@ export default function MLSSync() {
               </div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Health Check */}
+      <Card className="card-glass">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Activity className="h-5 w-5" />
+            Health Check
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Verify Realtyna API connectivity and token status
+          </p>
+          <Button
+            onClick={handleHealthCheck}
+            disabled={isCheckingHealth}
+            className="w-full"
+            variant="outline"
+          >
+            {isCheckingHealth ? (
+              <>
+                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                Checking...
+              </>
+            ) : (
+              <>
+                <Activity className="mr-2 h-4 w-4" />
+                Run Health Check
+              </>
+            )}
+          </Button>
+
+          {healthCheck && (
+            <div className="space-y-3 p-4 bg-background/50 rounded-lg border">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Overall Status:</span>
+                <Badge variant={healthCheck.ok ? "default" : "destructive"}>
+                  {healthCheck.ok ? "Healthy" : "Unhealthy"}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Token Status:</span>
+                <Badge variant={healthCheck.token_ok ? "default" : "destructive"}>
+                  {healthCheck.token_ok ? "Valid" : "Invalid"}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">API Base:</span>
+                <Badge variant={healthCheck.base_ok ? "default" : "destructive"}>
+                  {healthCheck.base_ok ? "Accessible" : "Unreachable"}
+                </Badge>
+              </div>
+              {healthCheck.error && (
+                <div className="text-sm text-destructive mt-2">
+                  Error: {healthCheck.error}
+                </div>
+              )}
+              <div className="text-xs text-muted-foreground">
+                Checked at: {new Date(healthCheck.timestamp).toLocaleString()}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

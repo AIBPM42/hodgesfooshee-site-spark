@@ -8,26 +8,31 @@ export default function SyncHealthWidget() {
   const { data: syncHealth } = useQuery({
     queryKey: ['sync-health'],
     queryFn: async () => {
-      const resources = ['Property', 'Member', 'Office', 'OpenHouse'];
+      const functionNames = ['sync-mls-data', 'sync_realtyna', 'mls-search', 'mls-openhouses'];
       const health = await Promise.all(
-        resources.map(async (resource) => {
+        functionNames.map(async (functionName) => {
           const { data } = await supabase
-            .from('mls_sync_state')
-            .select('last_run')
-            .eq('resource', resource)
+            .from('sync_log')
+            .select('completed_at, success')
+            .eq('function_name', functionName)
+            .order('completed_at', { ascending: false })
+            .limit(1)
             .single();
 
-          const lastRun = data?.last_run ? new Date(data.last_run) : null;
+          const lastRun = data?.completed_at ? new Date(data.completed_at) : null;
           const now = new Date();
           let status = 'error';
           
-          if (lastRun) {
-            const diffDays = (now.getTime() - lastRun.getTime()) / (1000 * 60 * 60 * 24);
-            if (diffDays < 1) status = 'synced';
-            else if (diffDays < 7) status = 'stale';
+          if (lastRun && data?.success) {
+            const diffHours = (now.getTime() - lastRun.getTime()) / (1000 * 60 * 60);
+            if (diffHours < 1) status = 'synced';
+            else if (diffHours < 24) status = 'stale';
           }
 
-          return { resource, status };
+          return { 
+            resource: functionName.replace('sync-mls-data', 'Property').replace('sync_realtyna', 'Listings').replace('mls-search', 'Search').replace('mls-openhouses', 'OpenHouse'), 
+            status 
+          };
         })
       );
 

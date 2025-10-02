@@ -33,6 +33,7 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import Analytics from "./pages/admin/Analytics";
 import Content from "./pages/admin/Content";
 import Services from "./pages/Services";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,8 +56,10 @@ const App = () => (
               <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               <Route path="/admin/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+              <Route path="/admin/mls-sync" element={<ProtectedRoute allowedRoles={['admin']}><MLSSync /></ProtectedRoute>} />
               <Route path="/admin/content" element={<ProtectedRoute allowedRoles={['admin']}><Content /></ProtectedRoute>} />
               <Route path="/admin/content-legacy" element={<AdminContent />} />
               <Route path="/admin/analytics-legacy" element={<AnalyticsPage />} />
@@ -69,7 +72,6 @@ const App = () => (
               </Route>
               <Route path="/mls" element={<MLS />} />
               <Route path="/admin-sync" element={<AdminSync />} />
-              <Route path="/admin/mls-sync" element={<ProtectedRoute><MLSSync /></ProtectedRoute>} />
               <Route path="/admin/mls-sync-dashboard" element={<MLSSyncDashboard />} />
               <Route path="/admin/broker" element={<BrokerDashboard />} />
               <Route path="/realtyna-test" element={<RealtynaSelftest />} />

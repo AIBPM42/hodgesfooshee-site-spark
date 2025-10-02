@@ -7,8 +7,8 @@ import { Link } from "react-router-dom";
 
 export const NewThisWeekSection = () => {
   // Realtyna-first, local-fallback pattern
-  const { data: realtynaListings, isLoading: realtynaLoading, error: realtynaError } = useNewListingsRealtyna(12);
-  const { data: localListings, isLoading: localLoading } = useNewListings(12);
+  const { data: realtynaListings, isLoading: realtynaLoading, error: realtynaError } = useNewListingsRealtyna(4);
+  const { data: localListings, isLoading: localLoading } = useNewListings(4);
 
   const listings = realtynaError ? localListings : realtynaListings;
   const isLoading = realtynaLoading || (realtynaError && localLoading);
@@ -37,20 +37,13 @@ export const NewThisWeekSection = () => {
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-12">
-          <div>
-            <h2 className="text-4xl font-bold mb-4">New This Week</h2>
-            <p className="text-xl text-white/80">Fresh listings just added to the market</p>
-          </div>
-          <Button asChild className="btn">
-            <Link to="/search?days=7">
-              View All <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold mb-4">New This Week</h2>
+          <p className="text-xl text-white/80">Fresh listings just added to the market</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {listings.slice(0, 12).map((listing) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {listings.slice(0, 4).map((listing) => (
             <Card key={listing.ListingKey || listing.listing_key} className="card-glass overflow-hidden group cursor-pointer hover:scale-105 transition-transform">
               <Link to={`/property/${listing.ListingKey || listing.listing_key}`}>
                 <div className="aspect-video bg-gradient-to-br from-luxury-gold/20 to-luxury-gold/5 flex items-center justify-center">
@@ -85,6 +78,14 @@ export const NewThisWeekSection = () => {
               </Link>
             </Card>
           ))}
+        </div>
+
+        <div className="text-center">
+          <Button asChild size="lg" className="btn">
+            <Link to="/search/properties">
+              View All Live Listings <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
