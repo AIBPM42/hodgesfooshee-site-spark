@@ -131,3 +131,6 @@ verify_jwt = false
 
 [functions.refresh_ai_county_insights]
 verify_jwt = false
+
+[functions.generate-county-html]
+verify_jwt = false

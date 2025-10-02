@@ -9,9 +9,13 @@ import { TrendingUp, TrendingDown, Home, DollarSign, Calendar, Package } from "l
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const CountyPage = () => {
+interface CountyPageProps {
+  demo?: boolean;
+}
+
+const CountyPage = ({ demo = false }: CountyPageProps) => {
   const { countySlug } = useParams<{ countySlug: string }>();
-  const { data: pageData, isLoading, error } = useCountyPage(countySlug || '');
+  const { data: pageData, isLoading, error } = useCountyPage(demo ? 'davidson-tn' : (countySlug || ''), demo);
 
   if (isLoading) {
     return (
@@ -43,6 +47,94 @@ const CountyPage = () => {
   }
 
   const { meta, kpis, trends, insights, ai, seo, ctas } = pageData;
+
+  // Demo mode renders HTML directly
+  if (demo && pageData.htmlContent) {
+    return (
+      <>
+        <Helmet>
+          <title>Davidson County, TN — Market Intelligence, Schools, Parks, Cost of Living</title>
+          <meta name="description" content="Comprehensive real estate intelligence for Davidson County (Nashville), Tennessee. Live market stats, schools, demographics, and expert insights." />
+          <link rel="canonical" href="https://www.hodgesfooshee.com/counties/davidson-tn" />
+        </Helmet>
+
+        <Header />
+        
+        <div className="min-h-screen bg-background">
+          {/* Hero */}
+          <div 
+            className="relative h-[400px] bg-cover bg-center"
+            style={{ backgroundImage: 'url(/images/davidson-parthenon.webp)' }}
+          >
+            <div className="absolute inset-0 bg-black/50" />
+            <div className="relative container mx-auto h-full flex flex-col justify-center px-4">
+              <Badge variant="secondary" className="w-fit mb-4">DEMO MODE - AI Generated</Badge>
+              <h1 className="text-5xl font-bold text-white mb-4">
+                Davidson County Market Intelligence
+              </h1>
+              <div 
+                className="text-white/90 prose prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: pageData.htmlContent.hero }}
+              />
+            </div>
+          </div>
+
+          <div className="container mx-auto px-4 py-12">
+            {/* Stats Strip */}
+            {pageData.htmlContent.stats && (
+              <div 
+                className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12"
+                dangerouslySetInnerHTML={{ __html: pageData.htmlContent.stats }}
+              />
+            )}
+
+            {/* Content Sections */}
+            {pageData.htmlContent.sections && pageData.htmlContent.sections.length > 0 && (
+              <div className="grid md:grid-cols-2 gap-8 mb-12">
+                {pageData.htmlContent.sections.map((section: string, i: number) => (
+                  <div key={i} dangerouslySetInnerHTML={{ __html: section }} />
+                ))}
+              </div>
+            )}
+
+            {/* FAQs */}
+            {pageData.htmlContent.faqs && pageData.htmlContent.faqs.length > 0 && (
+              <Card className="mb-12">
+                <CardHeader>
+                  <CardTitle>Frequently Asked Questions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {pageData.htmlContent.faqs.map((faq: string, i: number) => (
+                    <div key={i} dangerouslySetInnerHTML={{ __html: faq }} />
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* CTAs */}
+            <div className="flex flex-wrap gap-4 justify-center mb-8">
+              <Button size="lg" asChild>
+                <Link to="/search/properties?county=Davidson">See Live Listings</Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link to="/services">Schedule Consultation</Link>
+              </Button>
+            </div>
+
+            {/* Sources */}
+            {pageData.htmlContent.sources && (
+              <div 
+                className="mt-12 text-sm text-muted-foreground"
+                dangerouslySetInnerHTML={{ __html: pageData.htmlContent.sources }}
+              />
+            )}
+          </div>
+        </div>
+
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>

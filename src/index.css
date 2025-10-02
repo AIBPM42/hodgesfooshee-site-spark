@@ -471,3 +471,137 @@ main, section, .section, .surface, .page-surface,
   box-shadow: var(--glass-shadow-elevated);
 }
 
+/* === County Page Demo Styles === */
+.hero-synopsis {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.hero-synopsis p {
+  margin-bottom: 1rem;
+}
+
+.hero-synopsis a {
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.2s;
+  font-size: 0.875rem;
+}
+
+.hero-synopsis a:hover {
+  color: white;
+}
+
+.stat-card {
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-card);
+  backdrop-filter: blur(20px);
+  transition: box-shadow 0.3s;
+}
+
+.stat-card:hover {
+  box-shadow: var(--glass-shadow);
+}
+
+.stat-card h3 {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.stat-card .value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.stat-card .caption {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.content-section {
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-card);
+  backdrop-filter: blur(20px);
+}
+
+.content-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.content-section p {
+  color: var(--text-secondary);
+  line-height: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.content-section a {
+  color: hsl(var(--hf-orange));
+  transition: color 0.2s;
+  font-size: 0.875rem;
+}
+
+.content-section a:hover {
+  color: hsl(var(--hf-orange-light));
+}
+
+.faq-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-q {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.faq-a {
+  color: var(--text-secondary);
+  line-height: 1.75rem;
+}
+
+.faq-a a {
+  color: hsl(var(--hf-orange));
+  transition: color 0.2s;
+  font-size: 0.875rem;
+}
+
+.faq-a a:hover {
+  color: hsl(var(--hf-orange-light));
+}
+
+.sources-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sources-list li {
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.sources-list a {
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.sources-list a:hover {
+  color: var(--text-primary);
+}
+

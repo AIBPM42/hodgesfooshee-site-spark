@@ -237,8 +237,8 @@ const NashvilleInsiderAccess = () => {
                 </div>
               </div>
               
-              <Button className="w-full mt-6 btn">
-                View County Details
+              <Button className="w-full mt-6 btn" asChild>
+                <a href="/counties/davidson-tn">View County Intelligence</a>
               </Button>
             </Card>
 

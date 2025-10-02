@@ -88,6 +88,7 @@ const App = () => (
               <Route path="/search/offices" element={<OfficeResults />} />
               <Route path="/property/:id" element={<PropertyDetail />} />
               <Route path="/market/:countySlug" element={<CountyPage />} />
+              <Route path="/counties/davidson-tn" element={<CountyPage demo={true} />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
