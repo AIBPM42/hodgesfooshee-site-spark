@@ -52,7 +52,7 @@ export const NewThisWeekSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {listings.slice(0, 12).map((listing) => (
             <Card key={listing.ListingKey || listing.listing_key} className="card-glass overflow-hidden group cursor-pointer hover:scale-105 transition-transform">
-              <Link to={`/listing/${listing.ListingKey || listing.listing_key}`}>
+              <Link to={`/property/${listing.ListingKey || listing.listing_key}`}>
                 <div className="aspect-video bg-gradient-to-br from-luxury-gold/20 to-luxury-gold/5 flex items-center justify-center">
                   <Home className="h-12 w-12 text-luxury-gold/40" />
                 </div>

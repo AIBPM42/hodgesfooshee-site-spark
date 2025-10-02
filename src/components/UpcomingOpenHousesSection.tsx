@@ -95,7 +95,7 @@ export const UpcomingOpenHousesSection = () => {
                   </div>
 
                   <Button asChild size="sm" className="w-full btn">
-                    <Link to={`/listing/${listingKey}`}>
+                    <Link to={`/property/${listingKey}`}>
                       View Details
                     </Link>
                   </Button>
