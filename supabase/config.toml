@@ -1,5 +1,8 @@
 project_id = "xhqwmtzawqfffepcqxwf"
 
+[functions.mls-health]
+verify_jwt = false
+
 [functions.site-settings]
 verify_jwt = false
 
@@ -115,7 +118,4 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.log-event]
-verify_jwt = false
-
-[functions.mls-health]
 verify_jwt = false

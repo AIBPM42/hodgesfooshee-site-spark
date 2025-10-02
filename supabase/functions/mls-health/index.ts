@@ -1,4 +1,3 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { corsHeaders } from '../_shared/cors.ts';
 
 const REALTYNA_API_KEY = Deno.env.get('REALTYNA_API_KEY') || '';
@@ -15,11 +14,9 @@ Deno.serve(async (req) => {
 
   try {
     const timestamp = new Date().toISOString();
-    let token_ok = false;
-    let base_ok = false;
-    let error_message = '';
-
-    // Test token fetch
+    
+    // Get OAuth token
+    let token = '';
     try {
       const tokenResponse = await fetch(RF_TOKEN_URL, {
         method: 'POST',
@@ -37,47 +34,89 @@ Deno.serve(async (req) => {
 
       if (tokenResponse.ok) {
         const tokenData = await tokenResponse.json();
-        token_ok = !!tokenData.access_token;
+        token = tokenData.access_token;
+      }
+    } catch (error) {
+      console.error('Token fetch failed:', error);
+    }
 
-        // Test API base with token
-        if (token_ok) {
-          const baseResponse = await fetch(`${RF_BASE}/Property?$top=1`, {
+    const services = {
+      properties: { ok: false, status: 0, t: 0, error: '' },
+      openHouses: { ok: false, status: 0, t: 0, error: '' },
+      members: { ok: false, status: 0, t: 0, error: '' },
+      offices: { ok: false, status: 0, t: 0, error: '' },
+    };
+
+    if (!token) {
+      return new Response(
+        JSON.stringify({ services, timestamp, error: 'Failed to obtain token' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 503 }
+      );
+    }
+
+    // Check each service
+    const checks = [
+      { key: 'properties', url: `${RF_BASE}/Property?$top=1` },
+      { key: 'openHouses', url: `${RF_BASE}/OpenHouse?$top=1` },
+      { key: 'members', url: `${RF_BASE}/Member?$top=1` },
+      { key: 'offices', url: `${RF_BASE}/Office?$top=1` },
+    ];
+
+    await Promise.all(
+      checks.map(async ({ key, url }) => {
+        const start = Date.now();
+        try {
+          const response = await fetch(url, {
             headers: {
-              'Authorization': `Bearer ${tokenData.access_token}`,
+              'Authorization': `Bearer ${token}`,
               'x-api-key': REALTYNA_API_KEY,
             },
           });
-          base_ok = baseResponse.ok;
+          const t = Date.now() - start;
+          services[key as keyof typeof services] = {
+            ok: response.ok,
+            status: response.status,
+            t,
+            error: response.ok ? '' : `${response.status} ${response.statusText}`,
+          };
+          
+          if (!response.ok) {
+            console.error(`[${key}] Failed: ${url} -> ${response.status}`);
+          }
+        } catch (error) {
+          const t = Date.now() - start;
+          services[key as keyof typeof services] = {
+            ok: false,
+            status: 0,
+            t,
+            error: error.message || 'Network error',
+          };
+          console.error(`[${key}] Error: ${url}`, error);
         }
-      } else {
-        error_message = `Token fetch failed: ${tokenResponse.status}`;
+      })
+    );
+
+    const allOk = Object.values(services).every((s) => s.ok);
+
+    return new Response(
+      JSON.stringify({ services, timestamp }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: allOk ? 200 : 503,
       }
-    } catch (error) {
-      error_message = `Health check error: ${error.message}`;
-    }
-
-    const health = {
-      ok: token_ok && base_ok,
-      token_ok,
-      base_ok,
-      base: RF_BASE,
-      timestamp,
-      error: error_message || undefined,
-    };
-
-    return new Response(JSON.stringify(health), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: health.ok ? 200 : 503,
-    });
+    );
   } catch (error) {
     console.error('Health check error:', error);
     return new Response(
       JSON.stringify({
-        ok: false,
-        token_ok: false,
-        base_ok: false,
-        error: error.message,
+        services: {
+          properties: { ok: false, status: 0, t: 0, error: 'Server error' },
+          openHouses: { ok: false, status: 0, t: 0, error: 'Server error' },
+          members: { ok: false, status: 0, t: 0, error: 'Server error' },
+          offices: { ok: false, status: 0, t: 0, error: 'Server error' },
+        },
         timestamp: new Date().toISOString(),
+        error: error.message,
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
