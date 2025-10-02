@@ -26,6 +26,7 @@ import AdminSync from "./pages/AdminSync";
 import MLSSync from "./pages/admin/MLSSync";
 import BrokerDashboard from "./pages/admin/BrokerDashboard";
 import MLSSyncDashboard from "./pages/admin/MLSSyncDashboard";
+import RealtynaConnection from "./pages/admin/RealtynaConnection";
 import DashboardHome from "./pages/admin/DashboardHome";
 import AdminContent from "./pages/admin/AdminContent";
 import AnalyticsPage from "./pages/admin/AnalyticsPage";
@@ -57,10 +58,12 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/services" element={<Services />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/admin/*" element={<ProtectedRoute allowedRoles={['admin','broker','agent']}><AdminDashboard /></ProtectedRoute>} />
               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               <Route path="/admin/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
               <Route path="/admin/mls-sync" element={<ProtectedRoute allowedRoles={['admin']}><MLSSync /></ProtectedRoute>} />
               <Route path="/admin/content" element={<ProtectedRoute allowedRoles={['admin']}><Content /></ProtectedRoute>} />
+              <Route path="/admin/connections/realtyna" element={<ProtectedRoute allowedRoles={['admin']}><RealtynaConnection /></ProtectedRoute>} />
               <Route path="/admin/content-legacy" element={<AdminContent />} />
               <Route path="/admin/analytics-legacy" element={<AnalyticsPage />} />
               <Route path="/dashboard" element={<DashboardLayout />}>

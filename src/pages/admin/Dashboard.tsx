@@ -1,7 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Building2, Home, Calendar, TrendingDown, RefreshCcw, Activity, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import {
   loadHealth,
@@ -15,8 +18,11 @@ import {
   loadTopPriceCuts,
   loadAgentLeaderboard,
 } from "@/admin/data/adapters";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function AdminDashboard() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { data: health } = useQuery({
     queryKey: ['mls-health'],
     queryFn: loadHealth,
@@ -66,6 +72,27 @@ export default function AdminDashboard() {
     queryFn: () => loadAgentLeaderboard(mode),
   });
 
+  const handleRunSync = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('realtyna_sync_incremental');
+      if (error) throw error;
+      
+      toast({
+        title: "Sync Complete",
+        description: `Processed ${data.results ? Object.keys(data.results).length : 0} resources`,
+      });
+      
+      // Refetch data
+      queryClient.invalidateQueries();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Sync Failed",
+        description: error.message,
+      });
+    }
+  };
+
   const tiles = [
     {
       title: "Active Listings",
@@ -107,29 +134,19 @@ export default function AdminDashboard() {
           <h1 className="text-3xl font-display font-bold mb-2">Dashboard Overview</h1>
           <p className="text-muted-foreground">Real-time MLS data and market insights</p>
         </div>
-        <div className="flex gap-2">
-          {!isLive && (
-            <Badge variant="secondary" className="text-xs bg-yellow-500/20 text-yellow-600">
-              <AlertCircle className="h-3 w-3 mr-1" />
-              Demo Mode
-            </Badge>
-          )}
-          {isLive && (
-            <Badge variant="default" className="text-xs bg-green-500/20 text-green-600">
-              <Activity className="h-3 w-3 mr-1" />
-              LIVE
-            </Badge>
-          )}
-        </div>
+        <Badge variant={mode === 'live' ? "default" : "secondary"} className="text-sm">
+          {mode === 'live' ? "🟢 LIVE" : "🟡 Demo Mode"}
+        </Badge>
       </div>
 
       {/* Demo Mode Banner */}
       {!isLive && (
-        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
-          <p className="text-sm text-yellow-600">
-            Running in <strong>Demo Mode</strong> (MLS services offline). Data will auto-switch to LIVE when services recover.
-          </p>
-        </div>
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Running in Demo Mode (MLS offline). Data auto-switches to LIVE when services recover.
+          </AlertDescription>
+        </Alert>
       )}
 
       {/* KPI Cards */}
@@ -301,19 +318,24 @@ export default function AdminDashboard() {
       {/* Sync Health Strip */}
       {health && (
         <Card className="card-glass">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-sm flex items-center gap-2">
               <AlertCircle className="h-4 w-4" />
               MLS Service Health
             </CardTitle>
+            <Button onClick={handleRunSync} size="sm">Run Sync Now</Button>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {Object.entries(health.services).map(([key, service]) => (
-                <div key={key} className="flex items-center gap-2">
-                  <div className={`h-2 w-2 rounded-full ${service.ok ? 'bg-green-500' : 'bg-red-500'}`} />
-                  <span className="text-sm capitalize">{key}</span>
-                  {service.ok && <span className="text-xs text-muted-foreground">{service.t}ms</span>}
+              {Object.entries(health.services).map(([key, service]: [string, any]) => (
+                <div key={key} className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <div className={`h-2 w-2 rounded-full ${service.ok ? 'bg-green-500' : 'bg-red-500'}`} />
+                    <span className="text-sm capitalize">{key}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {service.ok ? `${service.t}ms | Count: ${service.countProbe || 0}` : `Status: ${service.status || 'Error'}`}
+                  </p>
                 </div>
               ))}
             </div>

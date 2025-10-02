@@ -41,10 +41,10 @@ Deno.serve(async (req) => {
     }
 
     const services = {
-      properties: { ok: false, status: 0, t: 0, error: '' },
-      openHouses: { ok: false, status: 0, t: 0, error: '' },
-      members: { ok: false, status: 0, t: 0, error: '' },
-      offices: { ok: false, status: 0, t: 0, error: '' },
+      properties: { ok: false, status: 0, t: 0, error: '', countProbe: 0 },
+      openHouses: { ok: false, status: 0, t: 0, error: '', countProbe: 0 },
+      members: { ok: false, status: 0, t: 0, error: '', countProbe: 0 },
+      offices: { ok: false, status: 0, t: 0, error: '', countProbe: 0 },
     };
 
     if (!token) {
@@ -73,12 +73,26 @@ Deno.serve(async (req) => {
             },
           });
           const t = Date.now() - start;
-          services[key as keyof typeof services] = {
-            ok: response.ok,
-            status: response.status,
-            t,
-            error: response.ok ? '' : `${response.status} ${response.statusText}`,
-          };
+          
+          if (response.ok) {
+            const data = await response.json();
+            const count = data?.value?.length || 0;
+            services[key as keyof typeof services] = {
+              ok: true,
+              status: response.status,
+              t,
+              error: '',
+              countProbe: count,
+            };
+          } else {
+            services[key as keyof typeof services] = {
+              ok: false,
+              status: response.status,
+              t,
+              error: `${response.status} ${response.statusText}`,
+              countProbe: 0,
+            };
+          }
           
           if (!response.ok) {
             console.error(`[${key}] Failed: ${url} -> ${response.status}`);
@@ -90,6 +104,7 @@ Deno.serve(async (req) => {
             status: 0,
             t,
             error: error.message || 'Network error',
+            countProbe: 0,
           };
           console.error(`[${key}] Error: ${url}`, error);
         }
@@ -110,10 +125,10 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         services: {
-          properties: { ok: false, status: 0, t: 0, error: 'Server error' },
-          openHouses: { ok: false, status: 0, t: 0, error: 'Server error' },
-          members: { ok: false, status: 0, t: 0, error: 'Server error' },
-          offices: { ok: false, status: 0, t: 0, error: 'Server error' },
+          properties: { ok: false, status: 0, t: 0, error: 'Server error', countProbe: 0 },
+          openHouses: { ok: false, status: 0, t: 0, error: 'Server error', countProbe: 0 },
+          members: { ok: false, status: 0, t: 0, error: 'Server error', countProbe: 0 },
+          offices: { ok: false, status: 0, t: 0, error: 'Server error', countProbe: 0 },
         },
         timestamp: new Date().toISOString(),
         error: error.message,

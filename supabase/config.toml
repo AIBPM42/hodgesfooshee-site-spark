@@ -119,3 +119,9 @@ verify_jwt = false
 
 [functions.log-event]
 verify_jwt = false
+
+[functions.realtyna_auth_test]
+verify_jwt = false
+
+[functions.realtyna_sync_incremental]
+verify_jwt = false

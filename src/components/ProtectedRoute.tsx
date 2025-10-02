@@ -3,13 +3,13 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRoles?: ('admin' | 'agent')[];
+  allowedRoles?: ('admin' | 'agent' | 'broker')[];
 }
 
 export const ProtectedRoute = ({ children, allowedRoles = ['admin', 'agent'] }: ProtectedRouteProps) => {
   // 1) Check preview FIRST - no auth needed
   const host = window.location.hostname;
-  const isPreview = host.includes('lovable.app') || host.includes('lovableproject.com');
+  const isPreview = host.includes('lovable') || host.includes('localhost') || host.includes('preview--');
   
   if (isPreview) {
     return <>{children}</>;

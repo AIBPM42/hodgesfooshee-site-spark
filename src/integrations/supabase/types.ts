@@ -502,6 +502,30 @@ export type Database = {
         }
         Relationships: []
       }
+      integration_settings: {
+        Row: {
+          created_at: string | null
+          id: string
+          key: string
+          updated_at: string | null
+          value: Json
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          key: string
+          updated_at?: string | null
+          value: Json
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          key?: string
+          updated_at?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           created_at: string | null
@@ -920,6 +944,24 @@ export type Database = {
           ingested_at?: string
           mls_id?: string
           payload?: Json
+        }
+        Relationships: []
+      }
+      mls_sync_cursor: {
+        Row: {
+          last_rf_modification_timestamp: string
+          resource: string
+          updated_at: string | null
+        }
+        Insert: {
+          last_rf_modification_timestamp: string
+          resource: string
+          updated_at?: string | null
+        }
+        Update: {
+          last_rf_modification_timestamp?: string
+          resource?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
