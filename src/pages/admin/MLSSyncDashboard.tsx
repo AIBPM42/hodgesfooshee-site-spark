@@ -57,24 +57,41 @@ export default function MLSSyncDashboard() {
     }
   };
 
-  const triggerSync = async (resource: string) => {
-    setSyncing((prev) => ({ ...prev, [resource]: true }));
-    toast.info(`Starting ${resource} sync...`);
+  const triggerSync = async (mode: 'test' | 'incremental' = 'test') => {
+    setSyncing({ Property: true, Member: true, Office: true, OpenHouse: true });
+    toast.info(`Starting ${mode} sync...`);
 
     try {
-      const { data, error } = await supabase.functions.invoke("mls-sync-trigger", {
-        body: { resource }
+      const { data, error } = await supabase.functions.invoke("sync_realtyna", {
+        body: {},
+        method: "POST"
       });
 
       if (error) throw error;
 
-      toast.success(`${resource} sync completed: ${data.records} records`);
+      // Check if response indicates failure
+      if (data && !data.ok) {
+        throw new Error(`[${data.code}] ${data.msg}`);
+      }
+
+      const totalSynced = Object.values(data.entity || {}).reduce((sum: number, val) => sum + (val as number), 0);
+      toast.success(`Sync completed: ${totalSynced} records in ${data.durationMs}ms`, {
+        description: Object.entries(data.entity || {})
+          .map(([name, count]) => `${name}: ${count}`)
+          .join(', ')
+      });
       await fetchSyncStatus();
     } catch (error: any) {
-      console.error(`${resource} sync error:`, error);
-      toast.error(`${resource} sync failed: ${error.message}`);
+      console.error(`Sync error:`, error);
+      toast.error(`Sync failed: ${error.message || 'Unknown error'}`, {
+        description: error.message?.includes('TOKEN_EXPIRED') 
+          ? 'Token expired — refreshing, try again'
+          : error.message?.includes('ENV_MISSING')
+          ? 'Missing environment variables'
+          : 'Check logs for details'
+      });
     } finally {
-      setSyncing((prev) => ({ ...prev, [resource]: false }));
+      setSyncing({});
     }
   };
 
@@ -113,10 +130,16 @@ export default function MLSSyncDashboard() {
           <h1 className="text-4xl font-bold mb-2">MLS Sync Dashboard</h1>
           <p className="text-muted-foreground">Realtyna Smart Plan Integration Status</p>
         </div>
-        <Button onClick={fetchSyncStatus} variant="outline">
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => triggerSync('test')} variant="default">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Run 25-row Test
+          </Button>
+          <Button onClick={fetchSyncStatus} variant="outline">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Resource Sync Cards */}
@@ -175,7 +198,7 @@ export default function MLSSyncDashboard() {
               </div>
 
               <Button
-                onClick={() => triggerSync(resource.name)}
+                onClick={() => triggerSync('incremental')}
                 disabled={isSyncing}
                 className="w-full"
                 variant={hasError ? "destructive" : "default"}
@@ -188,7 +211,7 @@ export default function MLSSyncDashboard() {
                 ) : (
                   <>
                     <RefreshCw className="h-4 w-4 mr-2" />
-                    Sync Now
+                    Sync Incremental
                   </>
                 )}
               </Button>

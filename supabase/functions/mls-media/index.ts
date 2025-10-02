@@ -1,72 +1,89 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { corsHeaders } from "../_shared/cors.ts";
-import { getRealtynaToken, getRealtynaHeaders } from "../_shared/realtyna-auth.ts";
-
-const RESO_BASE = "https://api.realtyfeed.com/reso/odata";
+import { corsHeaders, createErrorResponse, createSuccessResponse } from "../_shared/cors.ts";
+import { getRealtynaToken } from "../_shared/realtyna-auth.ts";
+import { getRealtynaBaseUrl, getRealtynaHeaders, fetchWithRetry } from "../_shared/realtyna-client.ts";
 
 serve(async (req) => {
+  const rid = crypto.randomUUID().substring(0, 8);
+  console.log(`[${rid}] mls-media started`);
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
-
-  const rid = crypto.randomUUID();
-  console.log(`[${rid}] MLS Media Search started`);
 
   try {
     const url = new URL(req.url);
     const listingKey = url.searchParams.get("listingKey");
 
     if (!listingKey) {
-      return new Response(JSON.stringify({ error: "listingKey required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
-      });
+      return createErrorResponse(
+        'edge.mls-media',
+        'MISSING_PARAM',
+        'listingKey parameter is required',
+        400
+      );
     }
 
-    const token = await getRealtynaToken();
+    // Get auth token
+    let token: string;
+    try {
+      token = await getRealtynaToken();
+    } catch (error: any) {
+      console.error(`[${rid}] Token error:`, error);
+      return createErrorResponse(
+        'edge.mls-media',
+        'TOKEN_FAILED',
+        error.message || 'Failed to obtain access token',
+        500
+      );
+    }
+
     const headers = getRealtynaHeaders(token);
+    const RESO_BASE = getRealtynaBaseUrl();
 
-    const queryParams = new URLSearchParams({
-      "$filter": `ResourceRecordKey eq '${listingKey}'`,
-      "$orderby": "Order"
-    });
+    const apiUrl = `${RESO_BASE}/Media?$filter=ResourceRecordKey eq '${listingKey}'&$orderby=Order&$top=100`;
+    console.log(`[${rid}] Fetching: ${apiUrl.substring(0, 150)}...`);
 
-    const apiUrl = `${RESO_BASE}/Media?${queryParams}`;
-    console.log(`[${rid}] Fetching: ${apiUrl}`);
-
-    const response = await fetch(apiUrl, { headers });
+    const response = await fetchWithRetry(apiUrl, { headers }, 2);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`[${rid}] API error ${response.status}:`, errorText);
-      return new Response(JSON.stringify({
-        error: `Realtyna API error: ${response.status}`,
-        details: errorText,
-        source: "realtyna"
-      }), {
-        status: response.status,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      console.error(`[${rid}] API error ${response.status}:`, errorText.substring(0, 500));
+      
+      let code = 'API_ERROR';
+      let msg = `Realtyna API returned ${response.status}`;
+      
+      if (response.status === 401) {
+        code = 'TOKEN_EXPIRED';
+        msg = 'Access token expired — refreshing, please try again';
+      }
+      
+      return createErrorResponse('edge.mls-media', code, msg, response.status, {
+        details: errorText.substring(0, 500)
       });
     }
 
     const data = await response.json();
     console.log(`[${rid}] Success: ${data.value?.length || 0} media items`);
 
-    return new Response(JSON.stringify({
+    return createSuccessResponse({
       media: data.value || [],
+      count: data.value?.length || 0,
       source: "realtyna"
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(`[${rid}] Error:`, error);
-    return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : "Unknown error",
-      source: "realtyna"
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
+    
+    if (error.message?.includes('ENV_MISSING')) {
+      return createErrorResponse('edge.mls-media', 'ENV_MISSING', error.message, 500);
+    }
+    
+    return createErrorResponse(
+      'edge.mls-media',
+      'MEDIA_FAILED',
+      error.message || 'Unknown error fetching media',
+      500
+    );
   }
 });

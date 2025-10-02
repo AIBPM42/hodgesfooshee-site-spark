@@ -341,7 +341,7 @@ export default function AdminDashboard() {
                     <div className="space-y-1">
                       <p className="text-xs text-red-400">Status: {service.status || 'Error'}</p>
                       {service.error && (
-                        <p className="text-xs text-muted-foreground">{service.error}</p>
+                        <p className="text-xs text-red-300 font-mono">{service.error.substring(0, 100)}</p>
                       )}
                     </div>
                   )}

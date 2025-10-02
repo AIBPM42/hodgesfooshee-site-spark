@@ -13,6 +13,9 @@ export default function Header() {
 
   const linkClass = ({ isActive }: { isActive: boolean }) => 
     `px-3 py-2 rounded-full hover:bg-white/10 text-white/90 transition ${isActive ? 'bg-white/10' : ''}`;
+  
+  const linkClassEnd = ({ isActive }: { isActive: boolean }) => 
+    `px-3 py-2 rounded-full hover:bg-white/10 text-white/90 transition ${isActive ? 'bg-white/10' : ''}`;
 
   return (
     <header className="fixed top-3 left-0 right-0 z-50">
@@ -22,7 +25,7 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <img src="/logo-hf.png" alt="Hodges & Fooshee" className="h-8 w-8 rounded-md" />
             <nav className="hidden md:flex items-center gap-2">
-              <NavLink to="/" end className={linkClass}>Home</NavLink>
+              <NavLink to="/" end className={linkClassEnd}>Home</NavLink>
               <a href="#featured" onClick={(e) => handleHashClick(e, 'featured')} className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Featured Listings</a>
               <NavLink to="/search/properties" className={linkClass}>Property Search</NavLink>
               <a href="#cities" onClick={(e) => handleHashClick(e, 'cities')} className="px-3 py-2 rounded-full hover:bg-white/10 text-white/90">Communities</a>

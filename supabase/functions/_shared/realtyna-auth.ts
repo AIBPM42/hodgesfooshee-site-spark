@@ -6,7 +6,15 @@ export interface RealtynaToken {
   expires_in: number;
 }
 
-// Token cache with expiration
+export interface AuthError {
+  ok: false;
+  where: string;
+  code: string;
+  msg: string;
+  status?: number;
+}
+
+// Token cache with expiration (55 minutes)
 let cachedToken: { token: string; expiresAt: number } | null = null;
 
 export async function getRealtynaToken(): Promise<string> {
@@ -20,8 +28,11 @@ export async function getRealtynaToken(): Promise<string> {
   const clientId = Deno.env.get("MLS_CLIENT_ID");
   const clientSecret = Deno.env.get("MLS_CLIENT_SECRET");
   
-  if (!clientId || !clientSecret) {
-    throw new Error("Missing MLS_CLIENT_ID or MLS_CLIENT_SECRET");
+  if (!clientId) {
+    throw new Error("ENV_MISSING: MLS_CLIENT_ID is required");
+  }
+  if (!clientSecret) {
+    throw new Error("ENV_MISSING: MLS_CLIENT_SECRET is required");
   }
 
   const tokenUrl = "https://api.realtyfeed.com/v1/auth/token";
@@ -48,11 +59,11 @@ export async function getRealtynaToken(): Promise<string> {
 
   const data: RealtynaToken = await response.json();
   
-  // Cache token (expires_in is in seconds, subtract 5min buffer)
-  const expiresAt = Date.now() + ((data.expires_in - 300) * 1000);
+  // Cache token (expires_in is in seconds, use 55min = 3300s)
+  const expiresAt = Date.now() + (3300 * 1000);
   cachedToken = { token: data.access_token, expiresAt };
   
-  console.log(`[realtyna-auth] Token cached, expires in ${data.expires_in}s`);
+  console.log(`[realtyna-auth] Token cached, expires in 55 minutes`);
   return data.access_token;
 }
 

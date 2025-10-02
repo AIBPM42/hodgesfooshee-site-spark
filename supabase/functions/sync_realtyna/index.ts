@@ -1,223 +1,226 @@
 // supabase/functions/sync_realtyna/index.ts
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { corsHeaders, createErrorResponse, createSuccessResponse } from '../_shared/cors.ts';
+import { getRealtynaToken } from '../_shared/realtyna-auth.ts';
+import { getRealtynaBaseUrl, getRealtynaHeaders, fetchWithRetry } from '../_shared/realtyna-client.ts';
 
-// Environment variable helper with fallbacks
-function getEnv(name: string, aliases: string[] = []) {
-  for (const k of [name, ...aliases]) {
-    const v = Deno.env.get(k);
-    if (v && v.trim()) return v;
-  }
-  throw new Error(`Missing env: one of ${[name, ...aliases].join(", ")}`);
-}
-
-// ====== ENV ======
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SERVICE_KEY   = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const sb = createClient(SUPABASE_URL, SERVICE_KEY);
 
-const MLS_CLIENT_ID     = getEnv("MLS_CLIENT_ID",     ["REALTYNA_CLIENT_ID","RF_CLIENT_ID"]);
-const MLS_CLIENT_SECRET = getEnv("MLS_CLIENT_SECRET", ["REALTYNA_CLIENT_SECRET","RF_CLIENT_SECRET"]);
-const REALTYNA_API_KEY  = getEnv("REALTYNA_API_KEY",  ["MLS_API_KEY","RF_API_KEY", "REALTY_API_KEY"]);
-
-console.log("[env] using", {
-  MLS_CLIENT_ID: MLS_CLIENT_ID.slice(0,4) + "...",
-  MLS_CLIENT_SECRET: "***",
-  REALTYNA_API_KEY: REALTYNA_API_KEY.slice(0,4) + "..."
-});
-
-const BASE        = Deno.env.get("RF_BASE") ?? "https://api.realtyfeed.com";
-const SCOPE       = Deno.env.get("RF_SCOPE") ?? "api/read";
-const REALTYFEED_ORIGIN = Deno.env.get("REALTYFEED_ORIGIN") || SUPABASE_URL;
-
-const TOKEN_URL   = `${BASE}/v1/auth/token`;
-// Fix: Remove stray ) and handle duplicate /reso/odata
-const cleanBase = BASE.replace(/\)+$/, '').replace(/\/+$/, '');
-const RESO_BASE = cleanBase.includes('/reso/odata') ? cleanBase : `${cleanBase}/reso/odata`;
-
-// ====== CORS ======
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET,OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, content-type, x-api-key",
-  "Content-Type": "application/json",
-};
-
-// ====== Helpers ======
-import { getRealtynaToken } from '../_shared/realtyna-auth.ts';
-import { getRealtynaHeaders, fetchWithRetry } from '../_shared/realtyna-client.ts';
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-async function getState() {
-  const { data } = await sb
-    .from("ingest_state")
-    .select("value")
-    .eq("key", "property_sync")
-    .maybeSingle();
-  return (data?.value as any) || {};
+interface EntityResult {
+  fetched: number;
+  upserted: number;
+  errors: number;
 }
 
-async function setState(value: any) {
-  await sb
-    .from("ingest_state")
-    .upsert({ key: "property_sync", value, updated_at: new Date().toISOString() });
-}
-
-async function clearState() {
-  await sb.from("ingest_state").delete().eq("key", "property_sync");
-}
-
-// Map + upsert into mls_listings keyed by listing_key
-async function upsertBatch(items: any[]) {
-  if (!items?.length) return;
-  const rows = items
-    .map((p: any) => ({
-      listing_key: p.ListingKey?.toString(),
-      listing_id: p.ListingId ?? null,
-      list_price: p.ListPrice ?? null,
-      city: p.City ?? null,
-      standard_status: p.StandardStatus ?? null,
-      bedrooms_total: p.BedroomsTotal ?? null,
-      bathrooms_total_integer: p.BathroomsTotalInteger ?? null,
-      living_area: p.LivingArea ?? null,
-      modification_timestamp: p.ModificationTimestamp
-        ? new Date(p.ModificationTimestamp).toISOString()
-        : null,
-      rf_modification_timestamp: p.RFModificationTimestamp
-        ? new Date(p.RFModificationTimestamp).toISOString()
-        : null,
-      updated_at: new Date().toISOString(),
-    }))
-    .filter((r: any) => r.listing_key); // require a key
-
-  if (!rows.length) return;
-  const { error } = await sb.from("mls_listings").upsert(rows, { onConflict: "listing_key" });
-  if (error) throw error;
-}
-
-// ====== Handler ======
 serve(async (req) => {
+  const rid = crypto.randomUUID().substring(0, 8);
+  console.log(`[${rid}] sync_realtyna started`);
+  
   try {
     if (req.method === "OPTIONS") {
-      return new Response(null, { headers: CORS_HEADERS });
+      return new Response(null, { headers: corsHeaders });
     }
 
-    // optional query param: ?reset=true to clear high-water mark
     const url = new URL(req.url);
-    const reset = url.searchParams.get("reset") === "true";
-    if (reset) await clearState();
+    const mode = url.searchParams.get("mode") || "test";
+    const startTime = Date.now();
 
-    const token = await getRealtynaToken();
-    const headers = {
-      ...getRealtynaHeaders(token, REALTYFEED_ORIGIN),
-      "Prefer": "odata.maxpagesize=200",
-    };
-
-    let state = await getState();
-    let nextUrl: string | undefined = state.nextLink;
-
-    // Build initial page if not resuming via @odata.nextLink
-    if (!nextUrl) {
-      const since = state.lastRFModified as string | undefined;
-      const filter = since ? `RFModificationTimestamp gt ${since}` : "";
-      const filterParam = filter ? `&$filter=${encodeURIComponent(filter)}` : "";
-      console.log("Building initial URL with filter:", filterParam);
-      nextUrl =
-        `${RESO_BASE}/Property?` +
-        `$top=200&` +
-        `$select=ListingKey,ListingId,ListPrice,City,StandardStatus,BedroomsTotal,` +
-        `BathroomsTotalInteger,LivingArea,ModificationTimestamp,RFModificationTimestamp` +
-        filterParam +
-        `&$orderby=RFModificationTimestamp asc`;
-      console.log("Initial URL:", nextUrl);
+    // Validate env
+    try {
+      getRealtynaBaseUrl();
+    } catch (error: any) {
+      if (error.message.includes('ENV_MISSING')) {
+        return createErrorResponse('edge.sync_realtyna', 'ENV_MISSING', error.message, 500);
+      }
+      throw error;
     }
 
-    let total = 0;
-    let pages_fetched = 0;
-    let items_inserted = 0;
-    // Safety caps to prevent runaway loops
-    const MAX_PAGES = 50;  // Process up to 50 pages
-    const PACE_MS = 120; // ~ gentle pace to stay under Smart plan 10 RPS
-    
-    console.log("Starting sync with MAX_PAGES:", MAX_PAGES);
-    
-    for (let i = 0; i < MAX_PAGES; i++) {
-      console.log(`Fetching page ${i + 1}, URL: ${nextUrl}`);
-      const res = await fetchWithRetry(nextUrl!, { headers });
-      
-      console.log(`API Response - Status: ${res.status}, Headers:`, Object.fromEntries(res.headers.entries()));
-      
-      const responseText = await res.text();
-      console.log(`Raw response body length: ${responseText.length}`);
-      
-      let json;
+    console.log(`[${rid}] Mode: ${mode}`);
+
+    // Get auth token
+    let token: string;
+    try {
+      token = await getRealtynaToken();
+    } catch (error: any) {
+      console.error(`[${rid}] Token error:`, error);
+      return createErrorResponse(
+        'edge.sync_realtyna',
+        'TOKEN_FAILED',
+        error.message || 'Failed to obtain access token',
+        500
+      );
+    }
+
+    const headers = getRealtynaHeaders(token);
+    const RESO_BASE = getRealtynaBaseUrl();
+
+    const entities = [
+      { name: 'Property', table: 'mls_listings', key: 'ListingKey' },
+      { name: 'Member', table: 'mls_members', key: 'MemberKey' },
+      { name: 'OpenHouse', table: 'mls_open_houses', key: 'OpenHouseKey' },
+      { name: 'Office', table: 'mls_offices', key: 'OfficeKey' }
+    ];
+
+    const results: Record<string, EntityResult> = {};
+
+    for (const entity of entities) {
+      console.log(`[${rid}] Syncing ${entity.name}...`);
+      const result: EntityResult = { fetched: 0, upserted: 0, errors: 0 };
+
       try {
-        json = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("Failed to parse JSON response:", parseError);
-        console.log("Response text preview:", responseText.slice(0, 500));
-        throw new Error("Invalid JSON response from API");
+        const limit = mode === 'test' ? 25 : 200;
+        const queryParams = new URLSearchParams({
+          '$top': limit.toString(),
+          '$orderby': 'ModificationTimestamp desc',
+          '$select': '*'
+        });
+
+        const apiUrl = `${RESO_BASE}/${entity.name}?${queryParams}`;
+        console.log(`[${rid}] Fetching: ${apiUrl.substring(0, 150)}...`);
+
+        const response = await fetchWithRetry(apiUrl, { headers }, 2);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`[${rid}] ${entity.name} API error ${response.status}:`, errorText.substring(0, 500));
+          result.errors = 1;
+          results[entity.name] = result;
+          continue;
+        }
+
+        const data = await response.json();
+        const items = data.value || [];
+        result.fetched = items.length;
+
+        console.log(`[${rid}] ${entity.name}: fetched ${items.length} items`);
+
+        if (items.length > 0) {
+          // Map and upsert based on entity type
+          let rows: any[] = [];
+
+          if (entity.name === 'Property') {
+            rows = items.map((p: any) => ({
+              listing_key: p.ListingKey?.toString(),
+              listing_id: p.ListingId || null,
+              list_price: p.ListPrice || null,
+              city: p.City || null,
+              standard_status: p.StandardStatus || null,
+              bedrooms_total: p.BedroomsTotal || null,
+              bathrooms_total_integer: p.BathroomsTotalInteger || null,
+              living_area: p.LivingArea || null,
+              modification_timestamp: p.ModificationTimestamp ? new Date(p.ModificationTimestamp).toISOString() : null,
+              rf_modification_timestamp: p.RFModificationTimestamp ? new Date(p.RFModificationTimestamp).toISOString() : null,
+              updated_at: new Date().toISOString(),
+            })).filter(r => r.listing_key);
+          } else if (entity.name === 'Member') {
+            rows = items.map((m: any) => ({
+              member_key: m.MemberKey?.toString(),
+              member_id: m.MemberId || null,
+              member_full_name: m.MemberFullName || null,
+              member_first_name: m.MemberFirstName || null,
+              member_last_name: m.MemberLastName || null,
+              member_email: m.MemberEmail || null,
+              member_phone: m.MemberPreferredPhone || null,
+              member_mobile_phone: m.MemberMobilePhone || null,
+              office_key: m.OfficeKey || null,
+              modification_timestamp: m.ModificationTimestamp ? new Date(m.ModificationTimestamp).toISOString() : null,
+              rf_modification_timestamp: m.RFModificationTimestamp ? new Date(m.RFModificationTimestamp).toISOString() : null,
+              updated_at: new Date().toISOString(),
+            })).filter(r => r.member_key);
+          } else if (entity.name === 'OpenHouse') {
+            rows = items.map((oh: any) => ({
+              open_house_key: oh.OpenHouseKey?.toString(),
+              open_house_id: oh.OpenHouseId || null,
+              listing_key: oh.ListingKey || null,
+              open_house_date: oh.OpenHouseDate || null,
+              open_house_start_time: oh.OpenHouseStartTime || null,
+              open_house_end_time: oh.OpenHouseEndTime || null,
+              modification_timestamp: oh.ModificationTimestamp ? new Date(oh.ModificationTimestamp).toISOString() : null,
+              rf_modification_timestamp: oh.RFModificationTimestamp ? new Date(oh.RFModificationTimestamp).toISOString() : null,
+              updated_at: new Date().toISOString(),
+            })).filter(r => r.open_house_key);
+          } else if (entity.name === 'Office') {
+            rows = items.map((o: any) => ({
+              office_key: o.OfficeKey?.toString(),
+              office_id: o.OfficeId || null,
+              office_name: o.OfficeName || null,
+              office_phone: o.OfficePhone || null,
+              office_email: o.OfficeEmail || null,
+              office_city: o.OfficeCity || null,
+              modification_timestamp: o.ModificationTimestamp ? new Date(o.ModificationTimestamp).toISOString() : null,
+              rf_modification_timestamp: o.RFModificationTimestamp ? new Date(o.RFModificationTimestamp).toISOString() : null,
+              updated_at: new Date().toISOString(),
+            })).filter(r => r.office_key);
+          }
+
+          if (rows.length > 0) {
+            const { error } = await sb.from(entity.table as any).upsert(rows, { 
+              onConflict: entity.key.toLowerCase().replace(/([A-Z])/g, '_$1').toLowerCase()
+            });
+
+            if (error) {
+              console.error(`[${rid}] ${entity.name} upsert error:`, error);
+              result.errors = 1;
+            } else {
+              result.upserted = rows.length;
+              console.log(`[${rid}] ${entity.name}: upserted ${rows.length} rows`);
+            }
+          }
+        }
+
+        // Update sync state
+        await sb.from('mls_sync_state').upsert({
+          resource: entity.name,
+          last_run: new Date().toISOString(),
+          last_mod: items[0]?.ModificationTimestamp || null,
+          notes: result.errors > 0 ? 'Error during sync' : `Synced ${result.upserted} records`,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'resource' });
+
+      } catch (error: any) {
+        console.error(`[${rid}] ${entity.name} error:`, error);
+        result.errors = 1;
       }
 
-      if (!res.ok) {
-        console.error("sync_realtyna page error:", res.status, json);
-        return new Response(
-          JSON.stringify({ ok: false, status: res.status, error: json }),
-          { status: 500, headers: CORS_HEADERS }
-        );
-      }
-
-      pages_fetched++;
-      
-      const items = json.value ?? [];
-      console.log(`Found ${items.length} items in response.value`);
-      
-      if (items.length === 0) {
-        console.log("No items found. Full response structure:", JSON.stringify(json, null, 2).slice(0, 1000));
-      } else {
-        console.log("First item keys:", Object.keys(items[0] || {}));
-        console.log("Sample ListingKey values:", items.slice(0, 3).map((i: any) => i.ListingKey));
-      }
-      
-      await upsertBatch(items);
-      items_inserted += items.length;
-      total += items.length;
-
-      // Update high-water mark and nextLink
-      const lastRF = items.length
-        ? items[items.length - 1].RFModificationTimestamp
-        : state.lastRFModified;
-
-      state = {
-        lastRFModified: lastRF ?? state.lastRFModified,
-        nextLink: json["@odata.nextLink"],
-      };
-      await setState(state);
-
-      if (!json["@odata.nextLink"]) break;
-      nextUrl = json["@odata.nextLink"];
-      await sleep(PACE_MS);
+      results[entity.name] = result;
     }
 
-    console.log(`SYNC COMPLETE - Pages: ${pages_fetched}, Items processed: ${total}, Items inserted: ${items_inserted}`);
+    const durationMs = Date.now() - startTime;
+    console.log(`[${rid}] Sync complete in ${durationMs}ms:`, results);
+
+    // Log to sync_log
+    await sb.from('sync_log').insert({
+      function_name: 'sync_realtyna',
+      success: Object.values(results).every(r => r.errors === 0),
+      records_processed: Object.values(results).reduce((sum, r) => sum + r.fetched, 0),
+      inserted: Object.values(results).reduce((sum, r) => sum + r.upserted, 0),
+      metadata: { mode, results, durationMs },
+      completed_at: new Date().toISOString()
+    });
+
+    return createSuccessResponse({
+      entity: Object.fromEntries(
+        Object.entries(results).map(([name, r]) => [name, r.upserted])
+      ),
+      durationMs,
+      mode
+    });
+
+  } catch (error: any) {
+    console.error(`[${rid}] Fatal error:`, error);
     
-    return new Response(
-      JSON.stringify({ 
-        ok: true, 
-        total, 
-        pages_fetched, 
-        items_processed: total,
-        items_inserted,
-        state 
-      }),
-      { headers: CORS_HEADERS }
-    );
-  } catch (e) {
-    console.error("sync_realtyna fatal:", e);
-    return new Response(
-      JSON.stringify({ ok: false, error: String(e) }),
-      { status: 500, headers: CORS_HEADERS }
+    if (error.message?.includes('ENV_MISSING')) {
+      return createErrorResponse('edge.sync_realtyna', 'ENV_MISSING', error.message, 500);
+    }
+    
+    return createErrorResponse(
+      'edge.sync_realtyna',
+      'SYNC_FAILED',
+      error.message || 'Unknown error during sync',
+      500
     );
   }
 });
