@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building2, Home, Calendar, TrendingDown, RefreshCcw, Clock, Activity, AlertCircle } from "lucide-react";
+import { Building2, Home, Calendar, TrendingDown, RefreshCcw, Clock, Activity } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import RecentActivityWidget from "@/components/admin/RecentActivityWidget";
+import SyncHealthWidget from "@/components/admin/SyncHealthWidget";
 
 export default function AdminDashboard() {
   const { data: stats, isLoading } = useQuery({
@@ -134,52 +136,10 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Activity */}
-      <Card className="card-glass">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5" />
-            Recent Activity
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p>• Property search: Nashville ($250K-$500K)</p>
-            <p>• Property view: 123 Main St</p>
-            <p>• Open house tour created</p>
-            <p className="text-xs pt-2">Last 10 events from site_events table</p>
-          </div>
-        </CardContent>
-      </Card>
+      <RecentActivityWidget />
 
       {/* Sync Health */}
-      <Card className="card-glass">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <AlertCircle className="h-5 w-5" />
-            Sync Health
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div>
-              <div className="text-xs text-muted-foreground">Listings</div>
-              <Badge variant="outline" className="mt-1">Synced</Badge>
-            </div>
-            <div>
-              <div className="text-xs text-muted-foreground">Members</div>
-              <Badge variant="outline" className="mt-1">Synced</Badge>
-            </div>
-            <div>
-              <div className="text-xs text-muted-foreground">Offices</div>
-              <Badge variant="outline" className="mt-1">Synced</Badge>
-            </div>
-            <div>
-              <div className="text-xs text-muted-foreground">Open Houses</div>
-              <Badge variant="outline" className="mt-1">Synced</Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <SyncHealthWidget />
     </div>
   );
 }

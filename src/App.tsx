@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import PropertySearchResults from "./pages/PropertySearchResults";
 import OpenHouseResults from "./pages/OpenHouseResults";
@@ -44,43 +46,45 @@ const queryClient = new QueryClient({
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <TooltipProvider>
-        <div className="dashboard-root min-h-screen" style={{ background: '#3A3A3A' }}>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/analytics" element={<Analytics />} />
-            <Route path="/admin/content" element={<Content />} />
-            <Route path="/admin/content-legacy" element={<AdminContent />} />
-            <Route path="/admin/analytics-legacy" element={<AnalyticsPage />} />
-            <Route path="/dashboard" element={<DashboardLayout />}>
-              <Route index element={<Overview />} />
-              <Route path="mls" element={<MLSModule />} />
-              <Route path="ai" element={<AIModule />} />
-              <Route path="analytics" element={<AnalyticsModule />} />
-              <Route path="social" element={<SocialModule />} />
-            </Route>
-            <Route path="/mls" element={<MLS />} />
-            <Route path="/admin-sync" element={<AdminSync />} />
-            <Route path="/admin/mls-sync" element={<MLSSync />} />
-            <Route path="/admin/mls-sync-dashboard" element={<MLSSyncDashboard />} />
-            <Route path="/admin/broker" element={<BrokerDashboard />} />
-            <Route path="/realtyna-test" element={<RealtynaSelftest />} />
-            <Route path="/search/properties" element={<PropertySearchResults />} />
-            <Route path="/search/open-houses" element={<OpenHouseResults />} />
-            <Route path="/search/zip" element={<ZipSearchResults />} />
-            <Route path="/search/agents" element={<AgentResults />} />
-            <Route path="/search/offices" element={<OfficeResults />} />
-            <Route path="/property/:id" element={<PropertyDetail />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-        </div>
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <div className="dashboard-root min-h-screen" style={{ background: '#3A3A3A' }}>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/admin/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+              <Route path="/admin/content" element={<ProtectedRoute allowedRoles={['admin']}><Content /></ProtectedRoute>} />
+              <Route path="/admin/content-legacy" element={<AdminContent />} />
+              <Route path="/admin/analytics-legacy" element={<AnalyticsPage />} />
+              <Route path="/dashboard" element={<DashboardLayout />}>
+                <Route index element={<Overview />} />
+                <Route path="mls" element={<MLSModule />} />
+                <Route path="ai" element={<AIModule />} />
+                <Route path="analytics" element={<AnalyticsModule />} />
+                <Route path="social" element={<SocialModule />} />
+              </Route>
+              <Route path="/mls" element={<MLS />} />
+              <Route path="/admin-sync" element={<AdminSync />} />
+              <Route path="/admin/mls-sync" element={<ProtectedRoute><MLSSync /></ProtectedRoute>} />
+              <Route path="/admin/mls-sync-dashboard" element={<MLSSyncDashboard />} />
+              <Route path="/admin/broker" element={<BrokerDashboard />} />
+              <Route path="/realtyna-test" element={<RealtynaSelftest />} />
+              <Route path="/search/properties" element={<PropertySearchResults />} />
+              <Route path="/search/open-houses" element={<OpenHouseResults />} />
+              <Route path="/search/zip" element={<ZipSearchResults />} />
+              <Route path="/search/agents" element={<AgentResults />} />
+              <Route path="/search/offices" element={<OfficeResults />} />
+              <Route path="/property/:id" element={<PropertyDetail />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+          </div>
+        </TooltipProvider>
+      </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

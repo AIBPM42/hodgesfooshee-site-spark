@@ -1201,6 +1201,39 @@ export type Database = {
         }
         Relationships: []
       }
+      services_content: {
+        Row: {
+          created_at: string | null
+          hero_subtitle: string | null
+          hero_title: string
+          id: string
+          sections: Json | null
+          seo_description: string | null
+          seo_title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          hero_subtitle?: string | null
+          hero_title?: string
+          id?: string
+          sections?: Json | null
+          seo_description?: string | null
+          seo_title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          hero_subtitle?: string | null
+          hero_title?: string
+          id?: string
+          sections?: Json | null
+          seo_description?: string | null
+          seo_title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           benefit_bullets: Json | null
