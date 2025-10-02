@@ -1,5 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutDashboard, FileText, Sparkles, BarChart3 } from "lucide-react";
+import { LayoutDashboard, FileText, Sparkles, BarChart3, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HomepageControl from "@/components/admin/HomepageControl";
@@ -7,12 +9,25 @@ import ContentInsights from "@/components/admin/ContentInsights";
 import AIHotProperties from "@/components/admin/AIHotProperties";
 import AnalyticsDashboard from "@/components/admin/AnalyticsDashboard";
 
-export default function Admin() {
+export default function AdminContent() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <Header />
       <main className="pt-24 pb-12">
         <div className="mx-auto max-w-7xl px-4">
+          {/* Back to Dashboard */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/admin')}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Dashboard
+          </Button>
+
           {/* Premium Header */}
           <div className="mb-8 animate-fade-in">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">

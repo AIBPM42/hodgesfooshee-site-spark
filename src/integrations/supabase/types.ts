@@ -526,6 +526,33 @@ export type Database = {
         }
         Relationships: []
       }
+      listing_views: {
+        Row: {
+          city: string | null
+          id: string
+          listing_key: string
+          occurred_at: string
+          price: number | null
+          session_id: string
+        }
+        Insert: {
+          city?: string | null
+          id?: string
+          listing_key: string
+          occurred_at?: string
+          price?: number | null
+          session_id: string
+        }
+        Update: {
+          city?: string | null
+          id?: string
+          listing_key?: string
+          occurred_at?: string
+          price?: number | null
+          session_id?: string
+        }
+        Relationships: []
+      }
       mls_listings: {
         Row: {
           bathrooms_total_integer: number | null
@@ -998,6 +1025,42 @@ export type Database = {
         }
         Relationships: []
       }
+      page_events: {
+        Row: {
+          id: string
+          ip: unknown | null
+          meta: Json
+          occurred_at: string
+          page: string
+          referrer: string | null
+          session_id: string
+          ua: string | null
+          user_role: string
+        }
+        Insert: {
+          id?: string
+          ip?: unknown | null
+          meta?: Json
+          occurred_at?: string
+          page: string
+          referrer?: string | null
+          session_id: string
+          ua?: string | null
+          user_role: string
+        }
+        Update: {
+          id?: string
+          ip?: unknown | null
+          meta?: Json
+          occurred_at?: string
+          page?: string
+          referrer?: string | null
+          session_id?: string
+          ua?: string | null
+          user_role?: string
+        }
+        Relationships: []
+      }
       posts: {
         Row: {
           author_id: string | null
@@ -1108,6 +1171,33 @@ export type Database = {
           scope?: string | null
           token_type?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      search_events: {
+        Row: {
+          duration_ms: number | null
+          id: string
+          occurred_at: string
+          query: Json
+          results_count: number | null
+          session_id: string
+        }
+        Insert: {
+          duration_ms?: number | null
+          id?: string
+          occurred_at?: string
+          query: Json
+          results_count?: number | null
+          session_id: string
+        }
+        Update: {
+          duration_ms?: number | null
+          id?: string
+          occurred_at?: string
+          query?: Json
+          results_count?: number | null
+          session_id?: string
         }
         Relationships: []
       }

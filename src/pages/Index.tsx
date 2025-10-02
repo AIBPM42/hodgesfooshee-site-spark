@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import FeaturedProperties from "@/components/FeaturedProperties";
@@ -12,12 +13,18 @@ import { ExploreCitiesSection } from "@/components/ExploreCitiesSection";
 import AIHotPropertiesSection from "@/components/AIHotPropertiesSection";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { logPageView } from "@/lib/analytics";
 import { Loader2 } from "lucide-react";
 
 
 const Index = () => {
   const { data: settings, isLoading } = useSiteSettings();
-  useAnalytics(); // Track page views
+  useAnalytics(); // Track page views (legacy)
+
+  // Track page view with new analytics system
+  useEffect(() => {
+    logPageView('/', document.referrer);
+  }, []);
 
   if (isLoading) {
     return (
