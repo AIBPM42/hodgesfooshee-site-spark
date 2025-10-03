@@ -4,7 +4,7 @@ import HeroSection from "@/components/HeroSection";
 import LatestMarketInsights from "@/components/LatestMarketInsights";
 import NashvilleInsiderAccess from "@/components/NashvilleInsiderAccess";
 import Footer from "@/components/Footer";
-import { CountyHighlight } from "@/components/CountyHighlight";
+import { MiddleTennesseeMarketIntelligence } from "@/components/MiddleTennesseeMarketIntelligence";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { logPageView } from "@/lib/analytics";
 
@@ -23,7 +23,7 @@ const Index = () => {
       <main className="bg-transparent">
         <div className="mx-auto max-w-7xl px-4 py-20 space-y-20">
           <section>
-            <CountyHighlight />
+            <MiddleTennesseeMarketIntelligence />
           </section>
           
           <section>
