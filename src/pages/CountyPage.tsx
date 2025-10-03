@@ -19,6 +19,10 @@ interface CountyPageProps {
 const CountyPage = ({ demo = false }: CountyPageProps) => {
   const { countySlug } = useParams<{ countySlug: string }>();
   const { data: pageData, isLoading, error } = useCountyPage(demo ? 'davidson-tn' : (countySlug || ''), demo);
+  
+  // Hooks must be at top level (not conditional)
+  const [sourcesOpen, setSourcesOpen] = useState(false);
+  const [copiedSources, setCopiedSources] = useState(false);
 
   if (isLoading) {
     return (
@@ -54,8 +58,6 @@ const CountyPage = ({ demo = false }: CountyPageProps) => {
   // Demo mode with static JSON data
   if (demo && pageData.staticData) {
     const { hero, stats, sections, faqs, sources } = pageData.staticData;
-    const [sourcesOpen, setSourcesOpen] = useState(false);
-    const [copiedSources, setCopiedSources] = useState(false);
     
     const copyAllSources = () => {
       const allUrls = sources.map((s: any) => `${s.title}: ${s.url}`).join('\n');
