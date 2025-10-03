@@ -33,45 +33,133 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are a real estate data researcher. Return ONLY valid JSON matching this exact schema:
+            content: `You are an expert research assistant producing neutral, fact-checked, HTML content for a county "intelligence" page aimed at home buyers, sellers, and real estate agents.
 
-{
-  "hero": {
-    "synopsis": "3-5 paragraph overview of Davidson County covering location, population, major cities (Nashville), economy, and real estate market. Each fact must have inline citation as [n]."
-  },
-  "stats": [
-    { "label": "Population", "value": "715,884", "caption": "2024 est", "citation": "[1]" },
-    ... 9 more stats (Median Home Price, Property Tax Rate, Avg Days on Market, Unemployment %, Top Employer, School Rating, Crime Index, Walkability Score, Median Household Income)
-  ],
-  "sections": [
-    {
-      "title": "Geography & Climate",
-      "content": "2-4 paragraphs with inline citations [n]. Cover climate, terrain, natural features."
-    },
-    ... 9 more sections (History & Culture, Demographics, Education & Schools, Economy & Jobs, Cost of Living, Housing Market, Transportation, Parks & Recreation, Healthcare)
-  ],
-  "faqs": [
-    {
-      "question": "What is Davidson County known for?",
-      "answer": "Detailed answer with citations [n]."
-    },
-    ... 12-17 more FAQs including all required ones plus 3-7 bonus questions
-  ],
-  "sources": [
-    { "title": "Source Name", "url": "https://..." },
-    ... all cited sources with descriptive titles
-  ]
-}
+Hard requirements:
 
-Requirements:
-- Use real 2024-2025 data with accurate citations
-- All numeric values as strings with proper formatting
-- Every fact needs a citation reference [1], [2], etc.
-- Return ONLY the JSON object, no markdown, no explanations`
+1. Output valid, self-contained HTML only (no scripts, no external CSS). Use accessible, semantic tags (section, h2, p, ul, li, figure, figcaption, table, thead, tbody, tr, th, td, details, summary).
+
+2. Every numeric claim must include at least one credible citation in square brackets inside the sentence, e.g. … 715,000 residents [U.S. Census — https://…]. Prefer official/primary sources (U.S. Census, BLS, BEA, TN.gov, Metro Nashville, MNPS, NWS, etc.).
+
+3. Add a compact Sources list at the end with human-readable titles and URLs used above.
+
+4. Keep tone professional, concise, and neutral. No hype.
+
+5. Keep sections ≤ ~180 words each. FAQ answers ≤ 3 short paragraphs.
+
+6. No MLS/listing data on this page (only a CTA link to your site's live listings).
+
+7. Do not mention Perplexity or model names. Do not include JSON. Return only HTML.
+
+HTML layout conventions:
+
+- Wrap the whole page in <main id="county-intel">…</main>.
+- Use these CSS utility classes in your markup so the app can theme it: container, grid, stat, muted, pill, badge, card, kpi, source-chip, chart, table-compact.
+- Stats go in a <section id="stats" class="grid"> as KPI cards (one stat per .kpi).
+- Use <details class="faq"> <summary>Q…</summary> <div class="answer">…</div> </details> for FAQs (collapsed by default — good for AEO & UX).
+- Put tiny inline "sparklines" as simple SVG placeholders (no external libs) when helpful (e.g., temp range).
+- Hero image: Nashville skyline / John Seigenthaler Pedestrian Bridge (captioned), not interior photos.
+
+Citations:
+
+- Inline bracket style in-text is required: [Title — URL]. Titles must match items in the Sources list.
+- If numbers vary by source, state a range and cite both.
+
+Guardrails:
+
+- If uncertain, say so briefly and cite the best available source(s).
+- No external scripts, tracking pixels, or iframes. No inline base64 images.
+
+Return ONLY the HTML content, no explanations, no markdown code blocks.`
           },
           {
             role: 'user',
-            content: 'Generate comprehensive Davidson County, Tennessee real estate and community data in the specified JSON format.'
+            content: `Create an HTML County Intelligence page for Davidson County, Tennessee that is fast, AEO/SEO-friendly, and fully cited.
+
+1) Hero
+
+<section id="hero" class="card">
+
+Heading: "Davidson County, TN: Market Intelligence, Lifestyle & Guides"
+
+One-paragraph synopsis summarizing location, population, economy, and housing with citations.
+
+Hero image: Nashville skyline / John Seigenthaler Pedestrian Bridge. Include a <figure> with <img alt="Nashville skyline over the Cumberland River"> and <figcaption>.
+
+Two buttons:
+- "See Live Listings" → /property-search?county=Davidson (just a link, no data embed)
+- "Download County PDF" → #download-pdf (anchor; app wires it)
+
+2) Fast Stat Strip (each with citations)
+
+Output as KPI cards inside <section id="stats" class="grid">. Each card:
+
+<article class="kpi">
+  <h3>Label</h3>
+  <p class="stat">Value</p>
+  <p class="muted">method/vintage + inline bracket citation</p>
+</article>
+
+Stats to include (latest stable vintages):
+- Population (total)
+- Median Home Price
+- Unemployment Rate
+- % Bachelor's+
+- Annual Tourists (estimate)
+
+3) Core Sections (10)
+
+Render each as <section class="card"> <h2>…</h2> <p>…</p> </section> with citations and optional tiny SVG charts when helpful.
+
+- Geography & Climate (include a min–max monthly temperature sparkline SVG)
+- History
+- Demographics & Population
+- Education & Schools
+- Economy & Employment
+- Parks & Recreation
+- Culture & Events
+- Transportation & Infrastructure
+- Government & Local Services
+- Real Estate & Housing Market (context only; add CTA link to /property-search?county=Davidson)
+
+4) FAQs (collapsed for AEO)
+
+Top "authority" questions as <details class="faq"> (10 required), each with cited answers:
+
+- What cities are in Davidson County TN?
+- What is the population of Davidson County TN?
+- What are the main attractions in Davidson County TN?
+- How do I contact Davidson County TN government offices?
+- What schools are located in Davidson County TN?
+- What parks are available in Davidson County TN?
+- What is the history of Davidson County TN?
+- Are there any annual events in Davidson County TN?
+- What counties border Davidson County TN?
+- How can I find real estate listings in Davidson County TN? (Answer: link to /property-search?county=Davidson)
+
+Append short "Who/How/Where" FAQs (also <details>; concise, cited):
+
+- How was Davidson County TN named?
+- How large is Davidson County TN?
+- How safe is Davidson County TN? (crime context)
+- How is the weather in Davidson County TN?
+- Where can I register to vote in Davidson County TN?
+- Who is the mayor of Davidson County (Nashville)?
+- Who oversees elections in Davidson County?
+- Who governs school districts in Davidson County?
+
+5) Sources
+
+End with <section id="sources" class="card">:
+
+Intro sentence: "Sources used throughout this page."
+
+Unordered list of all sources referenced (title + absolute URL). Titles must match your inline brackets.
+
+Important:
+- Do not reference MLS vendors or Realtyna.
+- Do not mention Perplexity or model names.
+- Return only HTML (no JSON).`
           }
         ],
         temperature: 0.2,
@@ -86,26 +174,17 @@ Requirements:
     }
 
     const data = await response.json();
-    const jsonContent = data.choices?.[0]?.message?.content || '';
+    const htmlContent = data.choices?.[0]?.message?.content || '';
 
-    if (!jsonContent) {
+    if (!htmlContent) {
       console.error('[generate-county-html] No content returned from Perplexity');
       return createErrorResponse('generate-county-html', 'NO_CONTENT', 'No content generated', 500);
     }
 
-    console.log('[generate-county-html] Generated content length:', jsonContent.length);
-
-    // Parse the JSON response
-    let parsedData;
-    try {
-      parsedData = JSON.parse(jsonContent);
-    } catch (e) {
-      console.error('[generate-county-html] Failed to parse JSON:', e);
-      return createErrorResponse('generate-county-html', 'PARSE_ERROR', 'Invalid JSON response', 500);
-    }
+    console.log('[generate-county-html] Generated HTML length:', htmlContent.length);
 
     return createSuccessResponse({
-      data: parsedData
+      html: htmlContent
     });
 
   } catch (error) {
