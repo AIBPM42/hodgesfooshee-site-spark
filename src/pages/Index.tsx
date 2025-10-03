@@ -26,9 +26,6 @@ const Index = () => {
             <NashvilleInsiderAccess />
           </section>
           
-          <section>
-            <MiddleTennesseeMarketIntelligence />
-          </section>
           
           <section>
             <LatestMarketInsights />
