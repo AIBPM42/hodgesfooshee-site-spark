@@ -5,6 +5,7 @@ import LatestMarketInsights from "@/components/LatestMarketInsights";
 import NashvilleInsiderAccess from "@/components/NashvilleInsiderAccess";
 import Footer from "@/components/Footer";
 import { NewThisWeekSection } from "@/components/NewThisWeekSection";
+import { CountyHighlight } from "@/components/CountyHighlight";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { logPageView } from "@/lib/analytics";
 
@@ -24,6 +25,10 @@ const Index = () => {
         <div className="mx-auto max-w-7xl px-4 py-20 space-y-20">
           <section>
             <NewThisWeekSection />
+          </section>
+          
+          <section>
+            <CountyHighlight />
           </section>
           
           <section>
