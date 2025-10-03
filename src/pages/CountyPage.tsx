@@ -48,89 +48,53 @@ const CountyPage = ({ demo = false }: CountyPageProps) => {
 
   const { meta, kpis, trends, insights, ai, seo, ctas } = pageData;
 
-  // Demo mode renders HTML directly
-  if (demo && pageData.htmlContent) {
+  // Demo mode with static JSON data
+  if (demo && pageData.staticData) {
+    const { hero, stats, sections, faqs, sources } = pageData.staticData;
+    
     return (
       <>
         <Helmet>
-          <title>Davidson County, TN — Market Intelligence, Schools, Parks, Cost of Living</title>
-          <meta name="description" content="Comprehensive real estate intelligence for Davidson County (Nashville), Tennessee. Live market stats, schools, demographics, and expert insights." />
-          <link rel="canonical" href="https://www.hodgesfooshee.com/counties/davidson-tn" />
+          <title>Davidson County, TN — Market Intelligence</title>
+          <meta name="description" content="Real estate intelligence for Davidson County, Tennessee" />
         </Helmet>
-
         <Header />
-        
         <div className="min-h-screen bg-background">
-          {/* Hero */}
-          <div 
-            className="relative h-[400px] bg-cover bg-center"
-            style={{ backgroundImage: 'url(/images/davidson-parthenon.webp)' }}
-          >
+          <div className="relative h-[400px] bg-cover bg-center" style={{ backgroundImage: 'url(/images/davidson-parthenon.webp)' }}>
             <div className="absolute inset-0 bg-black/50" />
             <div className="relative container mx-auto h-full flex flex-col justify-center px-4">
-              <Badge variant="secondary" className="w-fit mb-4">DEMO MODE - AI Generated</Badge>
-              <h1 className="text-5xl font-bold text-white mb-4">
-                Davidson County Market Intelligence
-              </h1>
-              <div 
-                className="text-white/90 prose prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: pageData.htmlContent.hero }}
-              />
+              <Badge variant="secondary" className="w-fit mb-4">DEMO - AI Generated</Badge>
+              <h1 className="text-5xl font-bold text-white mb-4">Davidson County Market Intelligence</h1>
+              <p className="text-white/90 text-lg max-w-3xl">{hero.synopsis}</p>
             </div>
           </div>
-
           <div className="container mx-auto px-4 py-12">
-            {/* Stats Strip */}
-            {pageData.htmlContent.stats && (
-              <div 
-                className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12"
-                dangerouslySetInnerHTML={{ __html: pageData.htmlContent.stats }}
-              />
-            )}
-
-            {/* Content Sections */}
-            {pageData.htmlContent.sections && pageData.htmlContent.sections.length > 0 && (
-              <div className="grid md:grid-cols-2 gap-8 mb-12">
-                {pageData.htmlContent.sections.map((section: string, i: number) => (
-                  <div key={i} dangerouslySetInnerHTML={{ __html: section }} />
-                ))}
-              </div>
-            )}
-
-            {/* FAQs */}
-            {pageData.htmlContent.faqs && pageData.htmlContent.faqs.length > 0 && (
-              <Card className="mb-12">
-                <CardHeader>
-                  <CardTitle>Frequently Asked Questions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {pageData.htmlContent.faqs.map((faq: string, i: number) => (
-                    <div key={i} dangerouslySetInnerHTML={{ __html: faq }} />
-                  ))}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* CTAs */}
-            <div className="flex flex-wrap gap-4 justify-center mb-8">
-              <Button size="lg" asChild>
-                <Link to="/search/properties?county=Davidson">See Live Listings</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link to="/services">Schedule Consultation</Link>
-              </Button>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
+              {stats.map((stat: any, i: number) => (
+                <Card key={i}><CardContent className="pt-6"><h3 className="text-sm font-medium mb-2">{stat.label}</h3><p className="text-2xl font-bold">{stat.value}</p><p className="text-xs text-muted-foreground">{stat.caption} {stat.citation}</p></CardContent></Card>
+              ))}
             </div>
-
-            {/* Sources */}
-            {pageData.htmlContent.sources && (
-              <div 
-                className="mt-12 text-sm text-muted-foreground"
-                dangerouslySetInnerHTML={{ __html: pageData.htmlContent.sources }}
-              />
-            )}
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              {sections.map((sec: any, i: number) => (
+                <Card key={i}><CardHeader><CardTitle>{sec.title}</CardTitle></CardHeader><CardContent><p className="text-sm leading-relaxed">{sec.content}</p></CardContent></Card>
+              ))}
+            </div>
+            <Card className="mb-12"><CardHeader><CardTitle>FAQs</CardTitle></CardHeader><CardContent className="space-y-4">
+              {faqs.map((faq: any, i: number) => (
+                <div key={i} className="border-b pb-4 last:border-0"><h4 className="font-semibold mb-2">{faq.question}</h4><p className="text-sm text-muted-foreground">{faq.answer}</p></div>
+              ))}
+            </CardContent></Card>
+            <div className="flex gap-4 justify-center mb-8">
+              <Button size="lg" asChild><Link to="/search/properties?county=Davidson">See Listings</Link></Button>
+              <Button size="lg" variant="outline" asChild><Link to="/services">Contact Us</Link></Button>
+            </div>
+            <div className="mt-12 text-sm text-muted-foreground"><h4 className="font-semibold mb-2">Sources:</h4><ul className="space-y-1">
+              {sources.map((src: any, i: number) => (
+                <li key={i}><a href={src.url} target="_blank" rel="noopener noreferrer" className="hover:underline">{src.title}</a></li>
+              ))}
+            </ul></div>
           </div>
         </div>
-
         <Footer />
       </>
     );

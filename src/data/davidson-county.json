@@ -1,0 +1,242 @@
+{
+  "hero": {
+    "synopsis": "Davidson County is located in north-central Tennessee and serves as the state's second-most populous county, with Nashville as its county seat and largest city [1]. The county spans approximately 526 square miles and is home to over 715,000 residents as of 2024 [2]. Known as \"Music City,\" Nashville drives the county's economy through healthcare, education, entertainment, and technology sectors [3]. The real estate market remains robust, with a median home price of $425,000 and strong demand driven by population growth and economic opportunity [4]. Davidson County offers a unique blend of Southern charm, cultural vibrancy, and modern amenities, making it one of the fastest-growing metro areas in the United States [5]."
+  },
+  "stats": [
+    { "label": "Population", "value": "715,884", "caption": "2024 estimate", "citation": "[2]" },
+    { "label": "Median Home Price", "value": "$425,000", "caption": "As of Q4 2024", "citation": "[4]" },
+    { "label": "Property Tax Rate", "value": "0.655%", "caption": "Effective rate", "citation": "[6]" },
+    { "label": "Avg Days on Market", "value": "32", "caption": "2024 average", "citation": "[7]" },
+    { "label": "Unemployment Rate", "value": "2.8%", "caption": "December 2024", "citation": "[8]" },
+    { "label": "Top Employer", "value": "Vanderbilt", "caption": "25,000+ employees", "citation": "[9]" },
+    { "label": "School Rating", "value": "7/10", "caption": "GreatSchools avg", "citation": "[10]" },
+    { "label": "Crime Index", "value": "52", "caption": "100 = high crime", "citation": "[11]" },
+    { "label": "Walkability Score", "value": "31", "caption": "Car-dependent", "citation": "[12]" },
+    { "label": "Median Household Income", "value": "$64,700", "caption": "2024 estimate", "citation": "[13]" }
+  ],
+  "sections": [
+    {
+      "title": "Geography & Climate",
+      "content": "Davidson County is situated in the Central Basin of Middle Tennessee, characterized by rolling hills and the Cumberland River flowing through its center [14]. The county experiences a humid subtropical climate with four distinct seasons—hot, humid summers (average high 89°F in July) and mild winters (average low 28°F in January) [15]. Annual precipitation averages 47 inches, with occasional severe weather including tornadoes during spring months [16]. The diverse terrain includes urban Nashville, suburban neighborhoods, and rural areas with agricultural land, providing varied lifestyle options for residents [17]."
+    },
+    {
+      "title": "History & Culture",
+      "content": "Founded in 1783 and named after Revolutionary War hero William Lee Davidson, the county has a rich history dating back to early American settlement [18]. Nashville became the state capital in 1843 and has since evolved into a major cultural center [19]. The city earned its \"Music City\" nickname in the 1950s, becoming the global center for country music through the Grand Ole Opry and numerous recording studios [20]. Today, Davidson County celebrates its heritage through historic sites, museums, and a thriving arts scene that extends beyond country music to include rock, indie, and classical genres [21]. The county's diverse population contributes to a vibrant culinary scene and cultural festivals year-round [22]."
+    },
+    {
+      "title": "Demographics",
+      "content": "Davidson County's population has grown approximately 15% since 2010, driven by domestic migration and economic opportunity [23]. The county's demographic composition is approximately 56% White, 28% Black or African American, 10% Hispanic or Latino, and 4% Asian, with growing diversity in recent years [24]. The median age is 34.5 years, reflecting a younger population compared to the national average of 38.5 years [25]. Educational attainment is above average, with 38% of residents holding a bachelor's degree or higher [26]. The influx of young professionals and families has transformed neighborhoods and spurred urban development throughout the county [27]."
+    },
+    {
+      "title": "Education & Schools",
+      "content": "Metropolitan Nashville Public Schools (MNPS) serves over 80,000 students across 160 schools, making it one of the largest districts in Tennessee [28]. The district has invested heavily in facility improvements and academic programs, though performance varies significantly by school and neighborhood [29]. Private and charter school options are abundant, with institutions like Harpeth Hall, Montgomery Bell Academy, and KIPP Nashville offering alternative educational pathways [30]. Higher education is a major economic driver, with Vanderbilt University, Tennessee State University, Belmont University, and Lipscomb University all located within the county [31]. These institutions contribute to research, healthcare, and workforce development while attracting students from across the nation [32]."
+    },
+    {
+      "title": "Economy & Jobs",
+      "content": "Davidson County's economy is robust and diversified, with healthcare, education, music and entertainment, tourism, and technology sectors driving growth [33]. Major employers include Vanderbilt University Medical Center, HCA Healthcare, Nissan North America, and Amazon, which operates a significant operations center in Nashville [34]. The unemployment rate of 2.8% is well below the national average, reflecting strong job market conditions [35]. The county has emerged as a tech hub, attracting startups and established companies seeking lower costs and quality of life compared to traditional tech centers [36]. Average salaries vary widely by industry, with healthcare and technology offering competitive compensation while service and hospitality sectors pay less [37]."
+    },
+    {
+      "title": "Cost of Living",
+      "content": "Davidson County's cost of living is approximately 5% above the national average, primarily driven by housing costs [38]. While more affordable than coastal metros, Nashville has experienced rapid price appreciation—housing costs increased nearly 40% between 2019 and 2024 [39]. Rent for a two-bedroom apartment averages $1,650 per month, while utilities, groceries, and transportation costs remain close to national averages [40]. Tennessee's lack of state income tax provides some financial relief, though sales tax is relatively high at 9.25% in Nashville [41]. Overall, the county offers a reasonable cost of living for a major metro area, especially for those in well-paying professional fields [42]."
+    },
+    {
+      "title": "Housing Market",
+      "content": "The Davidson County housing market remains competitive in 2024, with a median home price of $425,000 and average days on market of just 32 days [43]. Inventory remains tight, with active listings down 12% year-over-year, contributing to continued price appreciation [44]. Popular neighborhoods include East Nashville (trendy, walkable), 12 South (boutique retail, dining), Green Hills (upscale, family-friendly), and Germantown (historic, revitalized) [45]. New construction is booming in suburban areas like Donelson, Hermitage, and Antioch, offering more affordable options for first-time buyers [46]. Interest rate fluctuations and rising prices have cooled buyer demand slightly, but the market remains seller-favorable with limited supply [47]."
+    },
+    {
+      "title": "Transportation",
+      "content": "Davidson County is car-dependent, with a walkability score of just 31 and limited public transit options [48]. The Metropolitan Transit Authority (MTA) operates bus routes throughout the county, but ridership remains low compared to peer cities [49]. A 2018 transit referendum to fund light rail and expanded bus service was rejected by voters, leaving the county reliant on automobiles [50]. Major highways including I-40, I-65, and I-24 provide regional connectivity but experience significant congestion during peak hours [51]. Nashville International Airport (BNA) offers nonstop service to over 60 destinations, supporting business and leisure travel [52]. Bike infrastructure is improving, with greenways and protected lanes expanding in urban areas [53]."
+    },
+    {
+      "title": "Parks & Recreation",
+      "content": "Davidson County offers over 12,000 acres of public parkland, including urban parks, greenways, and nature preserves [54]. Centennial Park features the iconic Parthenon replica, while Shelby Bottoms Greenway provides miles of trails along the Cumberland River [55]. The county's parks department operates community centers, athletic fields, and golf courses, serving residents of all ages [56]. Nearby Percy Priest Lake and Radnor Lake State Park offer boating, fishing, and hiking opportunities within minutes of downtown [57]. Nashville's vibrant live music scene, honky-tonks, museums, and professional sports teams (Titans, Predators, Sounds) provide year-round entertainment [58]. The city hosts major events including CMA Fest, the Nashville Film Festival, and the Music City Bowl [59]."
+    },
+    {
+      "title": "Healthcare",
+      "content": "Davidson County is a national leader in healthcare, anchored by Vanderbilt University Medical Center and HCA Healthcare's corporate headquarters [60]. The county is home to numerous hospitals, specialty clinics, and research facilities, attracting patients from across the region [61]. Healthcare quality is generally high, with Vanderbilt consistently ranked among the top hospitals in the nation [62]. The healthcare sector employs over 100,000 workers in the Nashville metro area, making it the largest employment sector [63]. Access to primary care and specialists is good in urban areas but can be limited in rural parts of the county [64]. Mental health and addiction services have expanded in recent years to address growing community needs [65]."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What is Davidson County known for?",
+      "answer": "Davidson County is best known as the home of Nashville, the \"Music City\" and global center of country music, housing the Grand Ole Opry, Country Music Hall of Fame, and countless recording studios [66]. It's also a major healthcare hub, education center, and one of the fastest-growing metro areas in the United States [67]."
+    },
+    {
+      "question": "How much do homes cost in Davidson County?",
+      "answer": "The median home price in Davidson County is $425,000 as of Q4 2024, though prices vary significantly by neighborhood [68]. Starter homes in suburban areas may be found in the $250,000-$350,000 range, while properties in desirable urban neighborhoods like Green Hills or 12 South often exceed $600,000 [69]."
+    },
+    {
+      "question": "What are the best neighborhoods for families in Davidson County?",
+      "answer": "Family-friendly neighborhoods include Green Hills (excellent schools, upscale shopping), Brentwood (highly rated schools, suburban feel), Franklin (historic charm, top-rated schools), and Bellevue (affordable, community-oriented) [70]. These areas offer good schools, parks, and safe environments suitable for raising children [71]."
+    },
+    {
+      "question": "How much are property taxes in Davidson County?",
+      "answer": "The effective property tax rate in Davidson County is approximately 0.655%, which translates to about $2,784 annually on a $425,000 home [72]. Tennessee has no state income tax, which partially offsets the property tax burden for homeowners [73]."
+    },
+    {
+      "question": "What is the job market like in Davidson County?",
+      "answer": "The job market is strong, with an unemployment rate of just 2.8% as of December 2024 [74]. Major employment sectors include healthcare, education, music and entertainment, technology, and tourism, with competitive salaries in professional fields [75]. The county continues to attract new businesses and workers from across the country [76]."
+    },
+    {
+      "question": "How good are the schools in Davidson County?",
+      "answer": "School quality varies significantly across Davidson County. Metropolitan Nashville Public Schools (MNPS) has an average GreatSchools rating of 7/10, with some high-performing magnet and zoned schools but also struggling campuses [77]. Many families opt for private schools or move to suburban districts like Williamson County for higher-rated public schools [78]."
+    },
+    {
+      "question": "What are average commute times in Davidson County?",
+      "answer": "Average commute times in Davidson County are approximately 25 minutes, close to the national average [79]. However, traffic congestion on major highways like I-40 and I-65 can significantly extend commute times during peak hours, particularly for those traveling from outer suburbs [80]."
+    },
+    {
+      "question": "What is there to do in Davidson County?",
+      "answer": "Davidson County offers world-class live music venues, honky-tonks on Broadway, the Country Music Hall of Fame, the Parthenon replica, Nashville Sounds baseball, Tennessee Titans football, Nashville Predators hockey, and numerous parks and greenways [81]. The food scene is diverse and growing, with award-winning restaurants and hot chicken as a local specialty [82]."
+    },
+    {
+      "question": "What should I know about moving to Davidson County?",
+      "answer": "Prospective residents should know that Davidson County is growing rapidly, driving up housing costs and creating traffic congestion [83]. The lack of state income tax is offset by high sales tax (9.25%) and rising property values [84]. Public transit is limited, so a car is essential for most residents [85]. The climate is humid with hot summers and mild winters, and the area experiences occasional severe weather [86]."
+    },
+    {
+      "question": "What are current real estate trends in Davidson County?",
+      "answer": "Current trends include tight inventory (down 12% year-over-year), continued price appreciation (median up 6% in 2024), and quick sales (average 32 days on market) [87]. New construction is concentrated in suburban areas, and bidding wars remain common for desirable properties [88]. Rising interest rates have cooled demand slightly but the market remains competitive for buyers [89]."
+    },
+    {
+      "question": "Is Davidson County safe?",
+      "answer": "Safety varies by neighborhood in Davidson County. The overall crime index is 52 (where 100 is high crime), which is higher than the national average [90]. Property crime rates are elevated in certain urban areas, while violent crime is concentrated in specific neighborhoods [91]. Suburban areas generally have lower crime rates than the urban core [92]."
+    },
+    {
+      "question": "Does Davidson County have good healthcare?",
+      "answer": "Yes, Davidson County is a national healthcare leader with Vanderbilt University Medical Center ranked among the top hospitals in the U.S., along with numerous other hospitals and specialty clinics [93]. Healthcare access and quality are excellent in most areas, though rural parts of the county may have fewer options [94]."
+    },
+    {
+      "question": "What is the weather like in Davidson County?",
+      "answer": "Davidson County has a humid subtropical climate with hot, humid summers (average high 89°F in July) and mild winters (average low 28°F in January) [95]. The area receives about 47 inches of rain annually and experiences all four seasons, including beautiful spring blooms and colorful fall foliage [96]. Severe weather, including tornadoes, can occur in spring [97]."
+    },
+    {
+      "question": "Are there good outdoor recreation options?",
+      "answer": "Yes, Davidson County offers over 12,000 acres of parkland, greenways along the Cumberland River, Percy Priest Lake for boating and fishing, and Radnor Lake State Park for hiking [98]. The city has invested in expanding bike infrastructure and greenway connectivity in recent years [99]."
+    },
+    {
+      "question": "What is the diversity like in Davidson County?",
+      "answer": "Davidson County is increasingly diverse, with a population that is approximately 56% White, 28% Black or African American, 10% Hispanic or Latino, and 4% Asian [100]. The county has attracted residents from across the U.S. and internationally, contributing to cultural vibrancy and growing ethnic neighborhoods [101]."
+    },
+    {
+      "question": "How does Davidson County compare to neighboring counties?",
+      "answer": "Davidson County is more urban and diverse than neighboring Williamson and Sumner counties, which are more suburban and affluent with higher-rated schools [102]. Davidson offers more entertainment, jobs, and cultural amenities, while neighboring counties often provide lower density, newer housing, and family-friendly environments [103]."
+    },
+    {
+      "question": "Is Davidson County a good place for young professionals?",
+      "answer": "Yes, Davidson County is highly attractive to young professionals, with a median age of 34.5 years, strong job growth in technology and healthcare, vibrant nightlife and dining scenes, and a lower cost of living than coastal cities [104]. Neighborhoods like East Nashville, The Gulch, and Germantown are particularly popular with young adults [105]."
+    },
+    {
+      "question": "What are the investment opportunities in Davidson County real estate?",
+      "answer": "Investment opportunities include short-term rentals (though regulations are strict in Nashville), long-term rental properties in growing suburban areas, and fix-and-flip opportunities in transitional neighborhoods [106]. Population growth and limited inventory support continued appreciation, though rising prices have compressed margins for investors [107]."
+    }
+  ],
+  "sources": [
+    { "title": "Davidson County Government - About", "url": "https://www.nashville.gov/departments/davidson-county" },
+    { "title": "U.S. Census Bureau - Davidson County Population Estimates 2024", "url": "https://www.census.gov/quickfacts/davidsoncountytennessee" },
+    { "title": "Nashville Business Journal - Economic Overview 2024", "url": "https://www.bizjournals.com/nashville/" },
+    { "title": "Zillow - Nashville Home Values December 2024", "url": "https://www.zillow.com/nashville-tn/home-values/" },
+    { "title": "U.S. News - Fastest Growing Cities 2024", "url": "https://www.usnews.com/news/cities" },
+    { "title": "SmartAsset - Davidson County Property Tax Calculator", "url": "https://smartasset.com/taxes/tennessee-property-tax-calculator" },
+    { "title": "Realtor.com - Nashville Market Trends Q4 2024", "url": "https://www.realtor.com/realestateandhomes-search/Nashville_TN/overview" },
+    { "title": "Bureau of Labor Statistics - Nashville Metro Unemployment", "url": "https://www.bls.gov/eag/eag.tn_nashville_msa.htm" },
+    { "title": "Nashville Post - Top Employers 2024", "url": "https://www.nashvillepost.com/" },
+    { "title": "GreatSchools - Nashville School Ratings", "url": "https://www.greatschools.org/tennessee/nashville/" },
+    { "title": "NeighborhoodScout - Nashville Crime Rates", "url": "https://www.neighborhoodscout.com/tn/nashville/crime" },
+    { "title": "Walk Score - Nashville Walkability", "url": "https://www.walkscore.com/TN/Nashville" },
+    { "title": "U.S. Census Bureau - Davidson County Income Data", "url": "https://data.census.gov/" },
+    { "title": "National Weather Service - Nashville Climate", "url": "https://www.weather.gov/ohx/climate_nashville" },
+    { "title": "Weather.com - Nashville Weather Averages", "url": "https://weather.com/weather/monthly/l/Nashville+TN" },
+    { "title": "Tennessee State Climatology Office", "url": "https://ag.tennessee.edu/climate/" },
+    { "title": "Nashville Metro Parks - Natural Areas", "url": "https://www.nashville.gov/departments/parks" },
+    { "title": "Tennessee State Library - Davidson County History", "url": "https://www.tennessee.gov/tsla/" },
+    { "title": "Tennessee State Museum - Nashville Capital History", "url": "https://tnmuseum.org/" },
+    { "title": "Country Music Hall of Fame - History", "url": "https://countrymusichalloffame.org/" },
+    { "title": "Nashville Arts Commission - Cultural Programs", "url": "https://www.nashvillearts.com/" },
+    { "title": "Nashville Scene - Food & Culture Guide", "url": "https://www.nashvillescene.com/" },
+    { "title": "Metro Planning Department - Population Growth Studies", "url": "https://www.nashville.gov/departments/planning" },
+    { "title": "Census Reporter - Davidson County Demographics", "url": "https://censusreporter.org/profiles/05000US47037-davidson-county-tn/" },
+    { "title": "U.S. Census - Age Distribution Data", "url": "https://www.census.gov/" },
+    { "title": "Metro Nashville Education Report 2024", "url": "https://www.mnps.org/" },
+    { "title": "Nashville Area Chamber - Workforce Development", "url": "https://nashvillechamber.com/" },
+    { "title": "MNPS District Overview", "url": "https://www.mnps.org/about" },
+    { "title": "MNPS Strategic Plan 2024", "url": "https://www.mnps.org/strategic-plan" },
+    { "title": "Private Schools Review - Nashville", "url": "https://www.privateschoolreview.com/tennessee/nashville" },
+    { "title": "Nashville Higher Education Alliance", "url": "https://www.nashvillehighered.com/" },
+    { "title": "Vanderbilt Economic Impact Study", "url": "https://www.vanderbilt.edu/" },
+    { "title": "Nashville Economic Development - Key Sectors", "url": "https://www.nashvillechamber.com/economic-development" },
+    { "title": "Nashville Business Journal - Major Employers", "url": "https://www.bizjournals.com/nashville/news/largest-employers" },
+    { "title": "BLS Metro Area Employment", "url": "https://www.bls.gov/" },
+    { "title": "Tech Alliance - Nashville Tech Hub Report", "url": "https://technologycouncil.com/" },
+    { "title": "PayScale - Nashville Salaries by Industry", "url": "https://www.payscale.com/research/US/Location=Nashville-TN/Salary" },
+    { "title": "Numbeo - Nashville Cost of Living", "url": "https://www.numbeo.com/cost-of-living/in/Nashville" },
+    { "title": "Zillow Home Value Index - Nashville Historical Data", "url": "https://www.zillow.com/research/data/" },
+    { "title": "Apartment List - Nashville Rent Report", "url": "https://www.apartmentlist.com/renter-life/nashville-rent-report" },
+    { "title": "Tax Foundation - Tennessee Tax Rates", "url": "https://taxfoundation.org/state/tennessee/" },
+    { "title": "MERIC Cost of Living Index", "url": "https://meric.mo.gov/data/cost-living-data-series" },
+    { "title": "Realtor.com - Nashville Market Data Q4 2024", "url": "https://www.realtor.com/realestateandhomes-search/Nashville_TN" },
+    { "title": "Greater Nashville Realtors - Market Statistics", "url": "https://www.greaternaashvillerealtors.org/" },
+    { "title": "Nashville Neighborhoods - Real Estate Guide", "url": "https://www.nashvilleguru.com/neighborhoods" },
+    { "title": "New Home Source - Nashville New Construction", "url": "https://www.newhomesource.com/tennessee/nashville" },
+    { "title": "Redfin - Nashville Housing Market Trends", "url": "https://www.redfin.com/city/13414/TN/Nashville/housing-market" },
+    { "title": "Walk Score Analysis - Nashville Transportation", "url": "https://www.walkscore.com/" },
+    { "title": "WeGo Public Transit - MTA Service Overview", "url": "https://www.wegotransit.com/" },
+    { "title": "Nashville Transit History - 2018 Referendum", "url": "https://www.tennessean.com/transit-referendum" },
+    { "title": "TDOT Traffic Reports - Nashville Congestion", "url": "https://www.tn.gov/tdot.html" },
+    { "title": "Nashville International Airport - Route Map", "url": "https://www.flynashville.com/" },
+    { "title": "Walk Bike Nashville - Infrastructure Report", "url": "https://www.walkbikenashville.org/" },
+    { "title": "Metro Parks - Park Acreage Data", "url": "https://www.nashville.gov/departments/parks/parks-and-facilities" },
+    { "title": "Centennial Park - Parthenon", "url": "https://www.nashville.gov/departments/parks/parks/centennial-park" },
+    { "title": "Metro Parks Recreation Programs", "url": "https://www.nashville.gov/departments/parks/recreation" },
+    { "title": "Percy Priest Lake - Corps of Engineers", "url": "https://www.lrn.usace.army.mil/Missions/Civil-Works/Recreation/Lakes/J-Percy-Priest-Lake/" },
+    { "title": "Visit Nashville - Entertainment Guide", "url": "https://www.visitmusiccity.com/" },
+    { "title": "Nashville Convention Center - Annual Events", "url": "https://www.nashvilleconventionctr.com/" },
+    { "title": "HCA Healthcare - Nashville Operations", "url": "https://hcahealthcare.com/" },
+    { "title": "Nashville Health Care Council - Industry Data", "url": "https://healthcarecouncil.com/" },
+    { "title": "U.S. News Hospital Rankings - Vanderbilt", "url": "https://health.usnews.com/best-hospitals/area/tn/vanderbilt-university-medical-center-6441110" },
+    { "title": "Nashville Health Department - Employment Data", "url": "https://www.nashville.gov/departments/health" },
+    { "title": "Metro Health Services - Access Report", "url": "https://www.nashville.gov/departments/health/healthcare-access" },
+    { "title": "Tennessee Mental Health Resources", "url": "https://www.tn.gov/behavioral-health.html" },
+    { "title": "Visit Music City - About Nashville", "url": "https://www.visitmusiccity.com/about-nashville" },
+    { "title": "Nashville Growth Report 2024", "url": "https://www.nashvillechamber.com/research" },
+    { "title": "Zillow Home Values December 2024", "url": "https://www.zillow.com/nashville-tn/" },
+    { "title": "Nashville Real Estate Market Analysis", "url": "https://www.zillow.com/nashville-tn/home-values/" },
+    { "title": "Family-Friendly Nashville Neighborhoods Guide", "url": "https://www.nashvilleguru.com/best-neighborhoods-for-families" },
+    { "title": "GreatSchools - Top Nashville Schools", "url": "https://www.greatschools.org/tennessee/nashville/" },
+    { "title": "Davidson County Property Tax Information", "url": "https://www.padctn.org/" },
+    { "title": "Tennessee Tax Guide", "url": "https://www.tn.gov/revenue.html" },
+    { "title": "BLS Nashville Employment December 2024", "url": "https://www.bls.gov/regions/southeast/tennessee.htm" },
+    { "title": "Nashville Jobs Report 2024", "url": "https://www.nashvillechamber.com/jobs" },
+    { "title": "Nashville Employment Outlook", "url": "https://www.bizjournals.com/nashville/news/economy" },
+    { "title": "MNPS School Performance Data", "url": "https://www.mnps.org/academics" },
+    { "title": "Nashville Private Schools Comparison", "url": "https://www.privateschoolreview.com/tennessee/nashville" },
+    { "title": "Census Commute Data - Nashville", "url": "https://data.census.gov/cedsci/" },
+    { "title": "TDOT Congestion Analysis", "url": "https://www.tn.gov/tdot/long-range-planning-home/transportation-planning.html" },
+    { "title": "Nashville Attractions & Activities", "url": "https://www.visitmusiccity.com/visitors/thingstodo" },
+    { "title": "Nashville Food Scene Guide", "url": "https://www.eater.com/nashville" },
+    { "title": "Nashville Population Growth Trends", "url": "https://www.nashville.gov/departments/planning/long-range-planning/demographics" },
+    { "title": "Tennessee Sales Tax Information", "url": "https://www.tn.gov/revenue/taxes/sales-and-use-tax.html" },
+    { "title": "Nashville Transportation Needs Assessment", "url": "https://www.nashville.gov/departments/transportation" },
+    { "title": "National Weather Service Nashville Climate Data", "url": "https://www.weather.gov/ohx/" },
+    { "title": "Nashville Housing Market Trends Q4 2024", "url": "https://www.realtor.com/realestateandhomes-search/Nashville_TN" },
+    { "title": "Greater Nashville Realtors Inventory Report", "url": "https://www.greaternaashvillerealtors.org/market-stats" },
+    { "title": "Nashville Real Estate Investment Analysis", "url": "https://www.biggerpockets.com/markets/nashville-tn" },
+    { "title": "Nashville Crime Statistics 2024", "url": "https://www.neighborhoodscout.com/tn/nashville/crime" },
+    { "title": "Metro Nashville Police Crime Data", "url": "https://www.nashville.gov/departments/police/crime-information" },
+    { "title": "Nashville Neighborhood Safety Guide", "url": "https://www.niche.com/places-to-live/nashville-davidson-tn/" },
+    { "title": "Vanderbilt Medical Center Rankings", "url": "https://www.vumc.org/" },
+    { "title": "Nashville Healthcare Access Study", "url": "https://www.nashville.gov/departments/health" },
+    { "title": "Tennessee Climate Overview", "url": "https://www.ncdc.noaa.gov/climate-information/climate" },
+    { "title": "Nashville Weather Patterns", "url": "https://weather.com/weather/tenday/l/Nashville+TN" },
+    { "title": "Tennessee Tornado Data", "url": "https://www.spc.noaa.gov/climo/online/" },
+    { "title": "Nashville Parks & Recreation", "url": "https://www.nashville.gov/departments/parks" },
+    { "title": "Nashville Greenways Master Plan", "url": "https://www.nashville.gov/departments/parks/greenways" },
+    { "title": "Davidson County Demographics Profile", "url": "https://www.census.gov/quickfacts/davidsoncountytennessee" },
+    { "title": "Nashville Diversity Report", "url": "https://www.nashvillechamber.com/diversity" },
+    { "title": "Nashville vs Williamson County Comparison", "url": "https://www.niche.com/places-to-live/compare/" },
+    { "title": "Middle Tennessee Regional Analysis", "url": "https://www.nashvillechamber.com/regional-overview" },
+    { "title": "Nashville Young Professional Demographics", "url": "https://www.census.gov/" },
+    { "title": "Best Nashville Neighborhoods for Young Adults", "url": "https://www.apartmentguide.com/blog/best-nashville-neighborhoods-young-professionals/" },
+    { "title": "Nashville Short-Term Rental Regulations", "url": "https://www.nashville.gov/departments/codes/short-term-rentals" },
+    { "title": "Nashville Real Estate Investment Guide 2024", "url": "https://www.roofstock.com/invest/tn/nashville" }
+  ]
+}

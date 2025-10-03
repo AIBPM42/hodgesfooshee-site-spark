@@ -33,43 +33,45 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are a real estate research expert. Generate semantic HTML for county pages.
-Rules:
-- Use ONLY semantic HTML: <section>, <h1-3>, <p>, <ul>, <li>, <a>
-- Every fact MUST include citation link <a href="source_url" target="_blank" rel="noopener noreferrer">[n]</a>
-- No <script>, <style>, or inline CSS
-- Include class attributes for styling hooks
-- Output valid, well-formed HTML
-- Be factual and cite recent 2024-2025 sources`
+            content: `You are a real estate data researcher. Return ONLY valid JSON matching this exact schema:
+
+{
+  "hero": {
+    "synopsis": "3-5 paragraph overview of Davidson County covering location, population, major cities (Nashville), economy, and real estate market. Each fact must have inline citation as [n]."
+  },
+  "stats": [
+    { "label": "Population", "value": "715,884", "caption": "2024 est", "citation": "[1]" },
+    ... 9 more stats (Median Home Price, Property Tax Rate, Avg Days on Market, Unemployment %, Top Employer, School Rating, Crime Index, Walkability Score, Median Household Income)
+  ],
+  "sections": [
+    {
+      "title": "Geography & Climate",
+      "content": "2-4 paragraphs with inline citations [n]. Cover climate, terrain, natural features."
+    },
+    ... 9 more sections (History & Culture, Demographics, Education & Schools, Economy & Jobs, Cost of Living, Housing Market, Transportation, Parks & Recreation, Healthcare)
+  ],
+  "faqs": [
+    {
+      "question": "What is Davidson County known for?",
+      "answer": "Detailed answer with citations [n]."
+    },
+    ... 12-17 more FAQs including all required ones plus 3-7 bonus questions
+  ],
+  "sources": [
+    { "title": "Source Name", "url": "https://..." },
+    ... all cited sources with descriptive titles
+  ]
+}
+
+Requirements:
+- Use real 2024-2025 data with accurate citations
+- All numeric values as strings with proper formatting
+- Every fact needs a citation reference [1], [2], etc.
+- Return ONLY the JSON object, no markdown, no explanations`
           },
           {
             role: 'user',
-            content: `Generate HTML for Davidson County, Tennessee page with:
-
-1. HERO SECTION (class="hero-synopsis"):
-   - 3-5 paragraph overview covering: location, population, major cities (Nashville), economy, real estate market snapshot
-   - Include inline citations [1], [2], etc.
-
-2. STATS STRIP (10 cards, class="stat-card"):
-   Each card: <div class="stat-card"><h3>Label</h3><p class="value">Number</p><p class="caption">Context</p></div>
-   Stats: Population, Median Home Price, Property Tax Rate, Avg Days on Market, Unemployment %, Top Employer, School Rating, Crime Index, Walkability Score, Median Household Income
-
-3. TEN CONTENT SECTIONS (class="content-section"):
-   Each: <section class="content-section"><h2>Title</h2><p>2-4 paragraphs with inline citations</p></section>
-   Topics: Geography & Climate, History & Culture, Demographics, Education & Schools, Economy & Jobs, Cost of Living, Housing Market, Transportation, Parks & Recreation, Healthcare
-
-4. FAQs (class="faq-item"):
-   10 required questions + 3-5 bonus questions
-   Required: What is Davidson County known for?, How much do homes cost?, Best neighborhoods for families?, Property taxes?, Job market?, School quality?, Commute times?, Things to do?, Moving tips?, Real estate trends?
-   Format: <div class="faq-item"><h3 class="faq-q">Question?</h3><p class="faq-a">Answer with citations.</p></div>
-
-5. SOURCES (class="sources-list"):
-   <ul class="sources-list"><li><a href="url" target="_blank" rel="noopener noreferrer">Source Title</a></li>...</ul>
-   Include all cited URLs with descriptive titles
-
-Use recent 2024-2025 data. Make content authoritative and helpful.
-
-Return ONLY valid HTML with no markdown code blocks. Start directly with the hero section HTML.`
+            content: 'Generate comprehensive Davidson County, Tennessee real estate and community data in the specified JSON format.'
           }
         ],
         temperature: 0.2,
@@ -84,30 +86,26 @@ Return ONLY valid HTML with no markdown code blocks. Start directly with the her
     }
 
     const data = await response.json();
-    const htmlContent = data.choices?.[0]?.message?.content || '';
+    const jsonContent = data.choices?.[0]?.message?.content || '';
 
-    if (!htmlContent) {
+    if (!jsonContent) {
       console.error('[generate-county-html] No content returned from Perplexity');
-      return createErrorResponse('generate-county-html', 'NO_CONTENT', 'No HTML generated', 500);
+      return createErrorResponse('generate-county-html', 'NO_CONTENT', 'No content generated', 500);
     }
 
-    console.log('[generate-county-html] Generated HTML length:', htmlContent.length);
+    console.log('[generate-county-html] Generated content length:', jsonContent.length);
 
-    // Parse the HTML into sections
-    const heroMatch = htmlContent.match(/<div class="hero-synopsis">([\s\S]*?)<\/div>/);
-    const statsMatch = htmlContent.match(/<div class="stat-card">[\s\S]*?<\/div>/g);
-    const sectionsMatch = htmlContent.match(/<section class="content-section">[\s\S]*?<\/section>/g);
-    const faqsMatch = htmlContent.match(/<div class="faq-item">[\s\S]*?<\/div>/g);
-    const sourcesMatch = htmlContent.match(/<ul class="sources-list">[\s\S]*?<\/ul>/);
+    // Parse the JSON response
+    let parsedData;
+    try {
+      parsedData = JSON.parse(jsonContent);
+    } catch (e) {
+      console.error('[generate-county-html] Failed to parse JSON:', e);
+      return createErrorResponse('generate-county-html', 'PARSE_ERROR', 'Invalid JSON response', 500);
+    }
 
     return createSuccessResponse({
-      html: {
-        hero: heroMatch ? heroMatch[0] : '<div class="hero-synopsis"><p>Davidson County is home to Nashville, Tennessee.</p></div>',
-        stats: statsMatch ? statsMatch.join('') : '',
-        sections: sectionsMatch || [],
-        faqs: faqsMatch || [],
-        sources: sourcesMatch ? sourcesMatch[0] : '<ul class="sources-list"></ul>'
-      }
+      data: parsedData
     });
 
   } catch (error) {
