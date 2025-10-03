@@ -23,11 +23,11 @@ const Index = () => {
       <main className="bg-transparent">
         <div className="mx-auto max-w-7xl px-4 py-20 space-y-20">
           <section>
-            <MiddleTennesseeMarketIntelligence />
+            <NashvilleInsiderAccess />
           </section>
           
           <section>
-            <NashvilleInsiderAccess />
+            <MiddleTennesseeMarketIntelligence />
           </section>
           
           <section>
