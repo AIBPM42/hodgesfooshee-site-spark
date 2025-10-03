@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# build/artifacts
+.next/
+dist/
+node_modules/
+*.log
+.env.local
