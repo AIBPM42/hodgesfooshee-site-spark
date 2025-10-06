@@ -1,9 +1,12 @@
 name: spark
 build:
   base: node@20
-  install: npm ci
+  install: npm install
   build: npm run build
-  start: npm run start
-  nixpacksConfig:
-    skipProviders:
-      - deno
+start:
+  run: npm run start
+nixpacksConfig:
+  providers:
+    - node
+  skipProviders:
+    - deno
