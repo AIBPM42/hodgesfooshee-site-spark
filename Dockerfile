@@ -3,10 +3,10 @@ FROM node:20-alpine
 WORKDIR /app
 
 LABEL traefik.enable="true"
-LABEL traefik.http.routers.spark.rule="Host(`hodges-demo.aicustomautomations.com`)"
-LABEL traefik.http.routers.spark.entrypoints="websecure"
-LABEL traefik.http.routers.spark.tls="true"
-LABEL traefik.http.services.spark.loadbalancer.server.port="8080"
+LABEL traefik.http.routers.hodges.rule="Host(`hodges-demo.aicustomautomations.com`)"
+LABEL traefik.http.routers.hodges.entrypoints="websecure"
+LABEL traefik.http.routers.hodges.tls="true"
+LABEL traefik.http.services.hodges.loadbalancer.server.port="8080"
 
 COPY package*.json ./
 RUN npm install
