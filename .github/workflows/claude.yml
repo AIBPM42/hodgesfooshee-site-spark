@@ -1,0 +1,14 @@
+name: Claude Audit
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Claude Audit Trigger
+        uses: anthropic/claude-code-action@v1
+        with:
+          api_key: ${{ secrets.CLAUDE_API_KEY }}
