@@ -1,21 +1,14 @@
-name: Claude Code Action
+name: Claude Audit
 
 on:
-  pull_request:
-    types: [opened, edited, reopened, synchronize]
   issue_comment:
     types: [created]
 
 jobs:
-  claude:
+  audit:
     runs-on: ubuntu-latest
     steps:
-      - name: Claude Code Action Official
-        uses: anthropics/claude-code-action@v1
+      - name: Claude Audit Trigger
+        uses: anthropic/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
-
-
-
-
-Add Claude GitHub Action workflow
+          api_key: ${{ secrets.CLAUDE_API_KEY }}
