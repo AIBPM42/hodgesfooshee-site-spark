@@ -7,7 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
-import PropertySearchResults from "./pages/PropertySearchResults";
+import PropertySearchResults from "./pages/property-search-results";
 import OpenHouseResults from "./pages/OpenHouseResults";
 import ZipSearchResults from "./pages/ZipSearchResults";
 import AgentResults from "./pages/AgentResults";
