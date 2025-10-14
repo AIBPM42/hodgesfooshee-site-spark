@@ -8,9 +8,12 @@ on:
 
 jobs:
   audit:
+    if: github.event.comment.body == '@claude audit this PR'
     runs-on: ubuntu-latest
     steps:
       - name: Claude Audit Trigger
         uses: anthropic-actions/claude-audit@v1
         with:
+          claude_md_path: .github/CLAUDE.md
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
