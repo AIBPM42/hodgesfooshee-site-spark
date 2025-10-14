@@ -1,0 +1,13 @@
+useEffect(() => {
+  const saved = localStorage.getItem(listing.ListingKey);
+  if (saved) setFavorited(true);
+}, []);
+
+const toggleFavorite = () => {
+  setFavorited(!favorited);
+  if (!favorited) {
+    localStorage.setItem(listing.ListingKey, "true");
+  } else {
+    localStorage.removeItem(listing.ListingKey);
+  }
+};
