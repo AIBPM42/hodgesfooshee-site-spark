@@ -1,28 +1,28 @@
-import Link from 'next/link'
+import Header from "@/components/Header";
+import HeroSection from "@/components/HeroSection";
+import LatestMarketInsights from "@/components/LatestMarketInsights";
+import NashvilleInsiderAccess from "@/components/NashvilleInsiderAccess";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-8">
-      <h1 className="text-4xl font-bold mb-4">
-        Hodges & Fooshee Realty
-      </h1>
-      <p className="text-xl mb-8 text-center">
-        Premier MLS Search Platform
-      </p>
-      <div className="flex gap-4">
-        <Link
-          href="/search"
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          Search Properties
-        </Link>
-        <Link
-          href="/api/member"
-          className="px-6 py-3 bg-gray-200 rounded-lg hover:bg-gray-300"
-        >
-          Find Agents
-        </Link>
-      </div>
-    </main>
-  )
+    <>
+      <Header />
+      <HeroSection />
+
+      <main className="bg-transparent">
+        <div className="mx-auto max-w-7xl px-4 py-20 space-y-20">
+          <section>
+            <NashvilleInsiderAccess />
+          </section>
+
+          <section>
+            <LatestMarketInsights />
+          </section>
+        </div>
+      </main>
+
+      <Footer />
+    </>
+  );
 }

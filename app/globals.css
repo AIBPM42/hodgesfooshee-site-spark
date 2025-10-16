@@ -1,21 +1,265 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700;800;900&family=Playfair+Display:wght@400;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* === Hodges Glassmorphism Premium Design === */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Premium Glassmorphism Palette */
+  --brand-600: 17 160 217;       /* #11a0d9 - Primary brand blue */
+  --brand-700: 10 128 177;       /* #0a80b1 - Darker blue */
+  --brand-500: 41 182 246;       /* #29b6f6 - Lighter blue */
+  --brand-400: 79 195 247;       /* #4fc3f7 - Light blue */
+  --brand-200: 129 212 250;      /* #81d4fa - Very light blue */
+  --brand-900: 1 87 155;         /* #01579b - Very dark blue */
+  --luxury-gold: 255 193 7;      /* #ffc107 - Gold accent */
+
+  /* === H&F Brand Tokens (HSL) === */
+  --hf-orange: 16 85% 58%;           /* #FF6A2A - Primary CTAs, accents */
+  --hf-orange-dark: 13 79% 50%;      /* #E5571B - Hover states */
+  --hf-orange-light: 16 100% 68%;    /* #FF915D - Lighter variant */
+  --hf-green: 82 56% 51%;            /* #8BC53F - Success, positive metrics */
+  --hf-green-dark: 82 59% 41%;       /* #6BA42A - Darker success */
+  --hf-purple: 270 30% 50%;          /* #7D5BA6 - AI sections, exclusive */
+  --hf-purple-dark: 270 35% 45%;     /* #6A4895 - Darker AI accent */
+  --hf-red: 2 60% 55%;               /* #D64541 - Urgent, errors */
+  --hf-charcoal-900: 240 4% 7%;      /* #111111 - Deep background */
+  --hf-charcoal-800: 240 3% 11%;     /* #1C1C1E - Alt background */
+  --hf-text-primary: 220 14% 96%;    /* #F3F4F6 - Main text */
+  --hf-text-secondary: 220 9% 79%;   /* #C9CAD1 - Secondary text */
+  --hf-text-muted: 220 6% 63%;       /* #9AA0A6 - Muted text */
+
+  /* === Glassmorphism Surfaces === */
+  --glass-primary: rgba(255, 255, 255, 0.06);
+  --glass-secondary: rgba(255, 255, 255, 0.04);
+  --glass-card: rgba(255, 255, 255, 0.08);
+  --glass-elevated: rgba(255, 255, 255, 0.10);
+  --glass-nav: rgba(28, 28, 30, 0.92);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-border-strong: rgba(255, 255, 255, 0.22);
+
+  /* === Shadows & Glow === */
+  --glass-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+  --glass-shadow-elevated: 0 12px 40px rgba(0, 0, 0, 0.55);
+  --glass-glow-orange: 0 0 0 6px hsl(var(--hf-orange) / 0.25);
+  --glass-glow-purple: 0 0 0 6px hsl(var(--hf-purple) / 0.25);
+  --glass-glow-green: 0 0 0 6px hsl(var(--hf-green) / 0.25);
+
+  /* === Backgrounds & Gradients === */
+  --bg: hsl(var(--hf-charcoal-900));
+  --bg-alt: hsl(var(--hf-charcoal-800));
+  --bg-gradient: linear-gradient(180deg, hsl(var(--hf-charcoal-900)) 0%, hsl(var(--hf-charcoal-800)) 100%);
+  --bg-gradient-hero: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55));
+
+  /* === Text Colors === */
+  --text-primary: hsl(var(--hf-text-primary));
+  --text-secondary: hsl(var(--hf-text-secondary));
+  --text-muted: hsl(var(--hf-text-muted));
+  --text-accent: hsl(var(--hf-orange));
+
+  /* === Animation Transitions === */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Shadcn UI Variables (HSL format) */
+  --background: 240 10% 4%;          /* Deep dark blue */
+  --foreground: 0 0% 100%;           /* White text */
+  --card: 240 6% 10%;                /* Dark card background */
+  --card-foreground: 0 0% 100%;      /* White card text */
+  --popover: 240 6% 8%;              /* Popover background */
+  --popover-foreground: 0 0% 100%;   /* Popover text */
+  --primary: 199 89% 48%;            /* Brand blue #11a0d9 */
+  --primary-foreground: 0 0% 100%;   /* White on primary */
+  --secondary: 240 6% 10%;           /* Secondary background */
+  --secondary-foreground: 0 0% 90%;  /* Secondary text */
+  --muted: 240 6% 10%;               /* Muted background */
+  --muted-foreground: 0 0% 60%;      /* Muted text */
+  --accent: 199 89% 48%;             /* Accent color */
+  --accent-foreground: 0 0% 100%;    /* Accent text */
+  --destructive: 0 62% 30%;          /* Error red */
+  --destructive-foreground: 0 0% 100%; /* Error text */
+  --border: 240 6% 20%;              /* Border color */
+  --input: 240 6% 10%;               /* Input background */
+  --ring: 199 89% 48%;               /* Focus ring */
+  --radius: 12px;                    /* Border radius */
+
+  /* App State Colors */
+  --positive: var(--hf-green);
+  --hf-accent: var(--hf-orange);
+  --hf-success: var(--hf-green);
+  --hf-info: var(--hf-purple);
+  --hf-danger: var(--hf-red);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Premium Glassmorphism Base Styles */
+html, body {
+  background: var(--bg-gradient) !important;
+  color: var(--text-primary) !important;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+* {
+  border-color: hsl(var(--border));
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fraunces', 'Playfair Display', serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: clamp(40px, 6vw, 64px);
+  font-weight: 800;
+}
+
+h2 {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+}
+
+/* Premium Glassmorphism Components */
+@layer utilities {
+  .font-display {
+    font-family: 'Fraunces', 'Playfair Display', serif;
+  }
+
+  .bg-glass-gradient {
+    background: var(--bg-gradient);
+  }
+
+  .text-hf-orange {
+    color: hsl(var(--hf-orange));
+  }
+
+  .bg-hf-orange {
+    background-color: hsl(var(--hf-orange));
+  }
+
+  .border-hf-orange {
+    border-color: hsl(var(--hf-orange));
+  }
+
+  .glass-card, .card-glass {
+    background: var(--glass-card);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+  }
+
+  .nav-glass {
+    background: var(--glass-nav);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+  }
+
+  .glass-light {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+  }
+
+  .shadow-glass {
+    box-shadow: var(--glass-shadow);
+  }
+
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #29b6f6, #ffc107);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-gradient-hero {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(17, 160, 217, 0.3));
+  }
+
+  .btn, .btn-premium {
+    background: linear-gradient(90deg, hsl(var(--hf-orange)), hsl(var(--hf-orange-light)));
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 999px;
+    box-shadow: 0 8px 22px hsl(var(--hf-orange) / 0.35);
+    transition: var(--transition-smooth);
+    cursor: pointer;
+  }
+
+  .btn:hover, .btn-premium:hover {
+    background: linear-gradient(90deg, hsl(var(--hf-orange-dark)), hsl(var(--hf-orange)));
+    box-shadow: 0 10px 26px hsl(var(--hf-orange) / 0.45);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: hsl(var(--hf-text-primary));
+    border: 1px solid var(--glass-border);
+    padding: 0.5rem 1.5rem;
+    border-radius: 999px;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+    cursor: pointer;
+  }
+
+  .btn-ghost:hover {
+    background: var(--glass-primary);
+    border-color: var(--glass-border-strong);
+  }
+
+  .pill-orange {
+    background: hsl(var(--hf-orange));
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .pill-purple {
+    background: hsl(var(--hf-purple));
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .insight-band {
+    background: linear-gradient(135deg, hsl(var(--hf-orange)), hsl(var(--hf-purple)));
+  }
+
+  .text-positive {
+    color: hsl(var(--hf-green));
+  }
 }
