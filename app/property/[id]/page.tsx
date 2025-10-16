@@ -53,17 +53,9 @@ function PropertyDetailContent() {
       const detailData = await detailResponse.json();
       const prop = detailData.property;
 
-      // Fetch media separately - THIS IS THE KEY FIX FOR YOUR IMAGE ISSUE
-      const mediaResponse = await fetch(
-        `https://xhqwmtzawqfffepcqxwf.supabase.co/functions/v1/mls-media?listingKey=${id}`,
-        {
-          headers: {
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhocXdtdHphd3FmZmZlcGNxeHdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2MDQwODEsImV4cCI6MjA3MDE4MDA4MX0.gihIkhLS_pwr9Mz6uG6vm7BXPzfa2TcpvIrRECRfxfg'
-          }
-        }
-      );
-      const mediaData = await mediaResponse.json();
-      const media = mediaData.media || [];
+      // FIXED: Images are already in the detail response under Media array
+      const media = prop.Media || [];
+      console.log('🖼️ Property images:', media.map((m: any) => m.MediaURL));
 
       // Transform to PropertyDetails format
       return {
