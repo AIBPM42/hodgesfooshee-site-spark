@@ -1,4 +1,4 @@
-import { getMlsToken } from "../../lib/mls";
+import { getMlsToken } from "@/lib/mls";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { z } from "zod";

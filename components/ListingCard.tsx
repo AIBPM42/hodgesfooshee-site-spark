@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 
 export default function ListingCard({ listing }: any) {
