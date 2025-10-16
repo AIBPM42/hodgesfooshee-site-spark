@@ -19,10 +19,10 @@ export default function SearchForm() {
   });
 
   const onSubmit = (data: any) => {
-  const query = new URLSearchParams(data).toString();
-  router.push(`/search?${query}`);
-};
-};
+    const query = new URLSearchParams(data).toString();
+    router.push(`/search?${query}`);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <input {...register("city")} placeholder="City" />
