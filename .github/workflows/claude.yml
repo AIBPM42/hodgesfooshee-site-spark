@@ -7,13 +7,40 @@ on:
     types: [opened, edited, reopened, synchronize]
 
 jobs:
-  audit:
-    if: github.event_name == 'issue_comment' && github.event.comment.body == '@claude audit this PR'
+  comment-audit:
+    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')
     runs-on: ubuntu-latest
     steps:
-      - name: Claude Audit Trigger
-        uses: anthropic/claude-audit@1
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          claude_md_path: .github/CLAUDE.md
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
+          node-version: '20'
+
+      - name: Run Claude Audit
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node claude-audit-engine/index.js
+
+  pr-audit:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Claude Audit
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node claude-audit-engine/index.js
