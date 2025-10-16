@@ -11,7 +11,7 @@ LABEL traefik.http.services.hodges.loadbalancer.server.port="3000"
 
 # Install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
