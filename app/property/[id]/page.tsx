@@ -36,6 +36,7 @@ interface PropertyDetails {
 function PropertyDetailContent() {
   const params = useParams();
   const id = params.id as string;
+  const [selectedImageIndex, setSelectedImageIndex] = React.useState(0);
 
   const { data: property, isLoading, error } = useQuery({
     queryKey: ['property', id],
@@ -134,7 +135,7 @@ function PropertyDetailContent() {
             <Card className="glass-card mb-6">
               <div className="relative">
                 <img
-                  src={property.images[0] || '/placeholder.svg'}
+                  src={property.images[selectedImageIndex] || '/placeholder.svg'}
                   alt={property.title}
                   className="w-full h-96 object-cover rounded-t-lg"
                 />
@@ -150,18 +151,51 @@ function PropertyDetailContent() {
                     <Share2 className="w-4 h-4" />
                   </Button>
                 </div>
+
+                {/* Previous/Next Navigation Arrows */}
+                {property.images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setSelectedImageIndex(prev => prev === 0 ? property.images.length - 1 : prev - 1)}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur transition-all"
+                    >
+                      <ArrowLeft className="w-6 h-6" />
+                    </button>
+                    <button
+                      onClick={() => setSelectedImageIndex(prev => prev === property.images.length - 1 ? 0 : prev + 1)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur transition-all"
+                    >
+                      <ArrowLeft className="w-6 h-6 rotate-180" />
+                    </button>
+                  </>
+                )}
+
+                {/* Image Counter */}
+                {property.images.length > 1 && (
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur text-white px-4 py-2 rounded-full text-sm">
+                    {selectedImageIndex + 1} / {property.images.length}
+                  </div>
+                )}
               </div>
-              {/* Additional Images */}
+
+              {/* Thumbnail Carousel */}
               {property.images.length > 1 && (
-                <div className="p-4 grid grid-cols-4 gap-2">
-                  {property.images.slice(1, 5).map((img, idx) => (
-                    <img
-                      key={idx}
-                      src={img}
-                      alt={`Property ${idx + 2}`}
-                      className="w-full h-20 object-cover rounded cursor-pointer hover:opacity-75"
-                    />
-                  ))}
+                <div className="p-4">
+                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                    {property.images.map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`Property ${idx + 1}`}
+                        onClick={() => setSelectedImageIndex(idx)}
+                        className={`flex-shrink-0 w-24 h-20 object-cover rounded cursor-pointer transition-all ${
+                          selectedImageIndex === idx
+                            ? 'ring-4 ring-hf-orange opacity-100'
+                            : 'opacity-60 hover:opacity-100'
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
             </Card>
