@@ -1,7 +1,8 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense } from "react";
 
-export default function PaginationControls() {
+function PaginationControls() {
   const params = useSearchParams();
   const router = useRouter();
   const page = Number(params.get("page") || "1");
@@ -18,5 +19,13 @@ export default function PaginationControls() {
       <span>Page {page}</span>
       <button onClick={() => goToPage(page + 1)}>Next →</button>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading search results...</div>}>
+      <PaginationControls />
+    </Suspense>
   );
 }
