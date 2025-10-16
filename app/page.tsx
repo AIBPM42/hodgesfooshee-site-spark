@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import LatestMarketInsights from "@/components/LatestMarketInsights";
 import NashvilleInsiderAccess from "@/components/NashvilleInsiderAccess";
+import OpenHousesSection from "@/components/OpenHousesSection";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -11,6 +12,8 @@ export default function Home() {
       <HeroSection />
 
       <main className="bg-transparent">
+        <OpenHousesSection />
+
         <div className="mx-auto max-w-7xl px-4 py-20 space-y-20">
           <section>
             <NashvilleInsiderAccess />
