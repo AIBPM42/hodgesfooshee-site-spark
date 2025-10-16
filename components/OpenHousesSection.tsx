@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
+interface Agent {
+  first_name: string | null;
+  last_name: string | null;
+  phone: string | null;
+}
+
 interface OpenHouse {
   id: string;
   property_id: string;
@@ -21,12 +27,7 @@ interface OpenHouse {
   image_url: string | null;
   rsvp_count: number;
   agent_id: string;
-}
-
-interface Agent {
-  first_name: string | null;
-  last_name: string | null;
-  phone: string | null;
+  profiles?: Agent;
 }
 
 export default function OpenHousesSection() {
