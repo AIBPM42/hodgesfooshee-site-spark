@@ -59,15 +59,22 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Premium Brand Colors
-        brand: {
-          400: "hsl(var(--brand-400))",
-          500: "hsl(var(--brand-500))",
-          600: "hsl(var(--brand-600))",
-          700: "hsl(var(--brand-700))",
-        },
-        'luxury-gold': "hsl(var(--luxury-gold))",
-        // H&F Brand Colors (HSL)
+        // CSS-variable backed colors for DX (hover previews + autocomplete)
+        linen75: "var(--hf-linen-75)",
+        porcelain: "var(--hf-porcelain-50)",
+        pebble100: "var(--hf-pebble-100)",
+        footer: "var(--hf-footer)",
+        ink: "var(--hf-ink)",
+        inkSoft: "var(--hf-ink-soft)",
+        copper600: "var(--hf-copper-600)",
+        // Legacy static colors (keep for compatibility)
+        linen90: '#E8DCCB',
+        porcelain50: '#F7F3EE',
+        pebble110: '#DCCDB8',
+        copper500: '#F2572D',
+        copper400: '#FF6A3E',
+        auburn800: '#2C343A',
+        // Legacy Brand Colors (keep for compatibility)
         'hf-orange': "hsl(var(--hf-orange))",
         'hf-orange-dark': "hsl(var(--hf-orange-dark))",
         'hf-orange-light': "hsl(var(--hf-orange-light))",
@@ -80,27 +87,30 @@ export default {
           800: "hsl(var(--hf-charcoal-800))",
           900: "hsl(var(--hf-charcoal-900))",
         },
-        'hf-text': "hsl(var(--hf-text-primary))",
-        // Glass Utilities
-        glass: {
-          primary: "var(--glass-primary)",
-          secondary: "var(--glass-secondary)",
-          card: "var(--glass-card)",
-          nav: "var(--glass-nav)",
-          border: "var(--glass-border)",
-        },
-        // Text Colors
-        text: {
-          primary: "var(--text-primary)",
-          secondary: "var(--text-secondary)",
-          muted: "var(--text-muted)",
-          accent: "var(--text-accent)",
+        // Fire 12 Hodges Brand Colors
+        hodges: {
+          orange: "#E87722",
+          green: "#7BB241",
+          purple: "#6F4DA0",
+          crimson: "#C0392B",
+          onyx: "#0D0F12",
+          slate: "#121418",
+          carbon: "#16191F",
+          fog: "#1B2027",
+          ink: "#0E1116",
         },
       },
       boxShadow: {
-        glass: "var(--glass-shadow)",
-        'glass-glow': "var(--glass-glow)",
-        'premium': "0 8px 32px rgba(17, 160, 217, 0.15)",
+        soft: "0 6px 24px rgba(16, 24, 40, 0.06)",
+        lift: "0 10px 32px rgba(16, 24, 40, 0.10)",
+        glow: "0 8px 28px rgba(201, 74, 30, 0.28)",
+        glass: '0 6px 24px rgba(28,32,38,.10), 0 2px 6px rgba(28,32,38,.06)',
+        pill: '0 8px 18px rgba(28,32,38,.08)',
+        cta: '0 14px 30px rgba(201,74,30,.22)',
+        inner: "inset 0 1px 0 rgba(255,255,255,0.05)",
+        ring: "0 0 0 1px rgba(255,255,255,0.07)",
+        'premium': '0 4px 24px rgba(0, 0, 0, 0.08)',
+        'premium-lg': '0 8px 32px rgba(0, 0, 0, 0.12)',
         'luxury': "0 20px 60px rgba(0, 0, 0, 0.4)",
       },
       backdropBlur: {
@@ -119,10 +129,17 @@ export default {
         sm: "calc(var(--radius) - 4px)",
         xl: '0.75rem',
         '2xl': '20px',
+        xl2: '1.25rem',
+        xxl: '1.5rem',
       },
       fontFamily: {
         display: ["Fraunces", "Playfair Display", "Georgia", "serif"],
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+      },
+      fontSize: {
+        'kpi-large': ['2rem', { lineHeight: '1', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'kpi-medium': ['1.5rem', { lineHeight: '1', fontWeight: '600' }],
+        'micro-caps': ['0.6875rem', { lineHeight: '1', letterSpacing: '0.15em', fontWeight: '600' }],
       },
       keyframes: {
         "accordion-down": {
@@ -137,6 +154,10 @@ export default {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "slide-up": {
+          "0%": { transform: "translateY(10px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
         "glass-float": {
           "0%, 100%": { transform: "translateY(0px)" },
           "50%": { transform: "translateY(-10px)" },
@@ -146,6 +167,7 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.6s ease-out",
+        "slide-up": "slide-up 0.3s ease-out",
         "glass-float": "glass-float 6s ease-in-out infinite",
       },
     },
