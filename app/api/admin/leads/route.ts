@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
 import { mockLeads } from '@/lib/mock/distressedLeads';
 
 // GET /api/admin/leads - Get all leads (broker only)

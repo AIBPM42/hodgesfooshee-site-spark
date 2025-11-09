@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
 import { revalidateTag } from 'next/cache';
 import { createClient } from '@supabase/supabase-js';
 import { generateCountyNarrative } from '@/lib/perplexity/updateCounty';
