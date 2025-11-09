@@ -1,8 +1,7 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { corsHeaders } from "../_shared/cors.ts";
-import { getRealtynaToken, getRealtynaHeaders } from "../_shared/realtyna-auth.ts";
-
-const RESO_BASE = "https://api.realtyfeed.com/reso/odata";
+import { getRealtynaToken } from "../_shared/realtyna-auth.ts";
+import { getRealtynaBaseUrl, getRealtynaHeaders, fetchWithRetry } from "../_shared/realtyna-client.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -18,6 +17,7 @@ serve(async (req) => {
 
     const token = await getRealtynaToken();
     const headers = getRealtynaHeaders(token);
+    const RESO_BASE = getRealtynaBaseUrl();
 
     const filters: string[] = [];
     
@@ -42,7 +42,7 @@ serve(async (req) => {
     const apiUrl = `${RESO_BASE}/OpenHouse?${queryParams}`;
     console.log(`[${rid}] Fetching: ${apiUrl}`);
 
-    const response = await fetch(apiUrl, { headers });
+    const response = await fetchWithRetry(apiUrl, { headers }, 2);
 
     if (!response.ok) {
       const errorText = await response.text();

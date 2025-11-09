@@ -22,7 +22,7 @@ export default function HeroSection({ settings }: HeroSectionProps) {
     <section
       className="
         relative w-screen left-[calc(50%-50vw)]
-        overflow-hidden min-h-[85vh] flex items-center pb-16
+        overflow-hidden min-h-screen flex items-center pb-16
       "
     >
       {/* Full-bleed background image */}

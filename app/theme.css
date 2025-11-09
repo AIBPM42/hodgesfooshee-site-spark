@@ -1,0 +1,210 @@
+/* =============================
+   Hodges & Fooshee — Sandstone Light Theme
+   ============================= */
+
+:root {
+  /* Brand base */
+  --hf-sandstone: #F6F7F5;         /* page background */
+  --hf-ink-900: #2F3B46;           /* primary ink */
+  --hf-ink-700: #3E4B57;           /* secondary */
+  --hf-ink-600: #556270;           /* body */
+  --hf-ink-500: #6C7886;           /* muted */
+
+  /* Logo‑derived accents (modernized) */
+  --hf-copper: #C94A1E;            /* hero keyword, small accents */
+  --hf-ember:  #F2572D;            /* CTA start */
+  --hf-ember-bright: #FF6A3E;      /* CTA end / hover */
+  --hf-gold: #E1C778;              /* filament, hairlines */
+  --hf-olive: #7C8461;             /* secondary support */
+  --hf-plum:  #8B78B8;             /* optional micro focus */
+
+  /* Glass tokens */
+  --hf-glass: rgba(255,255,255,.78);
+  --hf-glass-deep: rgba(255,255,255,.62);
+  --hf-hairline: rgba(10,16,28,.10);
+  --hf-shadow: 0 10px 28px rgba(17,24,39,.10), inset 0 1px 0 rgba(255,255,255,.65);
+
+  /* Motion + radii */
+  --hf-r-xl: 24px;
+  --hf-r-lg: 18px;
+  --hf-r-md: 14px;
+  --hf-speed: 180ms;
+
+  /* Gradients */
+  --hf-cta: linear-gradient(90deg, var(--hf-ember) 0%, var(--hf-ember-bright) 100%);
+  --hf-cta-hover: linear-gradient(90deg, #FF6A3E 0%, #FFA270 100%);
+  --hf-hero-top: radial-gradient(1000px 420px at 50% 0%, rgba(255,255,255,.55), transparent 60%);
+  --hf-hero-fade: linear-gradient(to bottom, rgba(246,247,245,0) 60%, var(--hf-sandstone) 100%);
+}
+
+html, body {
+  background: var(--hf-sandstone);
+  color: var(--hf-ink-900);
+}
+
+/* Utility patterns */
+.container-balanced {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.h1 {
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.h2 {
+  font-size: clamp(28px, 3.5vw, 40px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.lead {
+  color: var(--hf-ink-600);
+  font-size: clamp(16px, 1.6vw, 18px);
+}
+
+.card-glass {
+  background: var(--hf-glass);
+  backdrop-filter: blur(16px) saturate(1.02);
+  -webkit-backdrop-filter: blur(16px) saturate(1.02);
+  border: 1px solid var(--hf-hairline);
+  border-radius: var(--hf-r-xl);
+  box-shadow: var(--hf-shadow);
+}
+
+.card-prism {
+  background: var(--hf-glass);
+  backdrop-filter: blur(16px) saturate(1.02);
+  -webkit-backdrop-filter: blur(16px) saturate(1.02);
+  border: 1px solid var(--hf-hairline);
+  border-radius: var(--hf-r-xl);
+  box-shadow: var(--hf-shadow);
+  position: relative;
+}
+
+.card-prism::after {
+  content: "";
+  position: absolute;
+  inset: auto 8px 8px auto;
+  width: 140px;
+  height: 80px;
+  pointer-events: none;
+  background: radial-gradient(120px 60px at 100% 100%, rgba(255,255,255,.55), transparent 70%);
+  filter: blur(6px);
+}
+
+.btn-cta {
+  position: relative;
+  overflow: hidden;
+  background: var(--hf-cta);
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(242,87,45,.24);
+  transition: transform var(--hf-speed) ease, filter var(--hf-speed) ease;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-cta:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.05);
+}
+
+.btn-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,.35) 12%, transparent 24%);
+  transform: translateX(-120%);
+  filter: blur(2px);
+}
+
+.btn-cta:hover::after {
+  animation: hf-sheen 900ms ease;
+}
+
+@keyframes hf-sheen {
+  to {
+    transform: translateX(120%);
+  }
+}
+
+.filament {
+  height: 1px;
+  border: 0;
+  margin: 16px 0;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--hf-gold) 55%, transparent), transparent);
+  mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+}
+
+.nav-link {
+  position: relative;
+  color: var(--hf-ink-700);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 6px 2px;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 2px;
+  width: 0%;
+  background: var(--hf-ember);
+  border-radius: 2px;
+  transition: width .22s ease;
+}
+
+.nav-link:hover::after,
+.nav-link[aria-current="page"]::after {
+  width: 100%;
+}
+
+.lightfield {
+  position: relative;
+  isolation: isolate;
+}
+
+.lightfield::before,
+.lightfield::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(800px 400px at 20% 0%, rgba(255,255,255,.45), transparent 60%),
+    radial-gradient(700px 380px at 80% 10%, rgba(255,255,255,.30), transparent 60%),
+    radial-gradient(900px 500px at 50% 100%, rgba(225,199,120,.10), transparent 70%);
+  filter: blur(10px);
+  z-index: -1;
+  animation: hf-drift 20s ease-in-out infinite alternate;
+  opacity: .85;
+}
+
+.lightfield::after {
+  animation-duration: 28s;
+  opacity: .55;
+}
+
+@keyframes hf-drift {
+  0% {
+    transform: translate3d(-2%, -1%, 0) scale(1.02);
+  }
+  100% {
+    transform: translate3d(2%, 1%, 0) scale(1.04);
+  }
+}
+
+.text-center {
+  text-align: center;
+}

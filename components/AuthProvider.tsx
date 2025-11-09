@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { User } from '@supabase/supabase-js'
-import { supabase, Profile } from '@/lib/supabase'
+import { Profile } from '@/lib/supabase'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
 
 interface AuthContextType {
@@ -24,6 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const supabase = createClientComponentClient()
 
   useEffect(() => {
     // Check active session
@@ -54,18 +56,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function loadProfile(userId: string) {
     try {
+      console.log('[AuthProvider] Loading profile for user:', userId);
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single()
 
-      if (error) throw error
-      setProfile(data)
-    } catch (error) {
-      console.error('Error loading profile:', error)
+      if (error) {
+        console.error('[AuthProvider] Profile query error:', error);
+        throw error;
+      }
+
+      if (!data) {
+        console.warn('[AuthProvider] No profile found for user:', userId);
+        setProfile(null);
+      } else {
+        console.log('[AuthProvider] Profile loaded:', data.email, data.role);
+        setProfile(data);
+      }
+    } catch (error: any) {
+      console.error('[AuthProvider] Error loading profile:', error);
+      console.error('[AuthProvider] Error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
+      // Don't throw - just set profile to null
+      setProfile(null);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 

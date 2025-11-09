@@ -38,8 +38,8 @@ const insights = [
 
 const LatestMarketInsights = () => {
   return (
-    <section className="py-20">
-      <div className="container mx-auto px-4">
+    <div>
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center mb-4">
@@ -55,30 +55,30 @@ const LatestMarketInsights = () => {
         {/* Insights Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           {insights.map((insight) => (
-            <Card key={insight.id} className="card-glass p-0 overflow-hidden hover:shadow-lg transition-shadow group">
+            <Card key={insight.id} className="bg-[#FBF3E7] border-black/5 p-0 overflow-hidden hover:shadow-elev-2 transition-shadow group">
               <div className="insight-band h-24 relative overflow-hidden">
                 <Badge className="absolute top-4 left-4 pill-orange px-3 py-1 text-[12px] rounded-full font-semibold">
                   {insight.category}
                 </Badge>
               </div>
               <CardContent className="p-6">
-                <div className="flex items-center text-sm text-muted-foreground mb-3">
+                <div className="flex items-center text-sm text-neutral-700/80 mb-3">
                   <Clock className="h-4 w-4 mr-1" />
                   <span className="mr-4">{insight.readTime}</span>
                   <span>{insight.date}</span>
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-[#FF6A2A] transition-colors">
+                <h3 className="text-xl font-semibold text-neutral-900 mb-3 group-hover:text-[#E44B22] transition-colors">
                   {insight.title}
                 </h3>
-                <p className="text-muted-foreground mb-4 leading-relaxed">
+                <p className="text-neutral-700/90 mb-4 leading-relaxed">
                   {insight.description}
                 </p>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center text-sm text-muted-foreground">
+                  <div className="flex items-center text-sm text-neutral-700/80">
                     <User className="h-4 w-4 mr-1" />
                     {insight.author}
                   </div>
-                  <Button className="btn p-0 h-auto">
+                  <Button className="btn p-0 h-auto text-neutral-800 hover:text-neutral-900">
                     Read More →
                   </Button>
                 </div>
@@ -95,7 +95,7 @@ const LatestMarketInsights = () => {
           </Button>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

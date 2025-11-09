@@ -1,13 +1,14 @@
 "use client";
 
 import React, { Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Bed, Bath, Square, MapPin } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { Nav } from '@/components/Nav';
+import { ListingCard } from '@/components/ListingCard';
 
 interface Property {
   id: string;
@@ -24,7 +25,6 @@ interface Property {
 
 function SearchResults() {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const { data: propertiesData, isLoading, error } = useQuery({
     queryKey: ['properties', searchParams.toString()],
@@ -47,17 +47,18 @@ function SearchResults() {
       // Transform Realtyna RESO data to Property format
       const properties = data.properties?.map((p: any) => ({
         id: p.ListingKey || p.ListingId,
-        title: `${p.BedroomsTotal || 0}BR/${p.BathroomsTotalInteger || 0}BA ${p.City || 'Property'}`,
-        address: `${p.UnparsedAddress || p.City || ''}, ${p.StateOrProvince || 'TN'}`,
+        title: `${p.BedroomsTotal || 0}BR/${p.BathroomsTotalInteger || 0}BA ${p.PropertyType || 'Home'} in ${p.City || 'Nashville'}`,
+        address: `${p.UnparsedAddress || p.City || ''}, ${p.StateOrProvince || 'TN'} ${p.PostalCode || ''}`,
         price: p.ListPrice || 0,
         beds: p.BedroomsTotal || 0,
         baths: p.BathroomsTotalInteger || 0,
         sqft: p.LivingArea || 0,
         image: p.Media?.[0]?.MediaURL || '/placeholder.svg',
         status: p.StandardStatus || 'Active',
-        listingType: 'For Sale'
+        listingType: p.PropertyType || 'For Sale'
       })) || [];
 
+      console.log('📊 Transformed properties:', properties.length, properties[0]);
       return { properties, total: data.total || 0 };
     },
     retry: 1
@@ -75,11 +76,13 @@ function SearchResults() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-hero pt-24">
-        <div className="container mx-auto px-4 py-8">
+      <>
+        <Nav />
+        <div className="min-h-screen bg-[#FAF5EC] pt-24">
+          <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
             <Link href="/">
-              <Button variant="ghost" className="glass mb-4">
+              <Button variant="ghost" className="mb-4 text-neutral-700 hover:text-neutral-900 hover:bg-white/60">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Search
               </Button>
@@ -87,117 +90,113 @@ function SearchResults() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Card key={i} className="glass-card animate-pulse">
-                <div className="h-48 bg-gray-700 rounded-t-lg"></div>
-                <CardContent className="p-4">
-                  <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
-                  <div className="h-3 bg-gray-700 rounded w-1/2"></div>
+              <Card key={i} className="bg-white rounded-2xl shadow-[0_12px_32px_rgba(20,20,20,0.08)] border border-black/5 animate-pulse overflow-hidden">
+                <div className="h-48 bg-neutral-200"></div>
+                <CardContent className="p-5">
+                  <div className="h-6 bg-neutral-200 rounded w-2/3 mb-3"></div>
+                  <div className="h-4 bg-neutral-200 rounded w-full mb-2"></div>
+                  <div className="h-3 bg-neutral-200 rounded w-3/4"></div>
                 </CardContent>
               </Card>
             ))}
           </div>
         </div>
       </div>
+      </>
     );
   }
 
   if (error) {
+    console.error('🚨 Search page error:', error);
     return (
-      <div className="min-h-screen bg-gradient-hero pt-24 flex items-center justify-center">
-        <Card className="glass-card max-w-md p-8">
-          <h2 className="text-2xl font-bold text-red-500 mb-4">Search Error</h2>
-          <p className="text-white/80 mb-4">{(error as Error).message}</p>
+      <>
+        <Nav />
+        <div className="min-h-screen bg-[#FAF5EC] pt-24 flex items-center justify-center px-4">
+        <Card className="bg-white rounded-2xl shadow-[0_12px_36px_rgba(20,20,20,0.12)] border border-black/5 max-w-md p-8">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Search Error</h2>
+          <p className="text-neutral-700 mb-4">{(error as Error).message}</p>
+          <p className="text-neutral-500 text-sm mb-6">
+            Search parameters: {searchParams.toString()}
+          </p>
           <Link href="/">
-            <Button className="btn w-full">
+            <Button className="w-full px-6 py-3 bg-gradient-to-r from-[#E4552E] to-[#F39C57] text-white font-semibold rounded-xl shadow-[0_8px_28px_rgba(228,85,46,0.35)] hover:shadow-[0_12px_36px_rgba(228,85,46,0.4)] hover:-translate-y-0.5 transition-all">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
             </Button>
           </Link>
         </Card>
       </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-hero pt-24">
+    <>
+      <Nav />
+      <div className="min-h-screen bg-[#FAF5EC] pt-24 pb-16">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
+        {/* Header with improved hierarchy */}
+        <div className="mb-10">
           <Link href="/">
-            <Button variant="ghost" className="glass mb-4">
+            <Button variant="ghost" className="mb-6 text-neutral-700 hover:text-neutral-900 hover:bg-white/60 transition-colors">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Search
             </Button>
           </Link>
-          <h1 className="text-4xl font-display font-bold text-white mb-2">
+
+          {/* Title with strong contrast */}
+          <h1 className="text-4xl md:text-5xl font-bold text-[#111827] mb-3 tracking-tight" style={{letterSpacing: '-0.01em'}}>
             Property Search Results
           </h1>
-          <p className="text-white/80">
+
+          {/* Count with meta styling */}
+          <p className="text-sm text-[#6B7280]">
             Found {propertiesData?.total || 0} properties matching your search
           </p>
         </div>
 
         {properties.length === 0 ? (
-          <Card className="glass-card p-12 text-center">
-            <h3 className="text-2xl font-semibold text-white mb-4">No properties found</h3>
-            <p className="text-white/60 mb-6">Try adjusting your search criteria</p>
+          <Card className="bg-white rounded-2xl shadow-[0_12px_36px_rgba(20,20,20,0.08)] border border-black/5 p-12 text-center">
+            <h3 className="text-2xl font-bold text-[#111827] mb-4">No properties found</h3>
+            <p className="text-[#6B7280] mb-6">Try adjusting your search criteria</p>
             <Link href="/">
-              <Button className="btn">New Search</Button>
+              <Button className="bg-gradient-to-r from-[#E4552E] to-[#F39C57] text-white font-semibold px-6 py-3 rounded-xl shadow-[0_8px_28px_rgba(228,85,46,0.35)] hover:shadow-[0_12px_36px_rgba(228,85,46,0.4)] hover:-translate-y-0.5 transition-all">
+                New Search
+              </Button>
             </Link>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map((property) => (
-              <Link key={property.id} href={`/property/${property.id}`}>
-                <Card className="glass-card overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer">
-                  <div className="relative h-48">
-                    <img
-                      src={property.image}
-                      alt={property.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <Badge className="absolute top-4 left-4 bg-hf-orange text-white">
-                      {property.status}
-                    </Badge>
-                  </div>
-                  <CardContent className="p-4">
-                    <div className="text-2xl font-bold text-hf-orange mb-2">
-                      {formatPrice(property.price)}
-                    </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">
-                      {property.title}
-                    </h3>
-                    <div className="flex items-center text-white/60 text-sm mb-3">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      {property.address}
-                    </div>
-                    <div className="flex items-center gap-4 text-white/80 text-sm">
-                      <div className="flex items-center">
-                        <Bed className="w-4 h-4 mr-1" />
-                        {property.beds} beds
-                      </div>
-                      <div className="flex items-center">
-                        <Bath className="w-4 h-4 mr-1" />
-                        {property.baths} baths
-                      </div>
-                      <div className="flex items-center">
-                        <Square className="w-4 h-4 mr-1" />
-                        {property.sqft.toLocaleString()} sqft
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+              <ListingCard
+                key={property.id}
+                photo={property.image}
+                price={formatPrice(property.price)}
+                title={property.title}
+                city={property.address}
+                beds={property.beds}
+                baths={property.baths}
+                sqft={property.sqft}
+                status={property.status}
+                type={property.listingType}
+                href={`/property/${property.id}`}
+              />
             ))}
           </div>
         )}
       </div>
     </div>
+    </>
   );
 }
 
 export default function PropertySearchPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gradient-hero pt-24 flex items-center justify-center"><div className="text-white text-xl">Loading search results...</div></div>}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FAF5EC] pt-24 flex items-center justify-center">
+        <div className="text-[#374151] text-xl font-medium">Loading search results...</div>
+      </div>
+    }>
       <SearchResults />
     </Suspense>
   );

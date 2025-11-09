@@ -1,24 +1,38 @@
-import type { Metadata } from 'next'
-import './globals.css'
-import Providers from '@/components/Providers'
+import "./globals.css";
+import { Inter, Fraunces } from "next/font/google";
+import { clsx } from "clsx";
+import { ThemeProvider } from 'next-themes'
+import { QueryProvider } from '@/components/providers/QueryProvider'
+import { AuthProvider } from '@/components/AuthProvider'
+import { Toaster } from '@/components/ui/toaster'
 
-export const metadata: Metadata = {
-  title: 'Hodges & Fooshee Realty - Premier MLS Search Platform',
-  description: 'Advanced MLS property search platform with real-time listings, open houses, and agent directory.',
-}
+const inter = Inter({ subsets:["latin"], variable:"--font-inter", display:"swap" });
+const fraunces = Fraunces({ subsets:["latin"], variable:"--font-fraunces", display:"swap" });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export const metadata = {
+  title: "Hodges & Fooshee Realty",
+  description: "Your Source for Nashville Real Estate Excellence",
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' }
+    ]
+  }
+};
+
+export default function RootLayout({ children }:{children:React.ReactNode}) {
   return (
-    <html lang="en">
+    <html lang="en" className={clsx(inter.variable, fraunces.variable)} suppressHydrationWarning>
       <body>
-        <Providers>
-          {children}
-        </Providers>
+        <AuthProvider>
+          <QueryProvider>
+            <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+              {children}
+              <Toaster />
+            </ThemeProvider>
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
-  )
+  );
 }

@@ -1,259 +1,121 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+'use client';
+
+import { InsiderGrid } from "@/components/InsiderGrid";
+import { CountyCard } from "@/components/CountyCard";
+import { Suspense, useState } from "react";
+import InsiderSignupModal from "@/components/InsiderSignupModal";
 
 const NashvilleInsiderAccess = () => {
+  const [showModal, setShowModal] = useState(false);
   return (
-    <section className="py-20">
-      <div className="container mx-auto px-4">
+    <div>
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
+        <div className="mb-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 mb-4">
             Nashville Insider Access
           </h2>
-          <p className="text-xl text-muted-foreground mb-8">
-            Exclusive opportunities before they hit the market
-          </p>
-          <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
-            Get first access to off-market properties, coming soon listings, and investment opportunities through our insider network
+          <p className="text-zinc-600 text-lg max-w-3xl mx-auto leading-relaxed">
+            Exclusive opportunities before they hit the market. Get first access to off-market properties and investment opportunities.
           </p>
         </div>
 
-        {/* Exclusive Properties */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <Card className="overflow-hidden card-glass relative group">
-            <div className="aspect-[4/3] bg-gradient-to-br from-gray-400 to-gray-600 relative">
-              <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
-              <Badge className="absolute top-4 left-4 pill-orange">
-                COMING SOON
-              </Badge>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-white">
-                  <h4 className="text-xl font-semibold mb-2">EXCLUSIVE ACCESS</h4>
-                  <p className="text-sm">Register to View Details</p>
-                </div>
-              </div>
+        {/* Exclusive Properties - Dynamic from Manus API */}
+        <Suspense
+          fallback={
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="rounded-2xl bg-white border border-black/5 shadow-md min-h-[180px] animate-pulse"
+                />
+              ))}
             </div>
-            <div className="p-6">
-              <h4 className="text-lg font-semibold text-foreground mb-2">Historic Estate</h4>
-              <p className="text-muted-foreground text-sm mb-3">Belle Meade Area</p>
-              <div className="space-y-2 text-sm text-muted-foreground mb-4">
-                <div className="flex justify-between">
-                  <span>Price Range:</span>
-                  <span className="font-semibold text-foreground">$1.2M - $1.4M</span>
-                </div>
-                <div className="text-center py-2 border-t border-border">
-                  <span className="font-medium">5+ Beds | 4+ Baths | 2+ Acres</span>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground italic mb-4">
-                "Rare historic estate with modern updates"
-              </p>
-              <Button className="w-full btn">
-                Register for Full Details
-              </Button>
-            </div>
-          </Card>
-
-          <Card className="overflow-hidden card-glass relative group">
-            <div className="aspect-[4/3] bg-gradient-to-br from-blue-400 to-blue-600 relative">
-              <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
-              <Badge className="absolute top-4 left-4 pill-orange">
-                OFF-MARKET
-              </Badge>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-white">
-                  <h4 className="text-xl font-semibold mb-2">EXCLUSIVE ACCESS</h4>
-                  <p className="text-sm">Register to View Details</p>
-                </div>
-              </div>
-            </div>
-            <div className="p-6">
-              <h4 className="text-lg font-semibold text-foreground mb-2">New Construction</h4>
-              <p className="text-muted-foreground text-sm mb-3">Williamson County</p>
-              <div className="space-y-2 text-sm text-muted-foreground mb-4">
-                <div className="flex justify-between">
-                  <span>Price Range:</span>
-                  <span className="font-semibold text-foreground">$650K - $750K</span>
-                </div>
-                <div className="text-center py-2 border-t border-border">
-                  <span className="font-medium">3+ Beds | 2+ Baths | Premium Finishes</span>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground italic mb-4">
-                "Brand new luxury townhome in top-rated district"
-              </p>
-              <Button className="w-full btn">
-                Register for Full Details
-              </Button>
-            </div>
-          </Card>
-
-          <Card className="overflow-hidden card-glass relative group">
-            <div className="aspect-[4/3] bg-gradient-to-br from-green-400 to-green-600 relative">
-              <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
-              <Badge className="absolute top-4 left-4 pill-purple">
-                EXCLUSIVE
-              </Badge>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-white">
-                  <h4 className="text-xl font-semibold mb-2">EXCLUSIVE ACCESS</h4>
-                  <p className="text-sm">Register to View Details</p>
-                </div>
-              </div>
-            </div>
-            <div className="p-6">
-              <h4 className="text-lg font-semibold text-foreground mb-2">Investment Opportunity</h4>
-              <p className="text-muted-foreground text-sm mb-3">Davidson County</p>
-              <div className="space-y-2 text-sm text-muted-foreground mb-4">
-                <div className="flex justify-between">
-                  <span>Price Range:</span>
-                  <span className="font-semibold text-foreground">$350K - $450K</span>
-                </div>
-                <div className="text-center py-2 border-t border-border">
-                  <span className="font-medium">Multi-Unit | Cash Flow Positive</span>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground italic mb-4">
-                "Turnkey rental property with proven returns"
-              </p>
-              <Button className="w-full btn">
-                Register for Full Details
-              </Button>
-            </div>
-          </Card>
-        </div>
+          }
+        >
+          <div className="mb-12">
+            <InsiderGrid />
+          </div>
+        </Suspense>
 
         {/* CTA Section */}
-        <div className="text-center card-glass rounded-2xl p-12">
-          <h3 className="text-3xl font-display font-bold text-foreground mb-4">
+        <div className="text-center rounded-3xl bg-[#FBF3E7] border border-black/5 shadow-elev-1 p-10 transition-all duration-300 hover:shadow-elev-2 mb-16">
+          <h3 className="text-xl font-semibold tracking-tight text-neutral-900 mb-3">
             Join Our Insider Network
           </h3>
-          <p className="text-lg text-muted-foreground mb-6 max-w-3xl mx-auto">
-            Get exclusive access to Nashville's hidden gems before they hit the public market. Our insider network gives you the competitive edge in today's fast-moving market.
+          <p className="text-neutral-700 mb-8 max-w-2xl mx-auto leading-relaxed">
+            Get exclusive access to Nashville's hidden gems before they hit the public market. Gain the competitive edge you need.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="btn px-8">
+            <button
+              onClick={() => setShowModal(true)}
+              className="rounded-xl px-7 py-3 text-white font-medium bg-brand-500 hover:bg-brand-600 shadow-md transition-colors"
+            >
               Get Instant Access
-            </Button>
-            <Button size="lg" className="btn-ghost px-8">
-              Schedule Private Consultation
-            </Button>
+            </button>
+            <a
+              href="mailto:contact@hodgesfoosheeteam.com?subject=Schedule Consultation"
+              className="rounded-xl px-7 py-3 font-medium bg-white border border-black/10 text-neutral-900 hover:bg-slate-50 shadow-sm transition-colors text-center"
+            >
+              Schedule Consultation
+            </a>
           </div>
         </div>
 
         {/* Market Intelligence Section */}
-        <div className="mt-20">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
+        <div>
+          <div className="mb-12 text-center">
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 mb-3">
               Middle Tennessee Market Intelligence
             </h2>
-            <p className="text-xl text-muted-foreground mb-6">
-              Real-time insights across 9 counties from Nashville's most trusted experts
-            </p>
-            <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
-              Our deep local knowledge combined with live market data gives you the intelligence edge
+            <p className="text-zinc-600 text-lg max-w-3xl mx-auto leading-relaxed">
+              Real-time insights across the region from Nashville's most trusted experts
             </p>
           </div>
 
           {/* County Cards */}
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-8 card-glass relative overflow-hidden">
-              <div className="absolute top-6 right-6">
-                <Badge className="pill-orange">🔥 HOT</Badge>
-              </div>
-              <h4 className="text-2xl font-semibold text-foreground mb-2">Davidson County</h4>
-              <p className="text-muted-foreground mb-6">Nashville</p>
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-7">
+            <CountyCard
+              name="Davidson County"
+              status="HOT"
+              growth="+4.2%"
+              medianPrice="$425,000"
+              dom="18 days"
+              trend="📈 +8.1%"
+              href="/counties/davidson-county"
+            />
 
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Population Growth</p>
-                  <p className="text-2xl font-bold text-green-500">+4.2%</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Median Price</p>
-                  <p className="text-3xl font-bold text-foreground">$425,000</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Days on Market</p>
-                  <p className="text-xl font-semibold text-foreground">18 days</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Price Trend</p>
-                  <p className="text-xl font-bold text-positive">📈 +8.1%</p>
-                </div>
-              </div>
+            <CountyCard
+              name="Williamson County"
+              status="RISING"
+              growth="+3.8%"
+              medianPrice="$650,000"
+              dom="22 days"
+              trend="📈 +6.3%"
+              href="/counties/williamson-county"
+            />
 
-              <Button className="w-full mt-6 btn">
-                View County Intelligence
-              </Button>
-            </Card>
-
-            <Card className="p-8 card-glass relative overflow-hidden">
-              <div className="absolute top-6 right-6">
-                <Badge className="pill-orange">⚡ RISING</Badge>
-              </div>
-              <h4 className="text-2xl font-semibold text-foreground mb-2">Williamson County</h4>
-              <p className="text-muted-foreground mb-6">Franklin</p>
-
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Population Growth</p>
-                  <p className="text-2xl font-bold text-green-500">+3.8%</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Median Price</p>
-                  <p className="text-3xl font-bold text-foreground">$650,000</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Days on Market</p>
-                  <p className="text-xl font-semibold text-foreground">22 days</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Price Trend</p>
-                  <p className="text-xl font-bold text-positive">📈 +6.3%</p>
-                </div>
-              </div>
-
-              <Button className="w-full mt-6 btn">
-                View County Details
-              </Button>
-            </Card>
-
-            <Card className="p-8 card-glass relative overflow-hidden">
-              <div className="absolute top-6 right-6">
-                <Badge className="pill-purple">📊 STABLE</Badge>
-              </div>
-              <h4 className="text-2xl font-semibold text-foreground mb-2">Rutherford County</h4>
-              <p className="text-muted-foreground mb-6">Murfreesboro</p>
-
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Population Growth</p>
-                  <p className="text-2xl font-bold text-green-500">+2.1%</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Median Price</p>
-                  <p className="text-3xl font-bold text-foreground">$385,000</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Days on Market</p>
-                  <p className="text-xl font-semibold text-foreground">25 days</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Price Trend</p>
-                  <p className="text-xl font-bold text-positive">📈 +3.2%</p>
-                </div>
-              </div>
-
-              <Button className="w-full mt-6 btn">
-                View County Details
-              </Button>
-            </Card>
+            <CountyCard
+              name="Rutherford County"
+              status="STABLE"
+              growth="+5.1%"
+              medianPrice="$385,000"
+              dom="25 days"
+              trend="📈 +7.2%"
+              href="/counties/rutherford-county"
+            />
           </div>
         </div>
       </div>
-    </section>
+
+      {/* Insider Signup Modal */}
+      {showModal && (
+        <InsiderSignupModal
+          openByDefault={true}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+    </div>
   );
 };
 

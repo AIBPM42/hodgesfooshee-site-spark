@@ -6,7 +6,8 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Database types
-export type UserRole = 'super_admin' | 'broker' | 'agent' | 'public_user'
+// Note: 'super_admin' and 'broker' are kept for backward compatibility but map to 'admin'
+export type UserRole = 'admin' | 'super_admin' | 'broker' | 'agent' | 'public_user'
 export type UserStatus = 'pending' | 'active' | 'suspended' | 'inactive'
 
 export interface Profile {

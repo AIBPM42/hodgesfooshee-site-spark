@@ -1,0 +1,68 @@
+{
+  "county": "Davidson",
+  "search_keyword": "davidson county tn",
+  "relevance_score": 64.2,
+  "entity_density": 0.15,
+  "page_metrics": {
+    "average_word_count": 1450,
+    "average_h1_count": 1,
+    "average_h2_count": 7,
+    "average_h3_count": 4,
+    "average_h4_count": 12,
+    "average_images": 18
+  },
+  "semantic_keywords": {
+    "highly_related_words": [
+      "nashville", "metro", "government", "community", "population", "census",
+      "region", "middle", "tennessee", "area", "city", "district", "services",
+      "schools", "parks", "economy", "history", "culture", "landmarks",
+      "transportation", "development", "neighborhoods", "events", "tourism", "infrastructure"
+    ],
+    "core_words": ["davidson", "county", "tn", "tennessee", "nashville"]
+  },
+  "competitor_gaps": {
+    "missing_keywords": ["landmarks", "tourism", "infrastructure", "neighborhoods", "economic data", "census details"],
+    "gap_analysis": "Competitors are completely missing tourism content, landmarks, economic data, infrastructure details, and neighborhood-specific information. Most also lack proper demographic/census data coverage and regional context (Middle Tennessee positioning). NO ONE is covering the 'complete Nashville/Davidson County guide' angle comprehensively."
+  },
+  "top_competitors": [
+    {"rank": 1, "url": "en.wikipedia.org", "note": "Wikipedia - comprehensive but generic"},
+    {"rank": 3, "url": "https://www.padctn.org/", "category": "Real Estate/Real Estate Services", "confidence": 61},
+    {"rank": 4, "url": "https://www.nashville.gov/departments/county-clerk", "category": "Law & Government/Government", "confidence": 56}
+  ],
+  "topic_outlines": [
+    "Overview of Davidson County", "History and Heritage", "Demographics and Population Trends",
+    "Economic Development", "Education System", "Parks and Recreation", "Arts and Culture",
+    "Transportation and Infrastructure", "Government and Politics", "Key Attractions and Landmarks"
+  ],
+  "facts_statistics": [
+    {"label": "County Seat", "value": "Nashville", "context": "State capital of Tennessee", "source": "Local government"},
+    {"label": "Population", "value": "700,250", "year": "2025", "source": "US Census Bureau", "verify_with_perplexity": true},
+    {"label": "Music Scene", "value": "Music City", "context": "Vibrant music scene, country music capital", "source": "Cultural recognition"},
+    {"label": "Year Founded", "value": "1783", "context": "Named after William Davidson", "source": "Historical records"},
+    {"label": "Percy Priest Lake", "value": "Major recreational destination", "context": "Boating, fishing, water sports", "source": "Army Corps of Engineers"},
+    {"label": "Unemployment Rate", "value": "3.9%", "context": "Below national average", "year": "2025", "source": "Tennessee Department of Labor", "verify_with_perplexity": true},
+    {"label": "Households with Children", "value": "33%+", "context": "Children under 18", "source": "US Census Bureau"},
+    {"label": "Parks & Recreation", "value": "200+ parks", "context": "Recreational areas for public use", "source": "Metro Parks Department"},
+    {"label": "Annual Visitors", "value": "14 million", "context": "Visitors to Nashville each year", "year": "2024", "source": "Nashville Convention & Visitors Corp", "verify_with_perplexity": true},
+    {"label": "Cultural Diversity", "value": "Rich cultural heritage", "context": "Diverse population", "source": "Census demographic data"}
+  ],
+  "paa_questions": [
+    {"question": "Where is Davidson County located?", "answer": "Davidson County is located in Middle Tennessee, serving as the state's second-most populous county and home to Nashville, the state capital."},
+    {"question": "What cities are in Davidson County?", "answer": "Davidson County contains Nashville (the county seat), Belle Meade, Berry Hill, Forest Hills, Goodlettsville (partial), Oak Hill, and Ridgetop (partial). Nashville and Davidson County operate under a consolidated metropolitan government since 1963."},
+    {"question": "What is the population of Davidson County?", "answer": "Davidson County has a population of approximately 700,250 residents as of 2025, making it the second-most populous county in Tennessee after Shelby County (Memphis)."},
+    {"question": "What historical sites are in Davidson County?", "answer": "Davidson County features numerous historical sites including The Hermitage (Andrew Jackson's home), Ryman Auditorium, Belle Meade Plantation, Fort Nashborough, Travellers Rest Plantation, and the Parthenon in Centennial Park."},
+    {"question": "What is the government structure of Davidson County?", "answer": "Davidson County operates under a consolidated metropolitan government with Nashville, established in 1963. The Metro Council serves as the legislative body, with a mayor serving as chief executive."},
+    {"question": "What schools are located in Davidson County?", "answer": "Davidson County is served by Metropolitan Nashville Public Schools (MNPS), the second-largest school district in Tennessee with over 80,000 students across 160+ schools. The area also hosts numerous private schools and higher education institutions including Vanderbilt University, Belmont University, and Tennessee State University."},
+    {"question": "What parks and recreation options are available in Davidson County?", "answer": "Davidson County offers over 200 parks and recreational facilities including Centennial Park, Radnor Lake State Park, Percy Warner Park, Edwin Warner Park, Shelby Park, and the Nashville Greenway system with 90+ miles of trails."},
+    {"question": "How do I register to vote in Davidson County?", "answer": "To register to vote in Davidson County, you must be a U.S. citizen, Tennessee resident, Davidson County resident for 30 days prior to an election, and at least 18 years old by election day. Register online through the Tennessee Department of State or in person at the Davidson County Election Commission."},
+    {"question": "What is the climate like in Davidson County?", "answer": "Davidson County has a humid subtropical climate with hot, humid summers (average high 89°F in July) and mild winters (average low 28°F in January). The area receives about 47 inches of rainfall annually with occasional snow in winter."},
+    {"question": "Are there any annual events in Davidson County?", "answer": "Davidson County hosts numerous annual events including CMA Fest, Nashville Film Festival, Music City Hot Chicken Festival, Tomato Art Fest, Nashville Pride Festival, Nashville Wine Auction, and Fourth of July celebrations at Riverfront Park."}
+  ],
+  "blog_topics": [
+    "Things to do in Davidson County, TN", "Cost of living in Nashville, TN",
+    "History of Davidson County", "Best neighborhoods in Nashville",
+    "Local schools in Davidson County, TN", "Housing market trends in Davidson County",
+    "Restaurants in Nashville, TN", "Parks and recreation in Davidson County",
+    "Upcoming events in Davidson County, TN", "Weather patterns in Davidson County, TN"
+  ]
+}

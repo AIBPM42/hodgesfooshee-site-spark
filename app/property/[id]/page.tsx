@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Bed, Bath, Square, MapPin, Calendar, Heart, Share2, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
+import PropertyDescription from '@/components/PropertyDescription';
+import { Nav } from '@/components/Nav';
 
 interface PropertyDetails {
   id: string;
@@ -30,7 +32,12 @@ interface PropertyDetails {
     phone: string;
     email: string;
     image: string;
+    license?: string;
+    designation?: string;
+    office?: string;
+    officePhone?: string;
   };
+  postalCode?: string;
 }
 
 function PropertyDetailContent() {
@@ -58,6 +65,51 @@ function PropertyDetailContent() {
       const media = prop.Media || [];
       console.log('🖼️ Property images:', media.map((m: any) => m.MediaURL));
 
+      // Fetch enhanced agent details from MLS Members
+      let agentDetails = {
+        name: prop.ListAgentFullName || 'Agent',
+        phone: prop.ListAgentDirectPhone || prop.ListAgentMobilePhone || '',
+        email: prop.ListAgentEmail || '',
+        image: '/placeholder.svg',
+        license: undefined as string | undefined,
+        designation: undefined as string | undefined,
+        office: undefined as string | undefined,
+        officePhone: undefined as string | undefined,
+      };
+
+      // Try to fetch full agent profile if we have a member key
+      if (prop.ListAgentKey || prop.ListAgentMlsId) {
+        try {
+          const memberKey = prop.ListAgentKey || prop.ListAgentMlsId;
+          const memberResponse = await fetch(
+            `https://xhqwmtzawqfffepcqxwf.supabase.co/functions/v1/mls-members?memberKey=${memberKey}`,
+            {
+              headers: {
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhocXdtdHphd3FmZmZlcGNxeHdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2MDQwODEsImV4cCI6MjA3MDE4MDA4MX0.gihIkhLS_pwr9Mz6uG6vm7BXPzfa2TcpvIrRECRfxfg'
+              }
+            }
+          );
+          if (memberResponse.ok) {
+            const memberData = await memberResponse.json();
+            const member = memberData.members?.[0];
+            if (member) {
+              agentDetails = {
+                name: member.MemberFullName || agentDetails.name,
+                phone: member.MemberDirectPhone || member.MemberMobilePhone || agentDetails.phone,
+                email: member.MemberEmail || agentDetails.email,
+                image: member.MemberPhotoURL || agentDetails.image,
+                license: member.MemberStateLicense,
+                designation: member.MemberDesignation,
+                office: member.OfficeName,
+                officePhone: member.OfficePhone,
+              };
+            }
+          }
+        } catch (err) {
+          console.warn('Could not fetch agent details:', err);
+        }
+      }
+
       // Transform to PropertyDetails format
       return {
         id: prop.ListingKey,
@@ -75,37 +127,119 @@ function PropertyDetailContent() {
         description: prop.PublicRemarks || 'No description available',
         features: [],
         images: media.map((m: any) => m.MediaURL).filter(Boolean),
-        agent: {
-          name: prop.ListAgentFullName || 'Agent',
-          phone: prop.ListAgentDirectPhone || '',
-          email: prop.ListAgentEmail || '',
-          image: '/placeholder.svg'
-        }
+        postalCode: prop.PostalCode,
+        agent: agentDetails
       };
     },
   });
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-hero pt-24 flex items-center justify-center">
-        <Card className="glass-card max-w-md">
-          <CardContent className="p-8 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-white">Loading property details...</p>
-          </CardContent>
-        </Card>
-      </div>
+      <>
+        <Nav />
+        <div className="min-h-screen bg-[#FAF5EC] pt-24 pb-16">
+          <div className="container mx-auto px-4 py-8">
+            {/* Skeleton Header */}
+            <div className="mb-8">
+              <div className="h-10 w-40 bg-neutral-200 rounded-lg animate-pulse"></div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Main Content Skeleton */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Image Skeleton */}
+                <Card className="bg-white rounded-2xl shadow-[0_12px_36px_rgba(20,20,20,0.08)] border border-black/5 overflow-hidden">
+                  <div className="w-full h-96 bg-neutral-200 animate-pulse"></div>
+                  <div className="p-4">
+                    <div className="flex gap-2">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div key={i} className="w-24 h-20 bg-neutral-200 rounded-lg animate-pulse"></div>
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Details Skeleton */}
+                <Card className="bg-white rounded-2xl shadow-[0_12px_36px_rgba(20,20,20,0.08)] border border-black/5">
+                  <CardHeader className="space-y-4">
+                    <div className="h-12 w-48 bg-neutral-200 rounded animate-pulse"></div>
+                    <div className="h-8 w-64 bg-neutral-200 rounded animate-pulse"></div>
+                    <div className="h-6 w-80 bg-neutral-200 rounded animate-pulse"></div>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Stats Skeleton */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {[1, 2, 3, 4].map((i) => (
+                        <div key={i} className="p-4 bg-neutral-50 rounded-xl border border-black/5">
+                          <div className="h-6 w-6 mx-auto mb-2 bg-neutral-200 rounded animate-pulse"></div>
+                          <div className="h-8 w-12 mx-auto mb-2 bg-neutral-200 rounded animate-pulse"></div>
+                          <div className="h-4 w-16 mx-auto bg-neutral-200 rounded animate-pulse"></div>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Description Skeleton */}
+                    <div className="space-y-3">
+                      <div className="h-6 w-32 bg-neutral-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-full bg-neutral-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-full bg-neutral-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-3/4 bg-neutral-200 rounded animate-pulse"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Sidebar Skeleton */}
+              <div className="lg:col-span-1 space-y-6">
+                {/* Agent Card Skeleton */}
+                <Card className="bg-white rounded-2xl shadow-[0_12px_36px_rgba(20,20,20,0.08)] border border-black/5">
+                  <CardHeader>
+                    <div className="h-6 w-32 bg-neutral-200 rounded animate-pulse"></div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center">
+                      <div className="w-12 h-12 rounded-full bg-neutral-200 animate-pulse mr-3"></div>
+                      <div className="space-y-2">
+                        <div className="h-5 w-32 bg-neutral-200 rounded animate-pulse"></div>
+                        <div className="h-4 w-24 bg-neutral-200 rounded animate-pulse"></div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-10 w-full bg-neutral-200 rounded animate-pulse"></div>
+                      <div className="h-10 w-full bg-neutral-200 rounded animate-pulse"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Property Info Skeleton */}
+                <Card className="bg-white rounded-2xl shadow-[0_8px_24px_rgba(20,20,20,0.05)] border border-black/5">
+                  <CardHeader>
+                    <div className="h-6 w-32 bg-neutral-200 rounded animate-pulse"></div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="flex justify-between py-3 border-b border-neutral-100">
+                        <div className="h-5 w-24 bg-neutral-200 rounded animate-pulse"></div>
+                        <div className="h-5 w-32 bg-neutral-200 rounded animate-pulse"></div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
     );
   }
 
   if (error || !property) {
     return (
-      <div className="min-h-screen bg-gradient-hero pt-24 flex items-center justify-center">
-        <Card className="glass-card max-w-md p-8">
-          <h2 className="text-2xl font-bold text-red-500 mb-4">Error Loading Property</h2>
-          <p className="text-white/80 mb-4">{(error as Error)?.message || 'Property not found'}</p>
+      <div className="min-h-screen bg-[#FAF5EC] pt-24 flex items-center justify-center px-4">
+        <Card className="bg-white rounded-2xl shadow-[0_12px_36px_rgba(20,20,20,0.12)] border border-black/5 max-w-md p-8">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Property</h2>
+          <p className="text-[#374151] mb-4">{(error as Error)?.message || 'Property not found'}</p>
           <Link href="/search/properties">
-            <Button className="btn w-full">
+            <Button className="w-full bg-gradient-to-r from-[#E4552E] to-[#F39C57] text-white font-semibold px-6 py-3 rounded-xl shadow-[0_8px_28px_rgba(228,85,46,0.35)] hover:shadow-[0_12px_36px_rgba(228,85,46,0.4)] hover:-translate-y-0.5 transition-all">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Search
             </Button>
@@ -116,12 +250,14 @@ function PropertyDetailContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-hero pt-24">
-      <div className="container mx-auto px-4 py-8">
+    <>
+      <Nav />
+      <div className="min-h-screen bg-[#FAF5EC] pt-24 pb-16">
+        <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <Link href="/search/properties">
-            <Button variant="ghost" className="glass mb-4">
+            <Button variant="ghost" className="mb-4 text-neutral-700 hover:text-neutral-900 hover:bg-white/60 transition-colors">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Results
             </Button>
@@ -130,24 +266,28 @@ function PropertyDetailContent() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             {/* Image Gallery */}
-            <Card className="glass-card mb-6">
+            <Card className="bg-white rounded-2xl shadow-[0_12px_36px_rgba(20,20,20,0.08)] border border-black/5 overflow-hidden">
               <div className="relative">
                 <img
                   src={property.images[selectedImageIndex] || '/placeholder.svg'}
                   alt={property.title}
-                  className="w-full h-96 object-cover rounded-t-lg"
+                  className="w-full h-96 object-cover transition-transform duration-300 hover:scale-[1.015]"
                 />
                 <div className="absolute top-4 left-4 flex gap-2">
-                  <Badge className="bg-hf-orange">{property.status}</Badge>
-                  <Badge variant="outline" className="bg-white/10 backdrop-blur">{property.propertyType}</Badge>
+                  <Badge className="bg-emerald-500 text-white font-bold text-xs uppercase tracking-wide px-3 py-1.5 rounded-full shadow-lg">
+                    {property.status}
+                  </Badge>
+                  <Badge className="bg-white/90 backdrop-blur text-[#374151] font-semibold text-xs px-3 py-1.5 rounded-full shadow-lg">
+                    {property.propertyType}
+                  </Badge>
                 </div>
                 <div className="absolute top-4 right-4 flex gap-2">
-                  <Button size="sm" variant="outline" className="glass-light">
+                  <Button size="sm" className="bg-white/90 backdrop-blur hover:bg-white text-[#374151] shadow-lg">
                     <Heart className="w-4 h-4" />
                   </Button>
-                  <Button size="sm" variant="outline" className="glass-light">
+                  <Button size="sm" className="bg-white/90 backdrop-blur hover:bg-white text-[#374151] shadow-lg">
                     <Share2 className="w-4 h-4" />
                   </Button>
                 </div>
@@ -157,13 +297,13 @@ function PropertyDetailContent() {
                   <>
                     <button
                       onClick={() => setSelectedImageIndex(prev => prev === 0 ? property.images.length - 1 : prev - 1)}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur transition-all"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full backdrop-blur transition-all shadow-lg"
                     >
                       <ArrowLeft className="w-6 h-6" />
                     </button>
                     <button
                       onClick={() => setSelectedImageIndex(prev => prev === property.images.length - 1 ? 0 : prev + 1)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur transition-all"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full backdrop-blur transition-all shadow-lg"
                     >
                       <ArrowLeft className="w-6 h-6 rotate-180" />
                     </button>
@@ -172,7 +312,7 @@ function PropertyDetailContent() {
 
                 {/* Image Counter */}
                 {property.images.length > 1 && (
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur text-white px-4 py-2 rounded-full text-sm">
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
                     {selectedImageIndex + 1} / {property.images.length}
                   </div>
                 )}
@@ -181,17 +321,17 @@ function PropertyDetailContent() {
               {/* Thumbnail Carousel */}
               {property.images.length > 1 && (
                 <div className="p-4">
-                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent">
                     {property.images.map((img, idx) => (
                       <img
                         key={idx}
                         src={img}
                         alt={`Property ${idx + 1}`}
                         onClick={() => setSelectedImageIndex(idx)}
-                        className={`flex-shrink-0 w-24 h-20 object-cover rounded cursor-pointer transition-all ${
+                        className={`flex-shrink-0 w-24 h-20 object-cover rounded-lg cursor-pointer transition-all ${
                           selectedImageIndex === idx
-                            ? 'ring-4 ring-hf-orange opacity-100'
-                            : 'opacity-60 hover:opacity-100'
+                            ? 'ring-4 ring-[#E4552E] opacity-100 scale-105'
+                            : 'opacity-60 hover:opacity-100 hover:scale-105'
                         }`}
                       />
                     ))}
@@ -201,81 +341,127 @@ function PropertyDetailContent() {
             </Card>
 
             {/* Property Details */}
-            <Card className="glass-card mb-6">
+            <Card className="bg-white rounded-2xl shadow-[0_12px_36px_rgba(20,20,20,0.08)] border border-black/5">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-3xl font-display text-gradient">
+                  {/* Price - bold, high contrast */}
+                  <CardTitle className="text-4xl font-extrabold text-[#111827] tracking-tight" style={{letterSpacing: '-0.01em'}}>
                     {new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'USD',
                       minimumFractionDigits: 0,
                     }).format(property.price)}
+                    {property.propertyType.toLowerCase().includes('lease') && (
+                      <span className="text-xl text-neutral-600 font-normal ml-1">/month</span>
+                    )}
                   </CardTitle>
                 </div>
-                <h1 className="text-2xl font-display font-semibold text-white">{property.title}</h1>
-                <div className="flex items-center text-white/70">
-                  <MapPin className="w-4 h-4 mr-1" />
+
+                {/* Title - strong hierarchy */}
+                <h1 className="text-2xl font-bold text-[#374151] mt-2">{property.title}</h1>
+
+                {/* Address - meta text with icon */}
+                <div className="flex items-center text-[#6B7280] mt-2">
+                  <MapPin className="w-4 h-4 mr-1.5" />
                   {property.address}
                 </div>
+
+                {/* Copper accent line */}
+                <div className="mt-4 h-0.5 w-24 bg-gradient-to-r from-[#E4552E] to-[#F39C57] rounded-full"></div>
               </CardHeader>
 
               <CardContent className="space-y-6">
                 {/* Key Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-4 glass-light rounded-lg">
-                    <Bed className="w-6 h-6 mx-auto mb-2 text-primary" />
-                    <div className="text-xl font-semibold text-white">{property.beds}</div>
-                    <div className="text-sm text-white/60">Bedrooms</div>
+                  <div className="text-center p-4 bg-neutral-50 rounded-xl border border-black/5">
+                    <Bed className="w-6 h-6 mx-auto mb-2 text-[#E4552E]" />
+                    <div className="text-2xl font-bold text-[#111827]">{property.beds}</div>
+                    <div className="text-sm text-[#6B7280] font-medium">Bedrooms</div>
                   </div>
-                  <div className="text-center p-4 glass-light rounded-lg">
-                    <Bath className="w-6 h-6 mx-auto mb-2 text-primary" />
-                    <div className="text-xl font-semibold text-white">{property.baths}</div>
-                    <div className="text-sm text-white/60">Bathrooms</div>
+                  <div className="text-center p-4 bg-neutral-50 rounded-xl border border-black/5">
+                    <Bath className="w-6 h-6 mx-auto mb-2 text-[#E4552E]" />
+                    <div className="text-2xl font-bold text-[#111827]">{property.baths}</div>
+                    <div className="text-sm text-[#6B7280] font-medium">Bathrooms</div>
                   </div>
-                  <div className="text-center p-4 glass-light rounded-lg">
-                    <Square className="w-6 h-6 mx-auto mb-2 text-primary" />
-                    <div className="text-xl font-semibold text-white">{property.sqft.toLocaleString()}</div>
-                    <div className="text-sm text-white/60">Sq Ft</div>
+                  <div className="text-center p-4 bg-neutral-50 rounded-xl border border-black/5">
+                    <Square className="w-6 h-6 mx-auto mb-2 text-[#E4552E]" />
+                    <div className="text-2xl font-bold text-[#111827]">{property.sqft.toLocaleString()}</div>
+                    <div className="text-sm text-[#6B7280] font-medium">Sq Ft</div>
                   </div>
-                  <div className="text-center p-4 glass-light rounded-lg">
-                    <Calendar className="w-6 h-6 mx-auto mb-2 text-primary" />
-                    <div className="text-xl font-semibold text-white">{property.yearBuilt}</div>
-                    <div className="text-sm text-white/60">Year Built</div>
+                  <div className="text-center p-4 bg-neutral-50 rounded-xl border border-black/5">
+                    <Calendar className="w-6 h-6 mx-auto mb-2 text-[#E4552E]" />
+                    <div className="text-2xl font-bold text-[#111827]">{property.yearBuilt}</div>
+                    <div className="text-sm text-[#6B7280] font-medium">Year Built</div>
                   </div>
                 </div>
 
                 {/* Description */}
                 <div>
-                  <h3 className="text-xl font-display font-semibold mb-3 text-white">Description</h3>
-                  <p className="text-white/70 leading-relaxed">{property.description}</p>
+                  <h3 className="text-xl font-bold text-[#111827] mb-4">Description</h3>
+                  <PropertyDescription description={property.description} />
                 </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Sidebar */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 space-y-6">
             {/* Agent Card */}
-            <Card className="glass-card mb-6">
+            <Card className="bg-white rounded-2xl shadow-[0_12px_36px_rgba(20,20,20,0.08)] border border-black/5">
               <CardHeader>
-                <CardTitle className="font-display text-white">Contact Agent</CardTitle>
+                <CardTitle className="text-lg font-bold text-[#111827]">Contact Agent</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center">
-                  <img
-                    src={property.agent.image}
-                    alt={property.agent.name}
-                    className="w-12 h-12 rounded-full object-cover mr-3"
-                  />
-                  <div>
-                    <div className="font-semibold text-white">{property.agent.name}</div>
-                    <div className="text-sm text-white/60">Real Estate Agent</div>
+                <div className="flex items-start gap-3">
+                  {/* Agent initials if no image */}
+                  {property.agent.image === '/placeholder.svg' ? (
+                    <div className="w-16 h-16 flex-shrink-0 rounded-full bg-gradient-to-br from-[#E4552E] to-[#F39C57] flex items-center justify-center text-white font-bold shadow-lg">
+                      {property.agent.name.split(' ').map(n => n[0]).join('')}
+                    </div>
+                  ) : (
+                    <img
+                      src={property.agent.image}
+                      alt={property.agent.name}
+                      className="w-16 h-16 flex-shrink-0 rounded-full object-cover shadow-lg ring-2 ring-white"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-[#111827]">{property.agent.name}</div>
+                    <div className="text-sm text-[#6B7280]">Real Estate Agent</div>
+                    {property.agent.designation && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {property.agent.designation.split(',').slice(0, 3).map((cert, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-xs bg-[#E4552E]/10 text-[#E4552E] border-[#E4552E]/20">
+                            {cert.trim()}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                {/* Office Information */}
+                {property.agent.office && (
+                  <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-100">
+                    <div className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-1">Office</div>
+                    <div className="font-medium text-[#111827] text-sm">{property.agent.office}</div>
+                    {property.agent.officePhone && (
+                      <div className="text-xs text-[#6B7280] mt-1">{property.agent.officePhone}</div>
+                    )}
+                  </div>
+                )}
+
+                {/* License */}
+                {property.agent.license && (
+                  <div className="text-xs text-[#6B7280] flex items-center gap-1">
+                    <span className="font-semibold">License:</span>
+                    <span>{property.agent.license}</span>
+                  </div>
+                )}
+
+                <div className="space-y-2 pt-2 border-t border-neutral-100">
                   {property.agent.phone && (
-                    <Button variant="outline" className="w-full btn-glass" asChild>
+                    <Button className="w-full bg-gradient-to-r from-[#E4552E] to-[#F39C57] text-white font-semibold shadow-[0_8px_28px_rgba(228,85,46,0.35)] hover:shadow-[0_12px_36px_rgba(228,85,46,0.4)] hover:-translate-y-0.5 transition-all" asChild>
                       <a href={`tel:${property.agent.phone}`}>
                         <Phone className="w-4 h-4 mr-2" />
                         {property.agent.phone}
@@ -283,7 +469,7 @@ function PropertyDetailContent() {
                     </Button>
                   )}
                   {property.agent.email && (
-                    <Button variant="outline" className="w-full btn-glass" asChild>
+                    <Button variant="outline" className="w-full border-neutral-300 text-[#374151] font-semibold hover:bg-neutral-50 transition-colors" asChild>
                       <a href={`mailto:${property.agent.email}`}>
                         <Mail className="w-4 h-4 mr-2" />
                         Send Email
@@ -295,26 +481,37 @@ function PropertyDetailContent() {
             </Card>
 
             {/* Property Info */}
-            <Card className="glass-card">
+            <Card className="bg-white rounded-2xl shadow-[0_8px_24px_rgba(20,20,20,0.05)] border border-black/5">
               <CardHeader>
-                <CardTitle className="font-display text-white">Property Details</CardTitle>
+                <CardTitle className="text-lg font-bold text-[#111827]">Property Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="flex justify-between text-white">
-                  <span className="text-white/60">Property Type</span>
-                  <span>{property.propertyType}</span>
+                <div className="flex justify-between py-3 border-b border-neutral-100">
+                  <span className="text-[#6B7280] font-medium">Property Type</span>
+                  <span className="text-[#111827] font-semibold">{property.propertyType}</span>
                 </div>
-                <div className="flex justify-between text-white">
-                  <span className="text-white/60">Lot Size</span>
-                  <span>{property.lotSize}</span>
+                {property.postalCode && (
+                  <div className="flex justify-between py-3 border-b border-neutral-100">
+                    <span className="text-[#6B7280] font-medium">ZIP Code</span>
+                    <Link
+                      href={`/search/properties?postalCode=${property.postalCode}`}
+                      className="text-[#E4552E] font-semibold hover:underline transition-colors"
+                    >
+                      {property.postalCode}
+                    </Link>
+                  </div>
+                )}
+                <div className="flex justify-between py-3 border-b border-neutral-100">
+                  <span className="text-[#6B7280] font-medium">Lot Size</span>
+                  <span className="text-[#111827] font-semibold">{property.lotSize}</span>
                 </div>
-                <div className="flex justify-between text-white">
-                  <span className="text-white/60">Listed</span>
-                  <span>{new Date(property.listingDate).toLocaleDateString()}</span>
+                <div className="flex justify-between py-3 border-b border-neutral-100">
+                  <span className="text-[#6B7280] font-medium">Listed</span>
+                  <span className="text-[#111827] font-semibold">{new Date(property.listingDate).toLocaleDateString()}</span>
                 </div>
-                <div className="flex justify-between text-white">
-                  <span className="text-white/60">MLS ID</span>
-                  <span>#{property.id}</span>
+                <div className="flex justify-between py-3">
+                  <span className="text-[#6B7280] font-medium">MLS ID</span>
+                  <span className="text-[#111827] font-semibold">#{property.id}</span>
                 </div>
               </CardContent>
             </Card>
@@ -322,12 +519,17 @@ function PropertyDetailContent() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
 export default function PropertyDetailPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gradient-hero pt-24 flex items-center justify-center"><div className="text-white text-xl">Loading...</div></div>}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FAF5EC] pt-24 flex items-center justify-center">
+        <div className="text-[#374151] text-xl font-medium">Loading...</div>
+      </div>
+    }>
       <PropertyDetailContent />
     </Suspense>
   );

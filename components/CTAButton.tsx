@@ -1,8 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
 import clsx from "clsx";
+import { ComponentPropsWithoutRef, ReactNode } from "react";
 
-type CTAButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type CTAButtonProps = Omit<ComponentPropsWithoutRef<typeof motion.button>, "ref" | "children"> & {
+  children?: ReactNode;
   icon?: string;
 };
 
