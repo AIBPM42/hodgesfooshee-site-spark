@@ -2,7 +2,6 @@
   "name": "hodgesfooshee-site-spark",
   "private": true,
   "version": "1.0.0",
-  "type": "module",
   "engines": {
     "node": ">=20 <21"
   },
