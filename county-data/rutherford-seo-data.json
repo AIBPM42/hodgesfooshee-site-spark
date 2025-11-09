@@ -1,0 +1,73 @@
+{
+  "county": "Rutherford",
+  "search_keyword": "rutherford county tn",
+  "relevance_score": 62.7,
+  "entity_density": 0.14,
+  "page_metrics": {
+    "average_word_count": 1390,
+    "average_h1_count": 1,
+    "average_h2_count": 6,
+    "average_h3_count": 5,
+    "average_h4_count": 14,
+    "average_images": 16
+  },
+  "semantic_keywords": {
+    "highly_related_words": [
+      "murfreesboro", "smyrna", "lavergne", "tennessee", "nashville",
+      "community", "history", "population", "growth", "economy",
+      "education", "schools", "parks", "government", "tourism",
+      "events", "culture", "heritage", "transportation", "development",
+      "housing", "business"
+    ],
+    "core_words": ["rutherford", "county", "tn", "tennessee"]
+  },
+  "competitor_gaps": {
+    "missing_keywords": [
+      "smyrna", "lavergne", "population", "growth", "economy",
+      "housing market", "demographics", "tourism"
+    ],
+    "gap_analysis": "Competitors are missing comprehensive Smyrna/LaVergne content, economic development details, population growth data, and housing market trends. NO ONE has strong coverage of Rutherford County as an affordable alternative to Williamson County."
+  },
+  "top_competitors": [
+    {"rank": 1, "url": "https://www.rutherfordcountytn.gov/", "category": "Law & Government/Government", "confidence": 95},
+    {"rank": 3, "url": "https://www.mtsu.edu/", "category": "Jobs & Education/Education/Colleges & Universities", "confidence": 84},
+    {"rank": 5, "url": "https://www.murfreesborotn.gov/", "category": "Law & Government/Government", "confidence": 72}
+  ],
+  "topic_outlines": [
+    "Overview of Rutherford County", "History and Heritage", "Demographics and Population Growth",
+    "Economic Development", "Education System and MTSU", "Cities: Murfreesboro, Smyrna, LaVergne",
+    "Parks and Recreation", "Arts, Culture, and Events", "Housing Market and Real Estate",
+    "Transportation and Infrastructure"
+  ],
+  "facts_statistics": [
+    {"label": "Population", "value": "358,000+", "year": "2025", "source": "US Census Bureau", "context": "Fastest-growing county in Tennessee"},
+    {"label": "County Seat", "value": "Murfreesboro", "context": "6th largest city in Tennessee", "source": "Local government"},
+    {"label": "Major Cities", "value": "Murfreesboro, Smyrna, LaVergne", "context": "Three major municipalities", "source": "County data"},
+    {"label": "Year Established", "value": "1803", "context": "Named after Revolutionary War hero Griffith Rutherford", "source": "Historical records"},
+    {"label": "MTSU Enrollment", "value": "22,000+ students", "context": "Largest undergraduate university in Tennessee", "source": "Middle Tennessee State University"},
+    {"label": "Median Home Price", "value": "$350,000-$400,000", "year": "2025", "source": "Local real estate data", "verify_with_perplexity": true},
+    {"label": "Unemployment Rate", "value": "3.2%", "context": "Below national average", "year": "2025", "source": "Tennessee Department of Labor"},
+    {"label": "Median Household Income", "value": "$72,000", "year": "2025", "source": "US Census Bureau"},
+    {"label": "Parks & Greenways", "value": "60+ parks", "context": "Over 100 miles of greenways", "source": "Rutherford County Parks"},
+    {"label": "Historic Sites", "value": "Stones River Battlefield", "context": "Civil War National Battlefield", "source": "National Park Service"}
+  ],
+  "paa_questions": [
+    {"question": "What is the population of Rutherford County TN?", "answer": "Rutherford County has a population of over 358,000 residents as of 2025, making it the fastest-growing county in Tennessee. The county has experienced rapid population growth due to affordable housing, strong job market, and proximity to Nashville."},
+    {"question": "Where is Rutherford County TN located?", "answer": "Rutherford County is located in Middle Tennessee, about 30 miles southeast of Nashville. The county is bordered by Davidson County to the northwest, Wilson County to the north, Williamson County to the west, and Bedford County to the south."},
+    {"question": "What cities are in Rutherford County TN?", "answer": "Major cities in Rutherford County include Murfreesboro (county seat and 6th largest city in Tennessee), Smyrna, LaVergne, Eagleville, and Christiana. Murfreesboro is the largest city and home to Middle Tennessee State University."},
+    {"question": "Is Rutherford County TN a good place to live?", "answer": "Yes, Rutherford County offers excellent quality of life with affordable housing compared to neighboring counties, strong job growth, access to education (MTSU), abundant parks and recreation, proximity to Nashville, and a growing economy. The area is popular with families and young professionals."},
+    {"question": "What is the cost of living in Rutherford County TN?", "answer": "Rutherford County has a moderate cost of living, lower than Williamson and Davidson counties but slightly above the Tennessee average. Housing is more affordable than Nashville metro areas, with median home prices around $350,000-$400,000 and no state income tax."},
+    {"question": "What are the schools like in Rutherford County TN?", "answer": "Rutherford County Schools serves over 50,000 students across 55 schools, making it one of Tennessee's largest school districts. The district offers diverse programs including Career and Technical Education, magnet schools, and dual enrollment with MTSU. Several schools are nationally recognized."},
+    {"question": "What is there to do in Rutherford County TN?", "answer": "Rutherford County offers diverse activities including Stones River National Battlefield, Bradley Academy Museum, Oaklands Mansion, 60+ parks with 100+ miles of greenways, The Avenue Murfreesboro shopping, Discovery Center science museum, live music venues, and annual events like Main Street JazzFest."},
+    {"question": "How far is Rutherford County from Nashville?", "answer": "Murfreesboro, the county seat, is approximately 30 miles southeast of downtown Nashville, with drive times of 35-45 minutes depending on traffic. Smyrna and LaVergne are closer to Nashville, about 20-25 miles away with 25-35 minute commutes."},
+    {"question": "What is the job market like in Rutherford County TN?", "answer": "Rutherford County has a strong, diverse economy with major employers including MTSU, Nissan North America (Smyrna plant), Amazon fulfillment centers, healthcare systems, and numerous distribution and manufacturing facilities. The unemployment rate is below the national average at around 3.2%."},
+    {"question": "Where can I find public services in Rutherford County TN?", "answer": "Public services are available at the Rutherford County Courthouse in Murfreesboro for county services, city halls in Murfreesboro, Smyrna, and LaVergne for municipal services, and various county offices for property records, voter registration, vehicle registration, and permits."}
+  ],
+  "blog_topics": [
+    "Things to do in Rutherford County TN", "Cost of living in Murfreesboro TN",
+    "History of Rutherford County", "Best neighborhoods in Rutherford County",
+    "Local schools in Rutherford County TN", "Housing market trends in Rutherford County",
+    "Restaurants in Murfreesboro TN", "Parks and recreation in Rutherford County",
+    "Upcoming events in Rutherford County TN", "Weather patterns in Rutherford County TN"
+  ]
+}

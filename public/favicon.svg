@@ -1,0 +1,10 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rainbow squares background -->
+  <rect width="16" height="16" fill="#E87722"/> <!-- Orange -->
+  <rect x="16" width="16" height="16" fill="#FDB913"/> <!-- Yellow -->
+  <rect y="16" width="16" height="16" fill="#7BB241"/> <!-- Green -->
+  <rect x="16" y="16" width="16" height="16" fill="#6F4DA0"/> <!-- Purple -->
+
+  <!-- White house outline -->
+  <path d="M16 6L26 14V26H20V20H12V26H6V14L16 6Z" stroke="white" stroke-width="2" fill="none" stroke-linejoin="round"/>
+</svg>

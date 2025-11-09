@@ -34,26 +34,39 @@ serve(async (req) => {
 
     // Build OData filter
     const filters: string[] = [];
-    
-    const city = searchParams.get("city");
-    const county = searchParams.get("county");
-    const minPrice = searchParams.get("minPrice");
-    const maxPrice = searchParams.get("maxPrice");
-    const bedrooms = searchParams.get("bedrooms") || searchParams.get("beds");
-    const bathrooms = searchParams.get("bathrooms") || searchParams.get("baths");
-    const minSqft = searchParams.get("minSqft");
-    const status = searchParams.get("status") || "Active";
-    const modifiedSince = searchParams.get("modifiedSince");
 
-    if (city) filters.push(`City eq '${city}'`);
-    if (county) filters.push(`CountyOrParish eq '${county}'`);
-    if (minPrice) filters.push(`ListPrice ge ${minPrice}`);
-    if (maxPrice) filters.push(`ListPrice le ${maxPrice}`);
-    if (bedrooms) filters.push(`BedroomsTotal ge ${bedrooms}`);
-    if (bathrooms) filters.push(`BathroomsTotalInteger ge ${bathrooms}`);
-    if (minSqft) filters.push(`LivingArea ge ${minSqft}`);
-    filters.push(`StandardStatus eq '${status}'`);
-    if (modifiedSince) filters.push(`ModificationTimestamp ge ${modifiedSince}`);
+    // Check if raw $filter is provided (for advanced queries)
+    const rawFilter = searchParams.get("$filter");
+
+    if (rawFilter) {
+      // Use raw filter directly
+      filters.push(rawFilter);
+    } else {
+      // Build filter from individual parameters
+      const city = searchParams.get("city");
+      const county = searchParams.get("county");
+      const postalCode = searchParams.get("postalCode") || searchParams.get("zip");
+      const listingKey = searchParams.get("listingKey") || searchParams.get("ListingKey");
+      const minPrice = searchParams.get("minPrice");
+      const maxPrice = searchParams.get("maxPrice");
+      const bedrooms = searchParams.get("bedrooms") || searchParams.get("beds");
+      const bathrooms = searchParams.get("bathrooms") || searchParams.get("baths");
+      const minSqft = searchParams.get("minSqft");
+      const status = searchParams.get("status") || "Active";
+      const modifiedSince = searchParams.get("modifiedSince");
+
+      if (listingKey) filters.push(`ListingKey eq '${listingKey}'`);
+      if (city) filters.push(`City eq '${city}'`);
+      if (county) filters.push(`CountyOrParish eq '${county}'`);
+      if (postalCode) filters.push(`PostalCode eq '${postalCode}'`);
+      if (minPrice) filters.push(`ListPrice ge ${minPrice}`);
+      if (maxPrice) filters.push(`ListPrice le ${maxPrice}`);
+      if (bedrooms) filters.push(`BedroomsTotal ge ${bedrooms}`);
+      if (bathrooms) filters.push(`BathroomsTotalInteger ge ${bathrooms}`);
+      if (minSqft) filters.push(`LivingArea ge ${minSqft}`);
+      if (!listingKey) filters.push(`StandardStatus eq '${status}'`); // Skip status filter if searching by specific listing
+      if (modifiedSince) filters.push(`ModificationTimestamp ge ${modifiedSince}`);
+    }
 
     const filterStr = filters.join(" and ");
     const top = searchParams.get("limit") || searchParams.get("$top") || "50";
@@ -66,7 +79,7 @@ serve(async (req) => {
       "$skip": skip,
       "$orderby": orderby,
       "$count": "true",
-      "$select": "ListingKey,ListingId,ListPrice,City,StandardStatus,BedroomsTotal,BathroomsTotalInteger,LivingArea,ModificationTimestamp,Media"
+      "$select": "ListingKey,ListingId,ListPrice,City,StateOrProvince,PostalCode,UnparsedAddress,PropertyType,StandardStatus,BedroomsTotal,BathroomsTotalInteger,LivingArea,ModificationTimestamp,Media"
     });
 
     const apiUrl = `${RESO_BASE}/Property?${queryParams}`;

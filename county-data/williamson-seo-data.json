@@ -1,0 +1,74 @@
+{
+  "county": "Williamson",
+  "search_keyword": "williamson county tn",
+  "relevance_score": 59.3,
+  "entity_density": 0.13,
+  "page_metrics": {
+    "average_word_count": 1318,
+    "average_h1_count": 1,
+    "average_h2_count": 6,
+    "average_h3_count": 4,
+    "average_h4_count": 16,
+    "average_images": 19
+  },
+  "semantic_keywords": {
+    "highly_related_words": [
+      "franklin", "brentwood", "nolensville", "spring", "hill", "fairview",
+      "thompson's", "station", "leipers", "fork", "community", "schools",
+      "parks", "history", "government", "events", "tourism", "economy",
+      "real", "estate", "demographics", "transportation", "services",
+      "education", "culture", "recreation"
+    ],
+    "core_words": ["williamson", "county", "tn", "tennessee"]
+  },
+  "competitor_gaps": {
+    "missing_keywords": [
+      "nolensville", "spring hill", "fairview", "thompson's station",
+      "leipers fork", "brentwood (some competitors)", "tourism",
+      "real estate", "demographics", "culture", "recreation"
+    ],
+    "gap_analysis": "Competitors are missing neighborhood-specific content (Nolensville, Spring Hill, Fairview, Leiper's Fork), tourism information, detailed real estate market data, and demographic breakdowns. HUGE opportunity to dominate these searches."
+  },
+  "top_competitors": [
+    {"rank": 3, "url": "https://www.wcs.edu/", "category": "Jobs & Education/Education/Primary & Secondary Schooling (K-12)", "confidence": 93},
+    {"rank": 4, "url": "https://inigo.williamson-tn.org/property_search/", "category": "Real Estate/Real Estate Listings", "confidence": 87},
+    {"rank": 5, "url": "https://williamsonchamber.com/government/", "category": "Law & Government/Government", "confidence": 68}
+  ],
+  "topic_outlines": [
+    "Geographic Overview", "History of Williamson County", "Demographics and Population Trends",
+    "Local Government and Administration", "Education and Schools", "Economic Development and Employment",
+    "Parks and Recreation Facilities", "Cultural Attractions and Events", "Real Estate Market Insights",
+    "Transportation and Infrastructure"
+  ],
+  "facts_statistics": [
+    {"label": "Population", "value": "251,700", "year": "2025", "source": "US Census Bureau"},
+    {"label": "Median Household Income", "value": "$101,300", "year": "2025", "source": "US Census Bureau"},
+    {"label": "High School Graduation Rate", "value": "95%+", "context": "pursue higher education", "source": "Williamson County Schools"},
+    {"label": "Homeownership Rate", "value": "65%", "year": "2025", "source": "Local government data"},
+    {"label": "Parks & Recreation", "value": "30+ parks", "context": "over 150 miles of trails", "source": "Williamson County Parks"},
+    {"label": "Affluent Communities", "value": "Franklin and Brentwood", "context": "Known for luxury living", "source": "Local knowledge"},
+    {"label": "Year Established", "value": "1799", "context": "Named after Hugh Williamson", "source": "Historical records"},
+    {"label": "Metro Area", "value": "Nashville metropolitan area", "context": "Part of Middle Tennessee", "source": "US Census Bureau"},
+    {"label": "Historic Sites", "value": "Carter House, Lotz House", "context": "Civil War era landmarks", "source": "Historical preservation"},
+    {"label": "School System Rating", "value": "Top-rated", "context": "Strong education system", "source": "State education rankings"}
+  ],
+  "paa_questions": [
+    {"question": "What is the population of Williamson County TN?", "answer": "Williamson County, Tennessee has a population of approximately 251,700 residents as of 2025. The county has experienced consistent growth over the past decade, driven by its proximity to Nashville, excellent schools, strong job market, and high quality of life."},
+    {"question": "Where is Williamson County TN located?", "answer": "Williamson County is located in Middle Tennessee, directly south of Nashville in the Nashville metropolitan area. The county is bordered by Davidson County to the north, Maury County to the south, and Rutherford County to the east."},
+    {"question": "What cities are in Williamson County TN?", "answer": "Major cities in Williamson County include Franklin (county seat), Brentwood, Spring Hill, Nolensville, Fairview, and Thompson's Station. The county also includes the charming community of Leiper's Fork."},
+    {"question": "What is the median income in Williamson County TN?", "answer": "The median household income in Williamson County is approximately $101,300, making it one of the wealthiest counties in Tennessee and among the highest in the nation. The area's strong economy and educated workforce contribute to above-average incomes."},
+    {"question": "How are the schools in Williamson County TN?", "answer": "Williamson County Schools (WCS) is consistently ranked among Tennessee's top school districts, with a 95%+ high school graduation rate. The district serves over 46,000 students across 49 schools and is known for academic excellence, strong extracurriculars, and high college acceptance rates."},
+    {"question": "What is there to do in Williamson County TN?", "answer": "Williamson County offers diverse activities including historic downtown Franklin shopping, Civil War sites (Carter House, Lotz House), outdoor recreation at 30+ parks with 150+ miles of trails, Carnton Plantation tours, Arrington Vineyards, and events like Main Street Festival and Pilgrimage Music Festival."},
+    {"question": "Is Williamson County TN a good place to live?", "answer": "Yes, Williamson County is consistently ranked as one of the best places to live in Tennessee and the United States, offering excellent schools, low crime rates, strong job market, abundant parks and recreation, proximity to Nashville, historic downtown areas, and high quality of life."},
+    {"question": "What is the housing market like in Williamson County TN?", "answer": "Williamson County's housing market is competitive with strong appreciation. Median home prices vary by city, with Brentwood and Franklin commanding premium prices. The market features a mix of historic homes, new construction, luxury estates, and family neighborhoods, with limited inventory driving demand."},
+    {"question": "What is the history of Williamson County TN?", "answer": "Williamson County was established in 1799 and named after Dr. Hugh Williamson. The area played a significant role in the Civil War, particularly the Battle of Franklin in 1864. Historic sites like Carnton Plantation, Carter House, and downtown Franklin preserve this rich history."},
+    {"question": "How far is Williamson County from Nashville?", "answer": "Williamson County borders Nashville directly to the south. Cities like Brentwood are immediately adjacent to Nashville, while Franklin is about 20 miles south of downtown Nashville. Commute times range from 15-30 minutes depending on location and traffic."}
+  ],
+  "blog_topics": [
+    "Best neighborhoods in Williamson County TN", "Cost of living in Franklin TN",
+    "Williamson County Schools guide", "Things to do in Brentwood TN",
+    "Historic sites in Williamson County", "Williamson County real estate market analysis",
+    "Parks and trails in Williamson County", "Moving to Williamson County guide",
+    "Dining in Franklin TN", "Williamson County events calendar"
+  ]
+}
