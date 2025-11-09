@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseServer';
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
+
 type ProcessRequest = {
   imageUrl?: string;
   imageUrls?: string[]; // Support multiple images for compositing

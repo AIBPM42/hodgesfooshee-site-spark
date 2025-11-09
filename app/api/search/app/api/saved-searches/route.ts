@@ -2,6 +2,10 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { z } from "zod";
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
+
 const schema = z.object({
   name: z.string(),
   filters: z.record(z.any()),

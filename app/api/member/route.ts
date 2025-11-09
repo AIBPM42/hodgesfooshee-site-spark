@@ -2,6 +2,10 @@ import { getMlsToken } from "@/lib/mls";
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
+
 const schema = z.object({
   MemberID: z.string(),
 });

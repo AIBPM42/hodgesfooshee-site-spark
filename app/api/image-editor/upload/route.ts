@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseServer';
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
+
 export async function POST(req: NextRequest) {
   try {
     const devMode = process.env.NEXT_PUBLIC_DEV_MODE === 'true';

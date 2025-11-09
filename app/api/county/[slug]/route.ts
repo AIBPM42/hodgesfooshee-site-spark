@@ -3,6 +3,10 @@ import { supabase } from "@/lib/supabase";
 import { mapCountyToData } from "@/lib/mappers/countyMapper";
 import type { County } from "@/lib/types/county";
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
+
 export async function GET(
   _: Request,
   context: { params: { slug: string } }

@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { mockLeads } from '@/lib/mock/distressedLeads';
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
+
 // GET /api/public/featured-leads - Get featured leads for public homepage
 export async function GET(request: NextRequest) {
   try {

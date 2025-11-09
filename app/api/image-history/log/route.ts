@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseServer';
 import crypto from 'crypto';
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
+
 async function fetchAsArrayBuffer(url: string) {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`Fetch failed ${r.status}`);

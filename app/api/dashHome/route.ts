@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as mock from "@/lib/mock/dashHomeData";
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
+
 /**
  * Dashboard Home Data API Route
  *

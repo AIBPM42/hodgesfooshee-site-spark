@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { mockSettings } from '@/lib/mock/distressedLeads';
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
+
 // GET /api/lead-hunter/settings - Get Lead Hunter settings
 export async function GET(request: NextRequest) {
   try {

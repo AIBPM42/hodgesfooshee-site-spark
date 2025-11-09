@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
+
 // POST /api/leads/[id]/feature - Broker features/unfeatures a lead
 export async function POST(
   request: NextRequest,

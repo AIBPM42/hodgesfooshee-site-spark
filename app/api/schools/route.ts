@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
+
 /**
  * Schools API Endpoint
  * Part of Smart Plan coverage requirements (CLAUDE.md:17)
