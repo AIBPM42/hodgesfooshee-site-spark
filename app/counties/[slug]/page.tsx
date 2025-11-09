@@ -18,6 +18,9 @@ import HeroImage from "@/components/county/HeroImage";
 import HeroCinematic from "@/components/HeroCinematic";
 import HeroSignatureBottom from "@/components/HeroSignatureBottom";
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -296,21 +299,3 @@ export default async function CountyPage({ params }: { params: { slug: string } 
     </>
   );
 }
-
-// Generate static params for all 9 counties
-export async function generateStaticParams() {
-  return [
-    { slug: 'davidson-county' },
-    { slug: 'williamson-county' },
-    { slug: 'rutherford-county' },
-    { slug: 'wilson-county' },
-    { slug: 'sumner-county' },
-    { slug: 'cheatham-county' },
-    { slug: 'dickson-county' },
-    { slug: 'maury-county' },
-    { slug: 'robertson-county' },
-  ];
-}
-
-// Enable ISR
-export const revalidate = 3600; // 1 hour
