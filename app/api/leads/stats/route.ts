@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { mockAdminStats, mockAgentStats } from '@/lib/mock/distressedLeads';
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
 // GET /api/leads/stats - Get dashboard stats (role-specific)
 export async function GET(request: NextRequest) {
   try {
