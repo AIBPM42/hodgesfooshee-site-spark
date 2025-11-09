@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabaseServer';
+import { supabaseAdmin } from '@/lib/supabaseServer';
 
 // GET /api/agent/leads - Get leads assigned to current agent
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient();
+    const supabase = supabaseAdmin;
 
     // Get current user
     const { data: { user }, error: userError } = await supabase.auth.getUser();

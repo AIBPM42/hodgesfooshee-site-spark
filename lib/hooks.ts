@@ -102,30 +102,30 @@ export function useLeads(role: 'admin' | 'agent' = 'admin') {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchLeads = async () => {
-      try {
-        setLoading(true);
-        const endpoint = role === 'admin' ? '/api/admin/leads' : '/api/agent/leads';
-        const response = await fetch(endpoint);
+  const fetchLeads = async () => {
+    try {
+      setLoading(true);
+      const endpoint = role === 'admin' ? '/api/admin/leads' : '/api/agent/leads';
+      const response = await fetch(endpoint);
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch leads');
-        }
-
-        const result = await response.json();
-        setData(result.data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error('Failed to fetch leads');
       }
-    };
 
+      const result = await response.json();
+      setData(result.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchLeads();
   }, [role]);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch: fetchLeads };
 }
 
 export function useLeadStats(role: 'admin' | 'agent' = 'admin') {
