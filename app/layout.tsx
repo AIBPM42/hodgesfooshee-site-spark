@@ -11,13 +11,7 @@ const fraunces = Fraunces({ subsets:["latin"], variable:"--font-fraunces", displ
 
 export const metadata = {
   title: "Hodges & Fooshee Realty",
-  description: "Your Source for Nashville Real Estate Excellence",
-  icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico', sizes: 'any' }
-    ]
-  }
+  description: "Your Source for Nashville Real Estate Excellence"
 };
 
 export default function RootLayout({ children }:{children:React.ReactNode}) {
