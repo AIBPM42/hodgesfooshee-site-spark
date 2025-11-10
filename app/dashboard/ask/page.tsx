@@ -137,6 +137,14 @@ export default function RealtyIntelligencePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
+      {/* Coming Soon Banner */}
+      <div className="mb-6 rounded-xl border-2 p-6 text-center" style={{ borderColor: '#E76A3C', backgroundColor: 'rgba(231, 106, 60, 0.05)' }}>
+        <h2 className="text-xl font-semibold text-token-text-hi mb-2">🚀 AI Assistant Upgrading</h2>
+        <p className="text-token-text-mute">
+          Our Realty Intelligence AI is being migrated to production infrastructure for improved performance and reliability. Check back soon!
+        </p>
+      </div>
+
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight text-token-text-hi">
