@@ -6,51 +6,46 @@
 
 In your Coolify dashboard:
 
-1. **Create New Application**
+1. **Create New Application (if not already created)**
    - Type: Next.js Application
    - Repository: `https://github.com/AIBPM42/hodgesfooshee-site-spark`
-   - Branch: `claude-install-audit` (or merge to main first)
+   - Branch: `main`
 
 2. **Build Settings**
-   - Build Command: `npm run build`
+   - Build Command: `npm ci && npm run build`
    - Start Command: `npm start`
    - Port: `3000`
-   - Node Version: `18.x` or `20.x`
+   - Node Version: `20.x` (required - see package.json)
+   - Install Command: `npm ci` (faster and more reliable than npm install)
+
+3. **Environment Variables Path**
+   - All variables are listed in `COOLIFY_ENV_VARS.md`
+   - Copy the entire contents from that file
+   - Paste into Coolify's Environment Variables section
 
 ### 2. Environment Variables (CRITICAL!)
 
-Add these in Coolify's Environment Variables section:
+**See `COOLIFY_ENV_VARS.md` for the complete list with actual values.**
 
-```bash
-# Supabase (REQUIRED)
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+The file contains all your:
+- ✅ Production settings (NEXT_PUBLIC_DEV_MODE=false, etc.)
+- ✅ Supabase credentials
+- ✅ n8n webhook URLs (your RAG system)
+- ✅ AI API keys (FAL, OpenAI, Perplexity, Anthropic)
+- ✅ Manus API key
+- ⚠️ MLS credentials (need to locate these if not using mock data)
 
-# Development Mode (set to false for production)
-NEXT_PUBLIC_DEV_MODE=false
-
-# API Keys (Optional but recommended)
-MANUS_API_KEY=your_manus_api_key
-PERPLEXITY_API_KEY=your_perplexity_api_key
-OPENAI_API_KEY=your_openai_api_key
-
-# N8N RAG Integration (if using)
-N8N_EMBED_WEBHOOK_URL=your_n8n_webhook_url
-N8N_EMBED_WEBHOOK_SECRET=your_n8n_secret
-```
+**Quick copy/paste from `COOLIFY_ENV_VARS.md` → Coolify Environment Variables section**
 
 ### 3. Cloudflare DNS Setup
 
-Point your domain to Coolify:
+Your DNS is already configured correctly:
 
-1. **Go to Cloudflare Dashboard** → DNS
-2. **Add/Update A Record:**
-   - Type: `A`
-   - Name: `hodges-demo` (or `@` for root domain)
-   - Content: `YOUR_COOLIFY_SERVER_IP`
-   - Proxy status: Proxied (orange cloud)
-   - TTL: Auto
+1. **Current DNS (from screenshot):**
+   - `hodges-demo` → `168.231.68.160` (Proxied)
+   - This points to your DigitalOcean Coolify server
+
+2. **No changes needed** - DNS already points to Coolify at 168.231.68.160
 
 ### 4. Coolify Domain Configuration
 
@@ -120,12 +115,13 @@ In Coolify:
 ## 📋 Quick Deployment Steps
 
 1. ✅ Push code to GitHub (DONE)
-2. ⏳ Create Coolify application
-3. ⏳ Add environment variables
-4. ⏳ Configure domain in Coolify
-5. ⏳ Update Cloudflare DNS
-6. ⏳ Run Supabase migration
-7. ⏳ Deploy and test
+2. ✅ Coolify application exists (recovered after disk space cleanup)
+3. ⏳ **NEXT: Add all environment variables from `COOLIFY_ENV_VARS.md`**
+4. ✅ DNS configured correctly (hodges-demo → 168.231.68.160)
+5. ⏳ Configure domain SSL in Coolify (if needed)
+6. ✅ Supabase already configured (test accounts working)
+7. ⏳ Trigger deployment and test
+8. ⏳ Remove "Coming Soon" banner from RAG page
 
 ---
 

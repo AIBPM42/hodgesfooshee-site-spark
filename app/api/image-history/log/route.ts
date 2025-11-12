@@ -28,13 +28,13 @@ export async function POST(req: NextRequest) {
       outputs: { name:string; size:number; url:string; status:string; error?:string }[];
     };
 
-    const { data: runRows, error: runErr } = await supabaseAdmin
+    const { data: runRows, error: runErr } = await (supabaseAdmin as any)
       .from('image_edit_runs')
       .insert([{ user_id: user.id, prompt, options, total: outputs.length }])
       .select('id').limit(1);
     if (runErr || !runRows?.[0]?.id) throw new Error(runErr?.message || 'Run insert failed');
 
-    const runId = runRows[0].id as string;
+    const runId = (runRows as any)[0].id as string;
     const assetsToInsert: any[] = [];
 
     for (const o of outputs) {
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const { error: assetsErr } = await supabaseAdmin.from('image_edit_assets').insert(assetsToInsert);
+    const { error: assetsErr } = await (supabaseAdmin as any).from("image_edit_assets").insert(assetsToInsert);
     if (assetsErr) throw assetsErr;
 
     return NextResponse.json({ ok:true, runId, assets: assetsToInsert });

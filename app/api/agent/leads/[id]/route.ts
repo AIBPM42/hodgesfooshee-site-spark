@@ -60,9 +60,9 @@ export async function PATCH(
     filteredUpdates.updated_at = new Date().toISOString();
 
     // Update the lead
-    const { data: updatedLead, error: updateError } = await supabase
+    const { data: updatedLead, error: updateError } = await (supabase as any)
       .from('distressed_leads')
-      .update(filteredUpdates as any)
+      .update(filteredUpdates)
       .eq('id', leadId)
       .select()
       .single();

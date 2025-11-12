@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     const lastName = nameParts.slice(1).join(' ') || '';
 
     // Insert lead into database
-    const { data: lead, error } = await supabase
+    const { data: lead, error } = await (supabase as any)
       .from('leads')
       .insert({
         first_name: firstName,
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
 
     // Log the lead creation
     console.log('[Lead Created]', {
-      id: lead.id,
+      id: (lead as any).id,
       email,
       source,
       timestamp: new Date().toISOString(),

@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       .eq('id', user.id)
       .single();
 
-    if (profile?.role !== 'agent') {
+    if (!profile || (profile as any)?.role !== 'agent') {
       return NextResponse.json({ error: 'Unauthorized - Agents only' }, { status: 403 });
     }
 
