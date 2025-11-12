@@ -32,7 +32,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
     }
 
-    if (lead.assigned_to !== user.id) {
+    if ((lead as any).assigned_to !== user.id) {
       return NextResponse.json(
         { error: 'You can only update leads assigned to you' },
         { status: 403 }
