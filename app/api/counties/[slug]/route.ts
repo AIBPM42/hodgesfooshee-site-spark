@@ -4,11 +4,7 @@ import type { County } from '@/lib/types/county';
 
 // Force dynamic rendering - don't pre-render at build time
 export const dynamic = 'force-dynamic';
-
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const runtime = 'nodejs';
 
 /**
  * GET /api/counties/[slug]
@@ -19,6 +15,17 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return NextResponse.json(
+        { error: 'Supabase configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
     const { slug } = params;
 
     const { data, error } = await supabase
