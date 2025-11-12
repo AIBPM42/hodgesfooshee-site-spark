@@ -62,7 +62,7 @@ export async function PATCH(
     // Update the lead
     const { data: updatedLead, error: updateError } = await supabase
       .from('distressed_leads')
-      .update(filteredUpdates)
+      .update(filteredUpdates as any)
       .eq('id', leadId)
       .select()
       .single();
