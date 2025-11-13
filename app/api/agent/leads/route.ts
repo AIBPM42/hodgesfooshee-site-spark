@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabaseServer';
+import { createClient } from '@supabase/supabase-js';
 
 // Force dynamic rendering - don't pre-render at build time
 export const dynamic = 'force-dynamic';
@@ -7,7 +7,16 @@ export const dynamic = 'force-dynamic';
 // GET /api/agent/leads - Get leads assigned to current agent
 export async function GET(request: NextRequest) {
   try {
-    const supabase = supabaseAdmin;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return NextResponse.json({ error: 'Supabase configuration missing' }, { status: 500 });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { persistSession: false }
+    });
 
     // Get current user
     const { data: { user }, error: userError } = await supabase.auth.getUser();
