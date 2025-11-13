@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 import { Upload, FileText, CheckCircle2, CircleAlert, X, Loader2 } from 'lucide-react';
+import { useAuth } from '@/components/AuthProvider';
 
 type QItem = {
   id: string;
@@ -27,6 +28,7 @@ const MAX_MB = 10;
 const BUCKET = 'kb-uploads';
 
 export default function KBUploadCard({ userId }: { userId?: string | null }) {
+  const { user } = useAuth(); // Get authenticated user from context
   const [queue, setQueue] = React.useState<QItem[]>([]);
   const [dragOver, setDragOver] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
@@ -58,6 +60,7 @@ export default function KBUploadCard({ userId }: { userId?: string | null }) {
   }
 
   async function handleUpload() {
+    console.log('handleUpload called', { busy, queueLength: queue.length });
     if (busy) return;
     const items = queue.filter(q => q.status === 'queued' || q.status === 'error');
     if (items.length === 0) {
@@ -65,13 +68,21 @@ export default function KBUploadCard({ userId }: { userId?: string | null }) {
       return;
     }
 
+    // Require authentication
+    if (!user) {
+      toast.error('You must be logged in to upload documents');
+      return;
+    }
+
+    const uploadUserId = user.id;
+
     setBusy(true);
     try {
       // 1) Upload to Supabase (serial keeps UI simple / reduce rate limits)
       const uploaded: QItem[] = [];
       for (const it of items) {
         setQueue(prev => prev.map(p => p.id === it.id ? { ...p, status: 'uploading', progress: 10 } : p));
-        const key = `${userId || 'anon'}/${uuidv4()}/${it.name}`;
+        const key = `${uploadUserId}/${uuidv4()}/${it.name}`;
         const { data, error } = await supabase.storage.from(BUCKET).upload(key, it.file, {
           upsert: false
         });
@@ -99,7 +110,7 @@ export default function KBUploadCard({ userId }: { userId?: string | null }) {
         body: JSON.stringify({
           files: uploaded
             .filter(u => u.url)
-            .map(u => ({ name: u.name, url: u.url!, size: u.size, mime: u.file.type || 'application/octet-stream', userId }))
+            .map(u => ({ name: u.name, url: u.url!, size: u.size, mime: u.file.type || 'application/octet-stream', userId: uploadUserId }))
         })
       });
       const resp = await r.json();

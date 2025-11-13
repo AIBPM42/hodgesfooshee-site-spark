@@ -21,12 +21,18 @@ export async function POST(req: Request) {
     }
 
     // Forward to n8n (kept server-side)
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    // Add webhook secret if configured
+    if (process.env.N8N_EMBED_WEBHOOK_SECRET) {
+      headers['X-Webhook-Secret'] = process.env.N8N_EMBED_WEBHOOK_SECRET;
+    }
+
     const r = await fetch(process.env.N8N_EMBED_WEBHOOK_URL!, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Webhook-Secret': process.env.N8N_EMBED_WEBHOOK_SECRET!,
-      },
+      headers,
       body: JSON.stringify({ files })
     });
 
