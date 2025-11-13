@@ -4,16 +4,27 @@ import { createClient } from '@supabase/supabase-js';
 // Load .env.local file for scripts
 config({ path: '.env.local' });
 
-// Service role client for API key management (admin only)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+// Lazy initialization of Supabase client to avoid build-time errors
+let supabaseAdmin: ReturnType<typeof createClient> | null = null;
 
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
+function getSupabaseAdmin() {
+  if (!supabaseAdmin) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('Supabase credentials are required');
+    }
+
+    supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    });
   }
-});
+  return supabaseAdmin;
+}
 
 export type ServiceName = 'manus' | 'perplexity' | 'openai';
 
@@ -25,7 +36,7 @@ export type ServiceName = 'manus' | 'perplexity' | 'openai';
 export async function getApiKey(service: ServiceName): Promise<string | null> {
   try {
     // First, try database
-    const { data, error } = await supabaseAdmin
+    const { data } = await getSupabaseAdmin()
       .from('api_keys')
       .select('key_value, is_active')
       .eq('service', service)
@@ -69,8 +80,10 @@ export async function updateApiKey(
   keyValue: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const admin = getSupabaseAdmin();
+
     // Check if key exists
-    const { data: existing } = await supabaseAdmin
+    const { data: existing } = await admin
       .from('api_keys')
       .select('id')
       .eq('service', service)
@@ -78,7 +91,7 @@ export async function updateApiKey(
 
     if (existing) {
       // Update existing key
-      const { error } = await supabaseAdmin
+      const { error } = await admin
         .from('api_keys')
         .update({ key_value: keyValue, is_active: true, updated_at: new Date().toISOString() })
         .eq('service', service);
@@ -86,7 +99,7 @@ export async function updateApiKey(
       if (error) throw error;
     } else {
       // Insert new key
-      const { error } = await supabaseAdmin
+      const { error } = await admin
         .from('api_keys')
         .insert({ service, key_value: keyValue, is_active: true });
 
