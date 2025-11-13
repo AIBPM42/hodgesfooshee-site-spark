@@ -4,7 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Upload, Wand2, Download, ExternalLink, X, Loader2, FileImage, Settings2, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { logRunClient, logDownloadClient } from '@/lib/usage';
-import { supabase } from '@/lib/supabaseBrowser';
+import { useAuth } from '@/components/AuthProvider';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 type ImageItem = {
   id: string;
@@ -23,6 +24,8 @@ type LogEntry = {
 };
 
 export default function ImageEditorV2() {
+  const { user } = useAuth(); // Get authenticated user from context
+  const supabase = createClientComponentClient();
   const [items, setItems] = useState<ImageItem[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
@@ -119,12 +122,13 @@ export default function ImageEditorV2() {
       addLog('info', `Composing ${items.length} images into one result...`);
 
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const devMode = process.env.NEXT_PUBLIC_DEV_MODE === 'true';
-
-        if (!session?.access_token && !devMode) {
+        if (!user) {
+          toast.error('You must be logged in to edit images');
           throw new Error('Not authenticated');
         }
+
+        // Get session for access token
+        const { data: { session } } = await supabase.auth.getSession();
 
         // Upload all images first
         const imageUrls: string[] = [];
@@ -237,6 +241,15 @@ export default function ImageEditorV2() {
     // BATCH MODE: Process each image separately (original behavior)
     addLog('info', `Starting batch edit with ${items.length} image(s)...`);
 
+    if (!user) {
+      toast.error('You must be logged in to edit images');
+      setIsRunning(false);
+      return;
+    }
+
+    // Get session for access token
+    const { data: { session } } = await supabase.auth.getSession();
+
     // Process all items (even if already done - allows re-running)
     for (const item of items) {
       setItems((prev) =>
@@ -245,13 +258,6 @@ export default function ImageEditorV2() {
 
       try {
         addLog('info', `Processing: ${item.file?.name || item.id}`);
-
-        const { data: { session } } = await supabase.auth.getSession();
-        const devMode = process.env.NEXT_PUBLIC_DEV_MODE === 'true';
-
-        if (!session?.access_token && !devMode) {
-          throw new Error('Not authenticated');
-        }
 
         let imageUrl: string;
 
