@@ -28,6 +28,15 @@ function getSupabaseAdmin() {
 
 export type ServiceName = 'manus' | 'perplexity' | 'openai';
 
+type ApiKeyRow = {
+  id?: string;
+  service: string;
+  key_value: string;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+};
+
 /**
  * Retrieves API key for a service with environment variable fallback
  * @param service - The service name (manus, perplexity, openai)
@@ -41,9 +50,9 @@ export async function getApiKey(service: ServiceName): Promise<string | null> {
       .select('key_value, is_active')
       .eq('service', service)
       .eq('is_active', true)
-      .single();
+      .single() as { data: ApiKeyRow | null; error: any };
 
-    if (data?.key_value) {
+    if (data && data.key_value) {
       return data.key_value;
     }
 
@@ -87,23 +96,21 @@ export async function updateApiKey(
       .from('api_keys')
       .select('id')
       .eq('service', service)
-      .single();
+      .single() as { data: { id: string } | null; error: any };
 
     if (existing) {
       // Update existing key
-      const { error } = await admin
-        .from('api_keys')
+      const updateResult: any = await (admin.from('api_keys') as any)
         .update({ key_value: keyValue, is_active: true, updated_at: new Date().toISOString() })
         .eq('service', service);
 
-      if (error) throw error;
+      if (updateResult.error) throw updateResult.error;
     } else {
       // Insert new key
-      const { error } = await admin
-        .from('api_keys')
+      const insertResult: any = await (admin.from('api_keys') as any)
         .insert({ service, key_value: keyValue, is_active: true });
 
-      if (error) throw error;
+      if (insertResult.error) throw insertResult.error;
     }
 
     return { success: true };
