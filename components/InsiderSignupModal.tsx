@@ -12,6 +12,42 @@ type Props = {
 // Hodges palette + accents (orange gradient + black/white)
 const CONFETTI_COLORS = ['#FF7A32', '#FF4E1C', '#111827', '#ffffff', '#F97316'];
 
+// Play confetti cannon sound effect
+function playConfettiSound() {
+  // Create multiple short "pop" sounds for a more realistic confetti cannon effect
+  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+
+  const playPop = (delay: number, frequency: number, duration: number) => {
+    setTimeout(() => {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
+
+      // Quick attack and decay for "pop" effect
+      const now = audioContext.currentTime;
+      gainNode.gain.setValueAtTime(0.3, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+      oscillator.start(now);
+      oscillator.stop(now + duration);
+    }, delay);
+  };
+
+  // Three quick pops with different frequencies for cannon effect
+  playPop(0, 150, 0.08);
+  playPop(50, 200, 0.1);
+  playPop(100, 180, 0.09);
+
+  // Add some "fizz" sounds for the confetti bursting
+  playPop(150, 800, 0.15);
+  playPop(200, 1200, 0.12);
+}
+
 export default function InsiderSignupModal({
   openByDefault = true,
   onClose,
@@ -44,6 +80,9 @@ export default function InsiderSignupModal({
     const duration = 3000;
     const end = Date.now() + duration;
 
+    // Play confetti pop sound
+    playConfettiSound();
+
     const burst = (particleRatio: number, opts = {}) =>
       confetti({
         particleCount: Math.floor(200 * particleRatio),
@@ -53,6 +92,7 @@ export default function InsiderSignupModal({
         ticks: 250,
         scalar: 0.9,
         colors: CONFETTI_COLORS,
+        zIndex: 10000, // Above modal
         ...opts,
       });
 
@@ -78,6 +118,7 @@ export default function InsiderSignupModal({
         scalar: 0.6 + Math.random() * 0.9,
         colors: CONFETTI_COLORS,
         origin: { x: Math.random(), y: -0.05 },
+        zIndex: 10000, // Above modal
       });
     }, 16);
   };
@@ -112,8 +153,8 @@ export default function InsiderSignupModal({
     }
 
     fireConfettiShow();
-    // Keep modal up for a moment so they see the celebration
-    setTimeout(() => handleClose(), 900);
+    // Keep modal up for 3 seconds so they can enjoy the full confetti show
+    setTimeout(() => handleClose(), 3000);
   };
 
   if (!open) return null;
