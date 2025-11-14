@@ -12,6 +12,7 @@ import PropertyDescription from '@/components/PropertyDescription';
 import { Nav } from '@/components/Nav';
 import { PropertyInquiryForm } from '@/components/PropertyInquiryForm';
 import { MLSComplianceFooter } from '@/components/MLSComplianceFooter';
+import { supabase } from '@/lib/supabase';
 
 interface PropertyDetails {
   id: string;
@@ -107,18 +108,48 @@ function PropertyDetailContent() {
         }
       }
 
-      // FEATURED AGENT: Leslie Alison from Hodges & Fooshee Realty
-      // This is who will be displayed prominently and receive leads
-      const featuredAgent = {
+      // Check if this property has a manually assigned agent
+      let featuredAgent = {
         name: 'Leslie Alison',
-        phone: '615-601-0862', // Mobile
-        email: 'leslie@hodgesfooshee.com', // TODO: Get actual email
-        image: '/placeholder.svg', // TODO: Add actual photo to /public/agents/leslie-alison.jpg
-        license: undefined as string | undefined, // TODO: Get license number
+        phone: '615-601-0862',
+        email: 'leslie@hodgesfooshee.com',
+        image: '/placeholder.svg',
+        license: undefined as string | undefined,
         designation: undefined as string | undefined,
         office: 'Hodges & Fooshee Realty',
         officePhone: '615-538-1100',
       };
+
+      try {
+        const { data: assignment } = await supabase
+          .from('property_agent_assignments')
+          .select(`
+            *,
+            agent:profiles!agent_id(first_name, last_name, email, phone, avatar_url)
+          `)
+          .eq('listing_key', prop.ListingKey)
+          .eq('status', 'active')
+          .single();
+
+        if (assignment && assignment.agent) {
+          // Use the manually assigned agent
+          featuredAgent = {
+            name: `${assignment.agent.first_name || ''} ${assignment.agent.last_name || ''}`.trim(),
+            phone: assignment.agent.phone || '',
+            email: assignment.agent.email || '',
+            image: assignment.agent.avatar_url || '/placeholder.svg',
+            license: undefined,
+            designation: undefined,
+            office: 'Hodges & Fooshee Realty',
+            officePhone: '615-538-1100',
+          };
+          console.log('✅ Using assigned agent:', featuredAgent.name);
+        } else {
+          console.log('ℹ️ No assignment found, using default agent (Leslie)');
+        }
+      } catch (err) {
+        console.warn('Could not fetch property assignment, using default agent:', err);
+      }
 
       // Transform to PropertyDetails format
       return {

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 const adminItems = [
   { href: "/admin", label: "Overview", exact: true },
   { href: "/admin/lead-management", label: "Lead Management" },
+  { href: "/admin/mls-assignments", label: "MLS Assignments" },
   { href: "/admin/content", label: "Site Content" },
   { href: "/admin/analytics", label: "Agent Analytics" },
   { href: "/admin/blog", label: "Blog Posts" },
