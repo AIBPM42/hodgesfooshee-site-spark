@@ -232,7 +232,7 @@ export default function KBUploadCard({ userId }: { userId?: string | null }) {
   // Fetch history on mount and when user changes
   React.useEffect(() => {
     fetchHistory();
-  }, [user]);
+  }, [user]); // Re-fetch whenever user authentication changes
 
   return (
     <div className="rounded-2xl border bg-token-surface-1 backdrop-blur p-5 shadow-matte-1" style={{ borderColor: 'var(--border)' }}>
