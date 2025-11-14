@@ -12,40 +12,40 @@ type Props = {
 // Hodges palette + accents (orange gradient + black/white)
 const CONFETTI_COLORS = ['#FF7A32', '#FF4E1C', '#111827', '#ffffff', '#F97316'];
 
-// Play confetti cannon sound effect
+// Play realistic confetti popper sound using HTML5 Audio
 function playConfettiSound() {
-  // Create multiple short "pop" sounds for a more realistic confetti cannon effect
-  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  try {
+    // Use the local confetti sound file provided by user
+    const soundUrl = '/confetti-pop.mp3';
 
-  const playPop = (delay: number, frequency: number, duration: number) => {
-    setTimeout(() => {
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+    // Play multiple confetti pops over 3 seconds to match the visual confetti
+    const playPop = (delay: number, volume: number) => {
+      setTimeout(() => {
+        const audio = new Audio(soundUrl);
+        audio.volume = volume;
+        audio.playbackRate = 1 + (Math.random() * 0.2 - 0.1); // Slight variation in pitch
 
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+        // Attempt to play with detailed error logging
+        audio.play()
+          .then(() => console.log(`✅ Pop ${delay}ms played successfully`))
+          .catch(e => {
+            console.error(`❌ Audio play error at ${delay}ms:`, e);
+            console.error('Error name:', e.name);
+            console.error('Error message:', e.message);
+          });
+      }, delay);
+    };
 
-      oscillator.frequency.value = frequency;
-      oscillator.type = 'sine';
-
-      // Quick attack and decay for "pop" effect
-      const now = audioContext.currentTime;
-      gainNode.gain.setValueAtTime(0.3, now);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
-
-      oscillator.start(now);
-      oscillator.stop(now + duration);
-    }, delay);
-  };
-
-  // Three quick pops with different frequencies for cannon effect
-  playPop(0, 150, 0.08);
-  playPop(50, 200, 0.1);
-  playPop(100, 180, 0.09);
-
-  // Add some "fizz" sounds for the confetti bursting
-  playPop(150, 800, 0.15);
-  playPop(200, 1200, 0.12);
+    // Fire 5 pops over 3 seconds with varying volumes
+    console.log('🎉 Starting confetti pops...');
+    playPop(0, 0.7);      // Initial burst
+    playPop(200, 0.6);    // Second pop
+    playPop(450, 0.5);    // Third pop
+    playPop(800, 0.4);    // Fourth pop
+    playPop(1200, 0.3);   // Final pop
+  } catch (e) {
+    console.error('Audio initialization error:', e);
+  }
 }
 
 export default function InsiderSignupModal({
@@ -55,6 +55,7 @@ export default function InsiderSignupModal({
 }: Props) {
   const [open, setOpen] = useState(openByDefault);
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const firstNameRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -77,50 +78,51 @@ export default function InsiderSignupModal({
   };
 
   const fireConfettiShow = () => {
-    const duration = 3000;
-    const end = Date.now() + duration;
-
     // Play confetti pop sound
     playConfettiSound();
 
-    const burst = (particleRatio: number, opts = {}) =>
-      confetti({
-        particleCount: Math.floor(200 * particleRatio),
-        spread: 70,
-        startVelocity: 55,
-        gravity: 0.8,
-        ticks: 250,
-        scalar: 0.9,
-        colors: CONFETTI_COLORS,
-        zIndex: 10000, // Above modal
-        ...opts,
-      });
+    // Fire LOTS of confetti cannon bursts from behind the form
+    const shootConfetti = (delay: number, originX: number) => {
+      setTimeout(() => {
+        // Each burst fires 200 particles (double the previous amount)
+        confetti({
+          particleCount: 200,
+          angle: 60 + (Math.random() * 60), // Shoot upward at varying angles
+          spread: 100,
+          origin: { x: originX, y: 1 }, // From bottom
+          startVelocity: 60,
+          gravity: 0.8,
+          ticks: 350,
+          scalar: 1.3,
+          colors: CONFETTI_COLORS,
+          zIndex: 999, // Behind modal (modal is z-1000)
+        });
+      }, delay);
+    };
 
-    // Initial bursts
-    burst(0.35, { origin: { x: 0.2, y: 0.6 } });
-    burst(0.35, { origin: { x: 0.8, y: 0.6 } });
-    burst(0.2,  { origin: { x: 0.5, y: 0.4 }, spread: 90, startVelocity: 65, scalar: 1.1 });
+    // Fire confetti bursts synchronized with sound pops - LOTS of cannons!
+    shootConfetti(0, 0.1);        // Far left
+    shootConfetti(0, 0.3);        // Left
+    shootConfetti(0, 0.5);        // Center
+    shootConfetti(0, 0.7);        // Right
+    shootConfetti(0, 0.9);        // Far right
 
-    // Continuous rain
-    const interval = setInterval(() => {
-      const timeLeft = end - Date.now();
-      if (timeLeft <= 0) {
-        clearInterval(interval);
-        return;
-      }
-      confetti({
-        particleCount: 6 + Math.floor(Math.random() * 8),
-        angle: 90,
-        spread: 120,
-        gravity: 1.1 + Math.random() * 0.4,
-        drift: (Math.random() - 0.5) * 1.2,
-        ticks: 220 + Math.floor(Math.random() * 140),
-        scalar: 0.6 + Math.random() * 0.9,
-        colors: CONFETTI_COLORS,
-        origin: { x: Math.random(), y: -0.05 },
-        zIndex: 10000, // Above modal
-      });
-    }, 16);
+    shootConfetti(200, 0.2);      // Second burst wave
+    shootConfetti(200, 0.5);
+    shootConfetti(200, 0.8);
+
+    shootConfetti(450, 0.15);     // Third burst wave
+    shootConfetti(450, 0.4);
+    shootConfetti(450, 0.6);
+    shootConfetti(450, 0.85);
+
+    shootConfetti(800, 0.25);     // Fourth burst wave
+    shootConfetti(800, 0.5);
+    shootConfetti(800, 0.75);
+
+    shootConfetti(1200, 0.3);     // Final burst wave
+    shootConfetti(1200, 0.5);
+    shootConfetti(1200, 0.7);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -152,8 +154,11 @@ export default function InsiderSignupModal({
       setLoading(false);
     }
 
+    // Show success card immediately
+    setSubmitted(true);
     fireConfettiShow();
-    // Keep modal up for 3 seconds so they can enjoy the full confetti show
+
+    // Close after 3 seconds of confetti
     setTimeout(() => handleClose(), 3000);
   };
 
@@ -169,76 +174,102 @@ export default function InsiderSignupModal({
 
       {/* modal */}
       <div className="fixed inset-0 z-[1000] grid place-items-center p-4">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-xl rounded-3xl bg-white/12
-                     backdrop-blur-2xl ring-1 ring-white/25
-                     shadow-[0_30px_120px_rgba(0,0,0,0.45)]
-                     p-6 md:p-8 text-white"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="mb-2 text-center">
-            <h3 className="text-2xl md:text-3xl font-semibold">
-              Join Our Insider Network
+        {!submitted ? (
+          <form
+            onSubmit={handleSubmit}
+            className="w-full max-w-xl rounded-3xl bg-white/12
+                       backdrop-blur-2xl ring-1 ring-white/25
+                       shadow-[0_30px_120px_rgba(0,0,0,0.45)]
+                       p-6 md:p-8 text-white"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-2 text-center">
+              <h3 className="text-2xl md:text-3xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                Join Our Insider Network
+              </h3>
+              <p className="mt-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+                Get first access to Nashville's hidden gems before they hit the market.
+              </p>
+            </div>
+
+            <div className="mt-5 space-y-3">
+              <div className="rounded-xl bg-white/15 ring-1 ring-white/25 px-4 py-3">
+                <input
+                  ref={firstNameRef}
+                  type="text"
+                  placeholder="First name"
+                  required
+                  className="w-full bg-transparent placeholder-white/70 text-white outline-none"
+                />
+              </div>
+              <div className="rounded-xl bg-white/15 ring-1 ring-white/25 px-4 py-3">
+                <input
+                  ref={lastNameRef}
+                  type="text"
+                  placeholder="Last name"
+                  required
+                  className="w-full bg-transparent placeholder-white/70 text-white outline-none"
+                />
+              </div>
+              <div className="rounded-xl bg-white/15 ring-1 ring-white/25 px-4 py-3">
+                <input
+                  ref={emailRef}
+                  type="email"
+                  required
+                  placeholder="Email address"
+                  className="w-full bg-transparent placeholder-white/70 text-white outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <button
+                type="submit"
+                disabled={loading}
+                className="rounded-xl px-5 py-3 font-semibold
+                           text-white bg-gradient-to-r from-[#FF7A32] to-[#FF4E1C]
+                           shadow-[0_10px_30px_rgba(255,110,60,0.45)]
+                           transition-transform hover:-translate-y-0.5 active:translate-y-0
+                           disabled:opacity-60"
+              >
+                {loading ? 'Submitting…' : 'Get Instant Access'}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleClose}
+                className="rounded-xl px-5 py-3 font-semibold text-white/90
+                           ring-1 ring-white/30 hover:bg-white/10 transition"
+              >
+                Not now
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div
+            className="w-full max-w-xl rounded-3xl bg-white
+                       shadow-[0_30px_120px_rgba(0,0,0,0.45)]
+                       p-8 md:p-12 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4">
+              <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-[#FF7A32] to-[#FF4E1C]
+                            flex items-center justify-center shadow-[0_10px_30px_rgba(255,110,60,0.4)]">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+              You're In!
             </h3>
-            <p className="mt-2 text-white/80">
-              Get first access to Nashville's hidden gems before they hit the market.
+
+            <p className="text-lg text-gray-600 leading-relaxed">
+              Welcome to the Insider Network. We'll notify you the moment exclusive properties become available.
             </p>
           </div>
-
-          <div className="mt-5 space-y-3">
-            <div className="rounded-xl bg-white/15 ring-1 ring-white/25 px-4 py-3">
-              <input
-                ref={firstNameRef}
-                type="text"
-                placeholder="First name"
-                required
-                className="w-full bg-transparent placeholder-white/70 text-white outline-none"
-              />
-            </div>
-            <div className="rounded-xl bg-white/15 ring-1 ring-white/25 px-4 py-3">
-              <input
-                ref={lastNameRef}
-                type="text"
-                placeholder="Last name"
-                required
-                className="w-full bg-transparent placeholder-white/70 text-white outline-none"
-              />
-            </div>
-            <div className="rounded-xl bg-white/15 ring-1 ring-white/25 px-4 py-3">
-              <input
-                ref={emailRef}
-                type="email"
-                required
-                placeholder="Email address"
-                className="w-full bg-transparent placeholder-white/70 text-white outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="mt-6 flex items-center justify-center gap-3">
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-xl px-5 py-3 font-semibold
-                         text-white bg-gradient-to-r from-[#FF7A32] to-[#FF4E1C]
-                         shadow-[0_10px_30px_rgba(255,110,60,0.45)]
-                         transition-transform hover:-translate-y-0.5 active:translate-y-0
-                         disabled:opacity-60"
-            >
-              {loading ? 'Submitting…' : 'Get Instant Access'}
-            </button>
-
-            <button
-              type="button"
-              onClick={handleClose}
-              className="rounded-xl px-5 py-3 font-semibold text-white/90
-                         ring-1 ring-white/30 hover:bg-white/10 transition"
-            >
-              Not now
-            </button>
-          </div>
-        </form>
+        )}
       </div>
     </>
   );

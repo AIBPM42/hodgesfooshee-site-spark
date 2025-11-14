@@ -23,7 +23,7 @@ export default function PropertyManagementPage() {
         {/* Main Content */}
         <section className="py-12 px-4">
           <div className="mx-auto max-w-4xl">
-            <div className="glass rounded-3xl p-8 md:p-12 mb-12">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 mb-12">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-6">
                 What Do Most Successful Landlords Have In Common?
               </h2>
@@ -75,7 +75,7 @@ export default function PropertyManagementPage() {
             </div>
 
             {/* About Jody Hodges */}
-            <div className="glass rounded-3xl p-8 md:p-12 mb-12">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 mb-12">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-6">Professional Property Management</h2>
               <p className="text-lg text-charcoal-700 mb-6">
                 <strong>Jody Hodges, P.I.</strong> has been managing properties for over 20 years. Jody Hodges is a Managing Broker licensed by the state of Tennessee, insured with both commercial and residential properties. Jody has been licensed as a private investigator since 1999 and strives to help his owners avoid trouble.
@@ -98,7 +98,7 @@ export default function PropertyManagementPage() {
             </div>
 
             {/* CTA Section */}
-            <div className="glass rounded-3xl p-8 md:p-12 text-center">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 text-center">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-4">
                 Ready to Protect Your Investment?
               </h2>
@@ -108,13 +108,13 @@ export default function PropertyManagementPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
                   href="tel:6155221724"
-                  className="rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-[0_10px_30px_rgba(242,87,45,0.45)] hover:shadow-[0_14px_40px_rgba(242,87,45,0.55)] transition font-semibold"
+                  className="rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-sm hover:bg-copper-700 hover:text-white transition-all font-semibold"
                 >
                   Call 615-522-1724
                 </a>
                 <a
                   href="mailto:jody@jodyhodges.com"
-                  className="rounded-full border-2 border-copper-600 text-copper-600 px-8 py-3 text-lg hover:bg-copper-50 transition font-semibold"
+                  className="rounded-full border-2 border-copper-600 text-copper-600 bg-white px-8 py-3 text-lg hover:bg-[#FBF3E7] transition-all font-semibold"
                 >
                   Send Email
                 </a>

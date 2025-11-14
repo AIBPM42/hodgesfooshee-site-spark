@@ -19,7 +19,7 @@ export default function BuyAHomePage() {
             </p>
             <Link
               href="/search/properties"
-              className="inline-flex items-center gap-2 rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-[0_10px_30px_rgba(242,87,45,0.45)] hover:shadow-[0_14px_40px_rgba(242,87,45,0.55)] transition font-semibold"
+              className="inline-flex items-center gap-2 rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-sm hover:bg-copper-700 hover:text-white transition-all font-semibold"
             >
               Start Your Property Search
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,7 +32,7 @@ export default function BuyAHomePage() {
         {/* Why Buy With Us */}
         <section className="py-12 px-4">
           <div className="mx-auto max-w-4xl">
-            <div className="glass rounded-3xl p-8 md:p-12 mb-12">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 mb-12">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-8 text-center">
                 Why Buy With Hodges & Fooshee?
               </h2>
@@ -104,7 +104,7 @@ export default function BuyAHomePage() {
             </div>
 
             {/* The Buying Process */}
-            <div className="glass rounded-3xl p-8 md:p-12 mb-12">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 mb-12">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-8 text-center">
                 Your Home Buying Journey
               </h2>
@@ -184,7 +184,7 @@ export default function BuyAHomePage() {
             </div>
 
             {/* Buyer Resources */}
-            <div className="glass rounded-3xl p-8 md:p-12 mb-12">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 mb-12">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-8 text-center">
                 Helpful Buyer Resources
               </h2>
@@ -228,7 +228,7 @@ export default function BuyAHomePage() {
             </div>
 
             {/* CTA Section */}
-            <div className="glass rounded-3xl p-8 md:p-12 text-center">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 text-center">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-4">
                 Ready to Find Your Dream Home?
               </h2>
@@ -238,13 +238,13 @@ export default function BuyAHomePage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/search/properties"
-                  className="rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-[0_10px_30px_rgba(242,87,45,0.45)] hover:shadow-[0_14px_40px_rgba(242,87,45,0.55)] transition font-semibold"
+                  className="rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-sm hover:bg-copper-700 hover:text-white transition-all font-semibold"
                 >
                   Search Properties
                 </Link>
                 <Link
                   href="/#contact"
-                  className="rounded-full border-2 border-copper-600 text-copper-600 px-8 py-3 text-lg hover:bg-copper-50 transition font-semibold"
+                  className="rounded-full border-2 border-copper-600 text-copper-600 bg-white px-8 py-3 text-lg hover:bg-[#FBF3E7] transition-all font-semibold"
                 >
                   Schedule a Consultation
                 </Link>

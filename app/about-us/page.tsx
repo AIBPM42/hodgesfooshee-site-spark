@@ -23,7 +23,7 @@ export default function AboutUsPage() {
         {/* Main Content */}
         <section className="py-12 px-4">
           <div className="mx-auto max-w-4xl">
-            <div className="glass rounded-3xl p-8 md:p-12 mb-12">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 mb-12">
               <p className="text-lg text-charcoal-700 mb-6">
                 Hodges & Fooshee Realty offers unparalleled service to ALL clients in the Nashville, Tennessee real estate market. Your complete satisfaction with our service and representation is our number one priority.
               </p>
@@ -34,7 +34,7 @@ export default function AboutUsPage() {
 
             {/* Features Grid */}
             <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <div className="glass rounded-3xl p-8">
+              <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8">
                 <div className="w-16 h-16 bg-copper-sweep rounded-full flex items-center justify-center mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -46,7 +46,7 @@ export default function AboutUsPage() {
                 </p>
               </div>
 
-              <div className="glass rounded-3xl p-8">
+              <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8">
                 <div className="w-16 h-16 bg-copper-sweep rounded-full flex items-center justify-center mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -58,7 +58,7 @@ export default function AboutUsPage() {
                 </p>
               </div>
 
-              <div className="glass rounded-3xl p-8">
+              <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8">
                 <div className="w-16 h-16 bg-copper-sweep rounded-full flex items-center justify-center mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -70,7 +70,7 @@ export default function AboutUsPage() {
                 </p>
               </div>
 
-              <div className="glass rounded-3xl p-8">
+              <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8">
                 <div className="w-16 h-16 bg-copper-sweep rounded-full flex items-center justify-center mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -84,7 +84,7 @@ export default function AboutUsPage() {
             </div>
 
             {/* Services Overview */}
-            <div className="glass rounded-3xl p-8 md:p-12 mb-12">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 mb-12">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-8 text-center">Our Services</h2>
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center">
@@ -135,14 +135,14 @@ export default function AboutUsPage() {
             </div>
 
             {/* Closing Message */}
-            <div className="glass rounded-3xl p-8 md:p-12 mb-12">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 mb-12">
               <p className="text-lg text-charcoal-700 text-center">
                 Let us know if there is something specific you are looking for and we'll find what you need. Enjoy your visit and please contact us if there is anything we can do to make your next home buying or home selling experience the best it can be!
               </p>
             </div>
 
             {/* Contact Section */}
-            <div className="glass rounded-3xl p-8 md:p-12 text-center" id="contact">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 text-center" id="contact">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-6">Get In Touch</h2>
               <p className="text-xl text-charcoal-700 mb-8">
                 Ready to start your real estate journey? We're here to help.
@@ -168,7 +168,7 @@ export default function AboutUsPage() {
               <div className="mt-8">
                 <Link
                   href="/search/properties"
-                  className="inline-flex items-center gap-2 rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-[0_10px_30px_rgba(242,87,45,0.45)] hover:shadow-[0_14px_40px_rgba(242,87,45,0.55)] transition font-semibold"
+                  className="inline-flex items-center gap-2 rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-sm hover:bg-copper-700 hover:text-white transition-all font-semibold"
                 >
                   Start Your Property Search
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -19,7 +19,7 @@ export default function SellYourHomePage() {
             </p>
             <Link
               href="/#contact"
-              className="inline-flex items-center gap-2 rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-[0_10px_30px_rgba(242,87,45,0.45)] hover:shadow-[0_14px_40px_rgba(242,87,45,0.55)] transition font-semibold"
+              className="inline-flex items-center gap-2 rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-sm hover:bg-copper-700 hover:text-white transition-all font-semibold"
             >
               Get Your Free Home Valuation
             </Link>
@@ -29,7 +29,7 @@ export default function SellYourHomePage() {
         {/* Why Choose Us */}
         <section className="py-12 px-4">
           <div className="mx-auto max-w-4xl">
-            <div className="glass rounded-3xl p-8 md:p-12 mb-12">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 mb-12">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-8 text-center">
                 Why Sell With Hodges & Fooshee?
               </h2>
@@ -101,7 +101,7 @@ export default function SellYourHomePage() {
             </div>
 
             {/* The Selling Process */}
-            <div className="glass rounded-3xl p-8 md:p-12 mb-12">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 mb-12">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-8 text-center">
                 Our Selling Process
               </h2>
@@ -181,7 +181,7 @@ export default function SellYourHomePage() {
             </div>
 
             {/* CTA Section */}
-            <div className="glass rounded-3xl p-8 md:p-12 text-center">
+            <div className="bg-[#FBF3E7] border border-black/5 shadow-md rounded-3xl p-8 md:p-12 text-center">
               <h2 className="text-3xl font-bold text-charcoal-900 mb-4">
                 Ready to Sell Your Home?
               </h2>
@@ -191,13 +191,13 @@ export default function SellYourHomePage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/#contact"
-                  className="rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-[0_10px_30px_rgba(242,87,45,0.45)] hover:shadow-[0_14px_40px_rgba(242,87,45,0.55)] transition font-semibold"
+                  className="rounded-full bg-copper-sweep text-white px-8 py-3 text-lg shadow-sm hover:bg-copper-700 hover:text-white transition-all font-semibold"
                 >
                   Contact Us Today
                 </Link>
                 <Link
                   href="/search/properties"
-                  className="rounded-full border-2 border-copper-600 text-copper-600 px-8 py-3 text-lg hover:bg-copper-50 transition font-semibold"
+                  className="rounded-full border-2 border-copper-600 text-copper-600 bg-white px-8 py-3 text-lg hover:bg-[#FBF3E7] transition-all font-semibold"
                 >
                   View Our Listings
                 </Link>

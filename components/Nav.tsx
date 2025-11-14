@@ -35,22 +35,22 @@ export function Nav() {
               </svg>
             </button>
             {servicesOpen && (
-              <div className="absolute top-full left-0 mt-2 w-56 rounded-xl glass shadow-[0_8px_24px_rgba(16,24,40,0.14)] py-2">
+              <div className="absolute top-full left-0 mt-1 w-64 rounded-2xl bg-white border border-black/5 shadow-[0_12px_32px_rgba(16,24,40,0.16)] py-2 overflow-hidden">
                 <Link
                   href="/services/sell-your-home"
-                  className="block px-4 py-2 text-charcoal-900/90 hover:text-copper-600 hover:bg-white/30 transition"
+                  className="block px-5 py-3 text-charcoal-900 hover:text-copper-600 hover:bg-[#FBF3E7] transition-all font-medium"
                 >
                   Sell Your Home
                 </Link>
                 <Link
                   href="/services/buy-a-home"
-                  className="block px-4 py-2 text-charcoal-900/90 hover:text-copper-600 hover:bg-white/30 transition"
+                  className="block px-5 py-3 text-charcoal-900 hover:text-copper-600 hover:bg-[#FBF3E7] transition-all font-medium"
                 >
                   Buy A Home
                 </Link>
                 <Link
                   href="/services/property-management"
-                  className="block px-4 py-2 text-charcoal-900/90 hover:text-copper-600 hover:bg-white/30 transition"
+                  className="block px-5 py-3 text-charcoal-900 hover:text-copper-600 hover:bg-[#FBF3E7] transition-all font-medium"
                 >
                   Property Management
                 </Link>
