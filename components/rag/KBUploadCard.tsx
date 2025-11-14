@@ -1,10 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
-import { Upload, FileText, CheckCircle2, CircleAlert, X, Loader2 } from 'lucide-react';
+import { Upload, FileText, CheckCircle2, CircleAlert, X, Loader2, Trash2, Clock } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
 
 type QItem = {
@@ -18,6 +18,15 @@ type QItem = {
   error?: string;
 };
 
+type HistoryItem = {
+  id: string;
+  file_name: string;
+  file_size: number;
+  status: string;
+  created_at: string;
+  error_message?: string | null;
+};
+
 const ACCEPT = [
   'application/pdf',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
@@ -29,9 +38,12 @@ const BUCKET = 'kb-uploads';
 
 export default function KBUploadCard({ userId }: { userId?: string | null }) {
   const { user } = useAuth(); // Get authenticated user from context
+  const supabase = createClientComponentClient(); // Use same client as AuthProvider
   const [queue, setQueue] = React.useState<QItem[]>([]);
   const [dragOver, setDragOver] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
+  const [history, setHistory] = React.useState<HistoryItem[]>([]);
+  const [loadingHistory, setLoadingHistory] = React.useState(false);
 
   function addFiles(files: FileList | null) {
     if (!files) return;
@@ -104,26 +116,39 @@ export default function KBUploadCard({ userId }: { userId?: string | null }) {
 
       // 2) Call API → n8n ingest
       setQueue(prev => prev.map(p => p.status === 'uploaded' ? { ...p, status: 'ingesting' } : p));
+
+      const payload = {
+        files: uploaded
+          .filter(u => u.url)
+          .map(u => ({ name: u.name, url: u.url!, size: u.size, mime: u.file.type || 'application/octet-stream', userId: uploadUserId }))
+      };
+
+      console.log('📤 Calling /api/kb/ingest with payload:', payload);
+
       const r = await fetch('/api/kb/ingest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          files: uploaded
-            .filter(u => u.url)
-            .map(u => ({ name: u.name, url: u.url!, size: u.size, mime: u.file.type || 'application/octet-stream', userId: uploadUserId }))
-        })
+        body: JSON.stringify(payload)
       });
+
+      console.log('📥 API response status:', r.status, r.statusText);
       const resp = await r.json();
+      console.log('📥 API response data:', resp);
 
       if (!r.ok || !resp?.ok) {
+        console.error('❌ Upload failed:', resp);
         toast.error(resp?.error || 'Ingest failed');
         setQueue(prev => prev.map(p => p.status === 'ingesting' ? { ...p, status: 'error', error: 'Ingest failed' } : p));
         setBusy(false);
         return;
       }
 
+      console.log('✅ Upload successful, refreshing history...');
       setQueue(prev => prev.map(p => p.status === 'ingesting' ? { ...p, status: 'done' } : p));
       toast.success('Uploaded & queued for embedding. Answers will reflect new docs shortly.');
+
+      // Refresh history after successful upload
+      fetchHistory();
     } catch (e:any) {
       toast.error(e?.message || 'Unexpected error');
     } finally {
@@ -139,6 +164,75 @@ export default function KBUploadCard({ userId }: { userId?: string | null }) {
     const mb = n / (1024 * 1024);
     return `${mb.toFixed(2)} MB`;
   }
+
+  function timeAgo(timestamp: string) {
+    const now = new Date();
+    const past = new Date(timestamp);
+    const diffMs = now.getTime() - past.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return 'just now';
+    if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+  }
+
+  async function fetchHistory() {
+    if (!user) {
+      console.log('No user logged in - skipping history fetch');
+      return;
+    }
+
+    console.log('Fetching upload history for user:', user.id);
+    setLoadingHistory(true);
+    try {
+      const { data, error } = await supabase
+        .from('kb_upload_history')
+        .select('id, file_name, file_size, status, created_at, error_message')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error('Failed to fetch upload history:', error);
+        console.error('Error details:', JSON.stringify(error, null, 2));
+      } else {
+        console.log('✅ Fetched upload history:', data);
+        setHistory(data || []);
+      }
+    } catch (err) {
+      console.error('Unexpected error fetching history:', err);
+    } finally {
+      setLoadingHistory(false);
+    }
+  }
+
+  async function deleteHistoryItem(id: string) {
+    try {
+      const { error } = await supabase
+        .from('kb_upload_history')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        toast.error('Failed to delete');
+        console.error(error);
+      } else {
+        setHistory(prev => prev.filter(h => h.id !== id));
+        toast.success('Removed from history');
+      }
+    } catch (err) {
+      toast.error('Failed to delete');
+      console.error(err);
+    }
+  }
+
+  // Fetch history on mount and when user changes
+  React.useEffect(() => {
+    fetchHistory();
+  }, [user]);
 
   return (
     <div className="rounded-2xl border bg-token-surface-1 backdrop-blur p-5 shadow-matte-1" style={{ borderColor: 'var(--border)' }}>
@@ -220,6 +314,71 @@ export default function KBUploadCard({ userId }: { userId?: string | null }) {
           Upload & Ingest
         </button>
       </div>
+
+      {/* Recent Uploads Section */}
+      {user && (
+        <div className="mt-6 rounded-2xl border bg-token-surface-1 backdrop-blur p-5 shadow-matte-1" style={{ borderColor: 'var(--border)' }}>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-semibold text-token-text-hi">Recent Uploads</h3>
+            <button
+              onClick={fetchHistory}
+              disabled={loadingHistory}
+              className="text-xs text-token-text-mute hover:text-token-text-hi transition"
+            >
+              {loadingHistory ? 'Loading...' : 'Refresh'}
+            </button>
+          </div>
+
+          {history.length === 0 ? (
+            <div className="text-center py-8">
+              <Clock className="h-8 w-8 mx-auto text-token-text-mute mb-2" />
+              <p className="text-sm text-token-text-mute">No uploads yet</p>
+            </div>
+          ) : (
+            <div className="space-y-2 max-h-80 overflow-auto">
+              {history.map(item => (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-3 rounded-lg border bg-token-surface-0 px-3 py-2.5"
+                  style={{ borderColor: 'var(--border)' }}
+                >
+                  <FileText className="h-5 w-5 text-token-text-mute flex-shrink-0" />
+
+                  <div className="flex-1 min-w-0">
+                    <p className="truncate text-token-text-hi text-sm font-medium">
+                      {item.file_name}
+                    </p>
+                    <p className="text-xs text-token-text-mute mt-0.5">
+                      {timeAgo(item.created_at)} • {humanSize(item.file_size)}
+                      {item.error_message && ` • ${item.error_message}`}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {item.status === 'embedded' && (
+                      <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                    )}
+                    {item.status === 'error' && (
+                      <CircleAlert className="h-5 w-5 text-rose-500" />
+                    )}
+                    {item.status === 'ingesting' && (
+                      <Loader2 className="h-5 w-5 text-amber-500 animate-spin" />
+                    )}
+
+                    <button
+                      onClick={() => deleteHistoryItem(item.id)}
+                      className="rounded p-1 text-token-text-mute hover:text-rose-500 transition"
+                      title="Remove from history"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
