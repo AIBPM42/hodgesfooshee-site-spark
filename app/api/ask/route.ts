@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { z } from "zod";
 
 // Force dynamic rendering - don't pre-render at build time
@@ -98,6 +100,15 @@ export async function POST(request: Request) {
       );
     }
 
+    // Get authenticated user from session
+    const supabase = createRouteHandlerClient({ cookies });
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // Get userId - prefer from session, fallback to request body
+    const userId = user?.id || null;
+
+    console.log(`🔐 User authentication: userId=${userId || 'anonymous'}`);
+
     // Check for N8N_WEBHOOK_URL
     const n8nUrl = process.env.N8N_WEBHOOK_URL;
     if (!n8nUrl) {
@@ -111,14 +122,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Forward request to n8n
+    // Forward request to n8n with userId for scoped vector search
     const { sessionId, action, chatInput } = parsed.data;
-    console.log(`🚀 Forwarding to n8n: sessionId=${sessionId}, chatInput="${chatInput.slice(0, 50)}..."`);
+    console.log(`🚀 Forwarding to n8n: sessionId=${sessionId}, userId=${userId || 'none'}, chatInput="${chatInput.slice(0, 50)}..."`);
 
     const n8nResponse = await fetch(n8nUrl, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ sessionId, action, chatInput }),
+      body: JSON.stringify({ sessionId, action, chatInput, userId }),
     });
 
     // Handle n8n errors
