@@ -280,7 +280,7 @@ export default async function CountyPage({ params }: { params: { slug: string } 
         <section className="section my-10 md:my-14">
           <div className="flex flex-col sm:flex-row gap-4 max-w-4xl mx-auto">
             <a
-              href={`/search/properties`}
+              href={`/search/properties?county=${encodeURIComponent(data.name)}`}
               className="flex-1 text-center rounded-xl px-6 py-3 font-medium text-white bg-brand-500 hover:bg-brand-600 shadow-md transition-colors"
             >
               View {data.name} Properties
