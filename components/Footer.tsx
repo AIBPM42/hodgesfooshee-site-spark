@@ -17,19 +17,18 @@ export default function Footer() {
           <h4 className="text-sm font-semibold mb-3 text-ink">Quick Links</h4>
           <ul className="space-y-2 text-sm text-ink/80">
             <li><a className="hover:text-[var(--copper-600)] transition-colors" href="/search/properties">Properties</a></li>
-            <li><a className="hover:text-[var(--copper-600)] transition-colors" href="/open-houses">Open Houses</a></li>
-            <li><a className="hover:text-[var(--copper-600)] transition-colors" href="/insights">Market Insights</a></li>
-            <li><a className="hover:text-[var(--copper-600)] transition-colors" href="/contact">Contact</a></li>
+            <li><a className="hover:text-[var(--copper-600)] transition-colors" href="/#blog">Market Insights</a></li>
+            <li><a className="hover:text-[var(--copper-600)] transition-colors" href="/about-us">About Us</a></li>
+            <li><a className="hover:text-[var(--copper-600)] transition-colors" href="/#contact">Contact</a></li>
           </ul>
         </div>
 
         <div>
           <h4 className="text-sm font-semibold mb-3 text-ink">Services</h4>
           <ul className="space-y-2 text-sm text-ink/80">
-            <li>Residential Sales</li>
-            <li>Luxury Properties</li>
-            <li>Investment Consulting</li>
-            <li>Property Management</li>
+            <li><a className="hover:text-[var(--copper-600)] transition-colors" href="/services/sell-your-home">Sell Your Home</a></li>
+            <li><a className="hover:text-[var(--copper-600)] transition-colors" href="/services/buy-a-home">Buy A Home</a></li>
+            <li><a className="hover:text-[var(--copper-600)] transition-colors" href="/services/property-management">Property Management</a></li>
           </ul>
         </div>
 

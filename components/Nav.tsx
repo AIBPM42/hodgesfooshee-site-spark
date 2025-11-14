@@ -6,6 +6,7 @@ import BrandLogo from "./BrandLogo";
 
 export function Nav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
 
   return (
     <header className="sticky top-4 z-[100] mx-auto w-[min(1200px,94vw)]">
@@ -20,11 +21,48 @@ export function Nav() {
           <Link href="/search/properties" className="hover:text-copper-600 transition focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-4 rounded">
             Property Search
           </Link>
-          <Link href="/open-houses" className="hover:text-copper-600 transition focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-4 rounded">
-            Open Houses
-          </Link>
+
+          {/* Services Dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setServicesOpen(true)}
+            onMouseLeave={() => setServicesOpen(false)}
+          >
+            <button className="hover:text-copper-600 transition focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-4 rounded flex items-center gap-1">
+              Services
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {servicesOpen && (
+              <div className="absolute top-full left-0 mt-2 w-56 rounded-xl glass shadow-[0_8px_24px_rgba(16,24,40,0.14)] py-2">
+                <Link
+                  href="/services/sell-your-home"
+                  className="block px-4 py-2 text-charcoal-900/90 hover:text-copper-600 hover:bg-white/30 transition"
+                >
+                  Sell Your Home
+                </Link>
+                <Link
+                  href="/services/buy-a-home"
+                  className="block px-4 py-2 text-charcoal-900/90 hover:text-copper-600 hover:bg-white/30 transition"
+                >
+                  Buy A Home
+                </Link>
+                <Link
+                  href="/services/property-management"
+                  className="block px-4 py-2 text-charcoal-900/90 hover:text-copper-600 hover:bg-white/30 transition"
+                >
+                  Property Management
+                </Link>
+              </div>
+            )}
+          </div>
+
           <Link href="/#blog" className="hover:text-copper-600 transition focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-4 rounded">
             Market Insights
+          </Link>
+          <Link href="/about-us" className="hover:text-copper-600 transition focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-4 rounded">
+            About Us
           </Link>
           <Link href="/#contact" className="hover:text-copper-600 transition focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-4 rounded">
             Contact
@@ -70,11 +108,24 @@ export function Nav() {
             <Link href="/search/properties" onClick={() => setMobileMenuOpen(false)} className="text-charcoal-900/90 hover:text-copper-600 transition py-2 focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-2 rounded">
               Property Search
             </Link>
-            <Link href="/open-houses" onClick={() => setMobileMenuOpen(false)} className="text-charcoal-900/90 hover:text-copper-600 transition py-2 focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-2 rounded">
-              Open Houses
+
+            {/* Services in Mobile */}
+            <div className="text-charcoal-900/90 font-semibold py-2">Services</div>
+            <Link href="/services/sell-your-home" onClick={() => setMobileMenuOpen(false)} className="text-charcoal-900/80 hover:text-copper-600 transition py-2 pl-4 focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-2 rounded">
+              Sell Your Home
             </Link>
+            <Link href="/services/buy-a-home" onClick={() => setMobileMenuOpen(false)} className="text-charcoal-900/80 hover:text-copper-600 transition py-2 pl-4 focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-2 rounded">
+              Buy A Home
+            </Link>
+            <Link href="/services/property-management" onClick={() => setMobileMenuOpen(false)} className="text-charcoal-900/80 hover:text-copper-600 transition py-2 pl-4 focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-2 rounded">
+              Property Management
+            </Link>
+
             <Link href="/#blog" onClick={() => setMobileMenuOpen(false)} className="text-charcoal-900/90 hover:text-copper-600 transition py-2 focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-2 rounded">
               Market Insights
+            </Link>
+            <Link href="/about-us" onClick={() => setMobileMenuOpen(false)} className="text-charcoal-900/90 hover:text-copper-600 transition py-2 focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-2 rounded">
+              About Us
             </Link>
             <Link href="/#contact" onClick={() => setMobileMenuOpen(false)} className="text-charcoal-900/90 hover:text-copper-600 transition py-2 focus-visible:outline-2 focus-visible:outline-copper-600 focus-visible:outline-offset-2 rounded">
               Contact
