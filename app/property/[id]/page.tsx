@@ -10,6 +10,8 @@ import { ArrowLeft, Bed, Bath, Square, MapPin, Calendar, Heart, Share2, Phone, M
 import Link from 'next/link';
 import PropertyDescription from '@/components/PropertyDescription';
 import { Nav } from '@/components/Nav';
+import { PropertyInquiryForm } from '@/components/PropertyInquiryForm';
+import { MLSComplianceFooter } from '@/components/MLSComplianceFooter';
 
 interface PropertyDetails {
   id: string;
@@ -36,6 +38,13 @@ interface PropertyDetails {
     designation?: string;
     office?: string;
     officePhone?: string;
+  };
+  // MLS Listing Agent (original - for compliance footer)
+  mlsListingAgent?: {
+    name: string;
+    officeName: string;
+    mlsSource?: string;
+    lastUpdated?: string;
   };
   postalCode?: string;
 }
@@ -65,19 +74,15 @@ function PropertyDetailContent() {
       const media = prop.Media || [];
       console.log('🖼️ Property images:', media.map((m: any) => m.MediaURL));
 
-      // Fetch enhanced agent details from MLS Members
-      let agentDetails = {
-        name: prop.ListAgentFullName || 'Agent',
-        phone: prop.ListAgentDirectPhone || prop.ListAgentMobilePhone || '',
-        email: prop.ListAgentEmail || '',
-        image: '/placeholder.svg',
-        license: undefined as string | undefined,
-        designation: undefined as string | undefined,
-        office: undefined as string | undefined,
-        officePhone: undefined as string | undefined,
+      // Store MLS listing agent for compliance footer
+      let mlsListingAgentInfo = {
+        name: prop.ListAgentFullName || 'Unknown Agent',
+        officeName: prop.ListOfficeName || 'Unknown Brokerage',
+        mlsSource: prop.OriginatingSystemName || 'MLS',
+        lastUpdated: prop.ModificationTimestamp || prop.ListingContractDate,
       };
 
-      // Try to fetch full agent profile if we have a member key
+      // Fetch MLS agent details if available (for compliance)
       if (prop.ListAgentKey || prop.ListAgentMlsId) {
         try {
           const memberKey = prop.ListAgentKey || prop.ListAgentMlsId;
@@ -93,22 +98,27 @@ function PropertyDetailContent() {
             const memberData = await memberResponse.json();
             const member = memberData.members?.[0];
             if (member) {
-              agentDetails = {
-                name: member.MemberFullName || agentDetails.name,
-                phone: member.MemberDirectPhone || member.MemberMobilePhone || agentDetails.phone,
-                email: member.MemberEmail || agentDetails.email,
-                image: member.MemberPhotoURL || agentDetails.image,
-                license: member.MemberStateLicense,
-                designation: member.MemberDesignation,
-                office: member.OfficeName,
-                officePhone: member.OfficePhone,
-              };
+              mlsListingAgentInfo.name = member.MemberFullName || mlsListingAgentInfo.name;
+              mlsListingAgentInfo.officeName = member.OfficeName || mlsListingAgentInfo.officeName;
             }
           }
         } catch (err) {
-          console.warn('Could not fetch agent details:', err);
+          console.warn('Could not fetch MLS agent details:', err);
         }
       }
+
+      // FEATURED AGENT: Leslie Alison from Hodges & Fooshee Realty
+      // This is who will be displayed prominently and receive leads
+      const featuredAgent = {
+        name: 'Leslie Alison',
+        phone: '615-601-0862', // Mobile
+        email: 'leslie@hodgesfooshee.com', // TODO: Get actual email
+        image: '/placeholder.svg', // TODO: Add actual photo to /public/agents/leslie-alison.jpg
+        license: undefined as string | undefined, // TODO: Get license number
+        designation: undefined as string | undefined,
+        office: 'Hodges & Fooshee Realty',
+        officePhone: '615-538-1100',
+      };
 
       // Transform to PropertyDetails format
       return {
@@ -128,7 +138,8 @@ function PropertyDetailContent() {
         features: [],
         images: media.map((m: any) => m.MediaURL).filter(Boolean),
         postalCode: prop.PostalCode,
-        agent: agentDetails
+        agent: featuredAgent, // Show Leslie Alison prominently
+        mlsListingAgent: mlsListingAgentInfo // Original agent for compliance footer
       };
     },
   });
@@ -406,13 +417,17 @@ function PropertyDetailContent() {
 
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Agent Card */}
+            {/* Contact Our Team Card */}
             <Card className="bg-white rounded-2xl shadow-[0_12px_36px_rgba(20,20,20,0.08)] border border-black/5">
               <CardHeader>
-                <CardTitle className="text-lg font-bold text-[#111827]">Contact Agent</CardTitle>
+                <CardTitle className="text-lg font-bold text-[#111827]">Contact Our Team</CardTitle>
+                <p className="text-sm text-[#6B7280] mt-1">
+                  Get expert guidance from Hodges & Fooshee Realty
+                </p>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-start gap-3">
+                {/* Featured Agent - Leslie Alison */}
+                <div className="flex items-start gap-3 pb-4 border-b border-neutral-100">
                   {/* Agent initials if no image */}
                   {property.agent.image === '/placeholder.svg' ? (
                     <div className="w-16 h-16 flex-shrink-0 rounded-full bg-gradient-to-br from-[#E4552E] to-[#F39C57] flex items-center justify-center text-white font-bold shadow-lg">
@@ -428,55 +443,19 @@ function PropertyDetailContent() {
                   <div className="flex-1 min-w-0">
                     <div className="font-bold text-[#111827]">{property.agent.name}</div>
                     <div className="text-sm text-[#6B7280]">Real Estate Agent</div>
-                    {property.agent.designation && (
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {property.agent.designation.split(',').slice(0, 3).map((cert, idx) => (
-                          <Badge key={idx} variant="secondary" className="text-xs bg-[#E4552E]/10 text-[#E4552E] border-[#E4552E]/20">
-                            {cert.trim()}
-                          </Badge>
-                        ))}
-                      </div>
+                    {property.agent.office && (
+                      <div className="text-xs text-[#6B7280] mt-1">{property.agent.office}</div>
                     )}
                   </div>
                 </div>
 
-                {/* Office Information */}
-                {property.agent.office && (
-                  <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-100">
-                    <div className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-1">Office</div>
-                    <div className="font-medium text-[#111827] text-sm">{property.agent.office}</div>
-                    {property.agent.officePhone && (
-                      <div className="text-xs text-[#6B7280] mt-1">{property.agent.officePhone}</div>
-                    )}
-                  </div>
-                )}
-
-                {/* License */}
-                {property.agent.license && (
-                  <div className="text-xs text-[#6B7280] flex items-center gap-1">
-                    <span className="font-semibold">License:</span>
-                    <span>{property.agent.license}</span>
-                  </div>
-                )}
-
-                <div className="space-y-2 pt-2 border-t border-neutral-100">
-                  {property.agent.phone && (
-                    <Button className="w-full bg-gradient-to-r from-[#E4552E] to-[#F39C57] text-white font-semibold shadow-[0_8px_28px_rgba(228,85,46,0.35)] hover:shadow-[0_12px_36px_rgba(228,85,46,0.4)] hover:-translate-y-0.5 transition-all" asChild>
-                      <a href={`tel:${property.agent.phone}`}>
-                        <Phone className="w-4 h-4 mr-2" />
-                        {property.agent.phone}
-                      </a>
-                    </Button>
-                  )}
-                  {property.agent.email && (
-                    <Button variant="outline" className="w-full border-neutral-300 text-[#374151] font-semibold hover:bg-neutral-50 transition-colors" asChild>
-                      <a href={`mailto:${property.agent.email}`}>
-                        <Mail className="w-4 h-4 mr-2" />
-                        Send Email
-                      </a>
-                    </Button>
-                  )}
-                </div>
+                {/* Property Inquiry Form */}
+                <PropertyInquiryForm
+                  propertyId={property.id}
+                  propertyAddress={property.address}
+                  agentPhone={property.agent.phone}
+                  agentEmail={property.agent.email}
+                />
               </CardContent>
             </Card>
 
@@ -513,6 +492,17 @@ function PropertyDetailContent() {
                   <span className="text-[#6B7280] font-medium">MLS ID</span>
                   <span className="text-[#111827] font-semibold">#{property.id}</span>
                 </div>
+
+                {/* MLS Compliance Footer */}
+                {property.mlsListingAgent && (
+                  <MLSComplianceFooter
+                    listingAgent={property.mlsListingAgent.name}
+                    listingOfficeName={property.mlsListingAgent.officeName}
+                    mlsSource={property.mlsListingAgent.mlsSource}
+                    mlsId={property.id}
+                    lastUpdated={property.mlsListingAgent.lastUpdated}
+                  />
+                )}
               </CardContent>
             </Card>
           </div>
