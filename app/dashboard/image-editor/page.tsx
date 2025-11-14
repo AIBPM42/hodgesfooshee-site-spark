@@ -39,7 +39,7 @@ export default function ImageEditorV2() {
   const logsEndRef = useRef<HTMLDivElement>(null);
 
   // Settings
-  const [strength, setStrength] = useState(0.95);
+  const [strength, setStrength] = useState(0.50);
   const [guidance, setGuidance] = useState(3.0);
   const [seed, setSeed] = useState<number | null>(null);
   const [preserveBg, setPreserveBg] = useState(true);
@@ -422,34 +422,34 @@ export default function ImageEditorV2() {
   }
 
   return (
-    <div className="flex h-screen bg-token-surface-0">
+    <div className="flex h-screen bg-white">
       {/* Left Panel - Input & Controls */}
-      <div className="w-[700px] border-r flex flex-col bg-token-surface-1" style={{ borderColor: 'var(--border)' }}>
+      <div className="w-[700px] border-r flex flex-col bg-gray-50" style={{ borderColor: '#e5e7eb' }}>
         {/* Header */}
-        <div className="p-4 border-b" style={{ borderColor: 'var(--border)' }}>
-          <h1 className="text-xl font-semibold text-token-text-hi flex items-center gap-2">
-            <Wand2 className="h-5 w-5" />
+        <div className="px-6 py-5 border-b" style={{ borderColor: '#e5e7eb' }}>
+          <h1 className="text-2xl font-semibold text-gray-900 flex items-center gap-3">
+            <Wand2 className="h-6 w-6 text-[#E76A3C]" />
             Hodges Image Studio
           </h1>
-          <p className="text-xs text-token-text-mute mt-1">Professional AI image editing & compositing</p>
+          <p className="text-sm text-gray-600 mt-2">Professional AI image editing & compositing</p>
         </div>
 
-        {/* Upload Area - Compact */}
-        <div className="p-4 border-b" style={{ borderColor: 'var(--border)' }}>
+        {/* Upload Area */}
+        <div className="px-6 py-4 border-b" style={{ borderColor: '#e5e7eb' }}>
           {/* Toggle between Upload and URL */}
           <div className="flex gap-2 mb-3">
             <button
               onClick={() => setInputMode('upload')}
-              className={`flex-1 px-3 py-2 text-xs font-medium rounded-lg transition ${
-                inputMode === 'upload' ? 'bg-token-surface-2 text-token-text-hi' : 'text-token-text-mute hover:text-token-text-hi'
+              className={`flex-1 px-4 py-2.5 text-sm font-medium rounded-lg transition ${
+                inputMode === 'upload' ? 'bg-white text-gray-900 shadow-sm border border-gray-200' : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
               }`}
             >
               Upload
             </button>
             <button
               onClick={() => setInputMode('url')}
-              className={`flex-1 px-3 py-2 text-xs font-medium rounded-lg transition ${
-                inputMode === 'url' ? 'bg-token-surface-2 text-token-text-hi' : 'text-token-text-mute hover:text-token-text-hi'
+              className={`flex-1 px-4 py-2.5 text-sm font-medium rounded-lg transition ${
+                inputMode === 'url' ? 'bg-white text-gray-900 shadow-sm border border-gray-200' : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
               }`}
             >
               URL
@@ -461,10 +461,10 @@ export default function ImageEditorV2() {
               <button
                 type="button"
                 onClick={() => document.getElementById('file-input-v2')?.click()}
-                className="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-3 text-sm font-medium transition hover:bg-token-surface-2"
-                style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
+                className="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed px-6 py-4 text-sm font-medium transition hover:bg-white hover:border-gray-400 text-gray-700"
+                style={{ borderColor: '#d1d5db' }}
               >
-                <Upload className="h-4 w-4" />
+                <Upload className="h-5 w-5" />
                 Add Image
               </button>
               <input
@@ -477,14 +477,14 @@ export default function ImageEditorV2() {
               />
             </label>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               <input
                 type="text"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="https://example.com/image.jpg"
-                className="w-full rounded-lg border bg-token-surface-0 px-3 py-2 text-sm text-token-text-hi placeholder:text-token-text-mute outline-none focus:ring-2"
-                style={{ borderColor: 'var(--border)', '--tw-ring-color': '#E76A3C' } as any}
+                className="w-full rounded-lg border bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#E76A3C] focus:border-[#E76A3C] transition"
+                style={{ borderColor: '#d1d5db' }}
               />
               <button
                 onClick={() => {
@@ -506,7 +506,7 @@ export default function ImageEditorV2() {
                   addLog('info', `Added image from URL`);
                   toast.success('Image added from URL');
                 }}
-                className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition hover:brightness-110"
+                className="w-full flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-medium text-white transition hover:opacity-90 shadow-sm"
                 style={{ backgroundColor: '#E76A3C' }}
               >
                 <Upload className="h-4 w-4" />
@@ -518,29 +518,29 @@ export default function ImageEditorV2() {
           {/* Uploaded Images List */}
           {items.length > 0 && (
             <div className="mt-3 space-y-2">
-              <div className="text-xs font-medium text-token-text-mute">Images ({items.length})</div>
+              <div className="text-sm font-medium text-gray-700">Images ({items.length})</div>
               {items.map((item, idx) => (
                 <div
                   key={item.id}
                   onClick={() => setSelectedImageIndex(idx)}
-                  className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition ${
-                    selectedImageIndex === idx ? 'bg-token-surface-2' : 'hover:bg-token-surface-2'
+                  className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition ${
+                    selectedImageIndex === idx ? 'bg-white shadow-sm' : 'hover:bg-white'
                   }`}
-                  style={selectedImageIndex === idx ? { borderColor: '#E76A3C' } : { borderColor: 'var(--border)' }}
+                  style={selectedImageIndex === idx ? { borderColor: '#E76A3C' } : { borderColor: '#e5e7eb' }}
                 >
                   {/* Thumbnail */}
                   <img
                     src={item.originalUrl}
                     alt={item.file?.name || `Image ${idx + 1}`}
-                    className="h-12 w-12 rounded object-cover flex-shrink-0"
+                    className="h-12 w-12 rounded-md object-cover flex-shrink-0"
                   />
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-token-text-hi truncate">
+                    <p className="text-sm font-medium text-gray-900 truncate">
                       {item.file?.name || `Image ${idx + 1}`}
                     </p>
-                    <p className="text-[10px] text-token-text-mute">
+                    <p className="text-xs text-gray-500 mt-0.5">
                       {item.status === 'idle' && 'Ready'}
                       {item.status === 'uploading' && 'Uploading...'}
                       {item.status === 'processing' && 'Processing...'}
@@ -555,9 +555,9 @@ export default function ImageEditorV2() {
                       e.stopPropagation();
                       removeItem(item.id);
                     }}
-                    className="p-1 rounded hover:bg-token-surface-0 text-token-text-mute hover:text-token-text-hi"
+                    className="p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition"
                   >
-                    <X className="h-3 w-3" />
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
               ))}
@@ -565,18 +565,18 @@ export default function ImageEditorV2() {
           )}
         </div>
 
-        {/* Compose Mode Toggle - Compact */}
+        {/* Compose Mode Toggle */}
         {items.length > 1 && (
-          <div className="px-4 py-2 border-b" style={{ borderColor: 'var(--border)' }}>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg border" style={{ borderColor: '#E76A3C', backgroundColor: 'rgba(231, 106, 60, 0.05)' }}>
+          <div className="px-6 py-4 border-b" style={{ borderColor: '#e5e7eb' }}>
+            <div className="flex items-center gap-3 px-4 py-3 rounded-lg border" style={{ borderColor: '#E76A3C', backgroundColor: 'rgba(231, 106, 60, 0.05)' }}>
               <input
                 type="checkbox"
                 checked={composeMode}
                 onChange={(e) => setComposeMode(e.target.checked)}
-                className="rounded"
+                className="rounded w-4 h-4 text-[#E76A3C] focus:ring-[#E76A3C]"
                 id="compose-toggle"
               />
-              <label htmlFor="compose-toggle" className="text-xs font-medium text-token-text-hi cursor-pointer">
+              <label htmlFor="compose-toggle" className="text-sm font-medium text-gray-900 cursor-pointer">
                 🎨 Compose into 1 image
               </label>
             </div>
@@ -584,32 +584,33 @@ export default function ImageEditorV2() {
         )}
 
         {/* Prompt */}
-        <div className="p-4 border-b" style={{ borderColor: 'var(--border)' }}>
+        <div className="px-6 py-4 border-b" style={{ borderColor: '#e5e7eb' }}>
           <label className="block">
-            <div className="text-sm font-medium text-token-text-hi mb-2">Prompt</div>
+            <div className="text-sm font-semibold text-gray-900 mb-2">Prompt</div>
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Describe your edit..."
               rows={2}
-              className="w-full rounded-lg border bg-token-surface-0 px-3 py-2 text-sm text-token-text-hi placeholder:text-token-text-mute outline-none focus:ring-2"
-              style={{ borderColor: 'var(--border)', '--tw-ring-color': '#E76A3C' } as any}
+              className="w-full rounded-lg border bg-white px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#E76A3C] focus:border-[#E76A3C] transition resize-none"
+              style={{ borderColor: '#d1d5db' }}
             />
           </label>
         </div>
 
         {/* Settings */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-          <div className="flex items-center gap-2 text-sm font-medium text-token-text-hi">
-            <Settings2 className="h-4 w-4" />
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+          <div className="flex items-center gap-2 text-base font-semibold text-gray-900 sticky top-0 bg-gray-50 pb-2 -mt-1 pt-1 z-10">
+            <Settings2 className="h-5 w-5 text-[#E76A3C]" />
             Settings
           </div>
 
           {/* Strength */}
           <div>
-            <label className="block text-xs text-token-text-mute mb-2">
-              Strength: {strength.toFixed(2)}
+            <label className="block text-sm text-gray-700 font-medium mb-1">
+              Strength: <span className="text-gray-900">{strength.toFixed(2)}</span>
             </label>
+            <p className="text-xs text-gray-500 mb-2">How much the AI changes the image. Lower = subtle, higher = dramatic.</p>
             <input
               type="range"
               min="0"
@@ -617,15 +618,16 @@ export default function ImageEditorV2() {
               step="0.05"
               value={strength}
               onChange={(e) => setStrength(parseFloat(e.target.value))}
-              className="w-full"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#E76A3C]"
             />
           </div>
 
           {/* Guidance */}
           <div>
-            <label className="block text-xs text-token-text-mute mb-2">
-              Guidance Scale: {guidance.toFixed(1)}
+            <label className="block text-sm text-gray-700 font-medium mb-1">
+              Guidance Scale: <span className="text-gray-900">{guidance.toFixed(1)}</span>
             </label>
+            <p className="text-xs text-gray-500 mb-2">How closely AI follows your prompt. 1-3 = natural, 7-10 = literal.</p>
             <input
               type="range"
               min="1"
@@ -633,42 +635,48 @@ export default function ImageEditorV2() {
               step="0.5"
               value={guidance}
               onChange={(e) => setGuidance(parseFloat(e.target.value))}
-              className="w-full"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#E76A3C]"
             />
           </div>
 
           {/* Seed */}
           <div>
-            <label className="block text-xs text-token-text-mute mb-2">Seed (optional)</label>
+            <label className="block text-sm text-gray-700 font-medium mb-1">Seed (optional)</label>
+            <p className="text-xs text-gray-500 mb-2">Set a number for reproducible results. Leave empty for random.</p>
             <input
               type="number"
               value={seed ?? ''}
               onChange={(e) => setSeed(e.target.value ? parseInt(e.target.value) : null)}
               placeholder="Random"
-              className="w-full rounded-lg border bg-token-surface-0 px-3 py-2 text-sm text-token-text-hi"
-              style={{ borderColor: 'var(--border)' }}
+              className="w-full rounded-lg border bg-white px-4 py-2.5 text-sm text-gray-900 focus:ring-2 focus:ring-[#E76A3C] focus:border-[#E76A3C] transition"
+              style={{ borderColor: '#d1d5db' }}
             />
           </div>
 
           {/* Preserve BG */}
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={preserveBg}
-              onChange={(e) => setPreserveBg(e.target.checked)}
-              className="rounded"
-            />
-            <label className="text-xs text-token-text-lo">Preserve background</label>
+          <div>
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={preserveBg}
+                onChange={(e) => setPreserveBg(e.target.checked)}
+                className="rounded w-4 h-4 text-[#E76A3C] focus:ring-[#E76A3C]"
+                id="preserve-bg"
+              />
+              <label htmlFor="preserve-bg" className="text-sm text-gray-700 font-medium cursor-pointer">Preserve background</label>
+            </div>
+            <p className="text-xs text-gray-500 mt-1 ml-7">Keep the original background unchanged when editing.</p>
           </div>
 
           {/* Output Format */}
           <div>
-            <label className="block text-xs text-token-text-mute mb-2">Output Format</label>
+            <label className="block text-sm text-gray-700 font-medium mb-1">Output Format</label>
+            <p className="text-xs text-gray-500 mb-2">JPEG for smaller files, PNG for transparency, WebP for best compression.</p>
             <select
               value={outputFmt}
               onChange={(e) => setOutputFmt(e.target.value as any)}
-              className="w-full rounded-lg border bg-token-surface-0 px-3 py-2 text-sm text-token-text-hi"
-              style={{ borderColor: 'var(--border)' }}
+              className="w-full rounded-lg border bg-white px-4 py-2.5 text-sm text-gray-900 focus:ring-2 focus:ring-[#E76A3C] focus:border-[#E76A3C] transition"
+              style={{ borderColor: '#d1d5db' }}
             >
               <option value="jpeg">JPEG</option>
               <option value="png">PNG</option>
@@ -678,12 +686,13 @@ export default function ImageEditorV2() {
 
           {/* Aspect Ratio */}
           <div>
-            <label className="block text-xs text-token-text-mute mb-2">Aspect Ratio</label>
+            <label className="block text-sm text-gray-700 font-medium mb-1">Aspect Ratio</label>
+            <p className="text-xs text-gray-500 mb-2">Output dimensions. Original aspect may be adjusted to fit.</p>
             <select
               value={aspect}
               onChange={(e) => setAspect(e.target.value as any)}
-              className="w-full rounded-lg border bg-token-surface-0 px-3 py-2 text-sm text-token-text-hi"
-              style={{ borderColor: 'var(--border)' }}
+              className="w-full rounded-lg border bg-white px-4 py-2.5 text-sm text-gray-900 focus:ring-2 focus:ring-[#E76A3C] focus:border-[#E76A3C] transition"
+              style={{ borderColor: '#d1d5db' }}
             >
               <option value="1:1">1:1 (Square)</option>
               <option value="16:9">16:9 (Landscape)</option>
@@ -693,24 +702,27 @@ export default function ImageEditorV2() {
             </select>
           </div>
 
+          {/* Add bottom padding for better scrolling */}
+          <div className="h-4"></div>
+
         </div>
 
         {/* Run Button */}
-        <div className="p-4 border-t" style={{ borderColor: 'var(--border)' }}>
+        <div className="px-6 py-4 border-t" style={{ borderColor: '#e5e7eb' }}>
           <button
             onClick={handleRun}
             disabled={isRunning || items.length === 0 || !prompt.trim()}
-            className="w-full rounded-lg px-4 py-3 text-sm font-medium text-white transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full rounded-lg px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
             style={{ backgroundColor: '#E76A3C' }}
           >
             {isRunning ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin" />
                 Processing...
               </>
             ) : (
               <>
-                <Wand2 className="h-4 w-4" />
+                <Wand2 className="h-5 w-5" />
                 {composeMode && items.length > 1
                   ? `Compose ${items.length} Images`
                   : `Run Edit (${items.length})`}
@@ -721,23 +733,23 @@ export default function ImageEditorV2() {
       </div>
 
       {/* Right Panel - Large Image Preview & Logs */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-white">
         {/* Large Image Preview */}
-        <div className="flex-1 overflow-hidden bg-token-surface-0 p-6 flex flex-col">
+        <div className="flex-1 overflow-hidden bg-gray-50 p-8 flex flex-col">
           {items.length === 0 ? (
-            <div className="flex items-center justify-center h-full text-center text-token-text-mute">
+            <div className="flex items-center justify-center h-full text-center text-gray-400">
               <div>
-                <Upload className="mx-auto h-12 w-12 mb-3" />
-                <p>Upload images to get started</p>
+                <Upload className="mx-auto h-16 w-16 mb-4" />
+                <p className="text-lg font-medium">Upload images to get started</p>
               </div>
             </div>
           ) : (
             (() => {
               const selectedItem = items[selectedImageIndex];
               return (
-                <div className="flex-1 flex flex-col gap-4 min-h-0">
+                <div className="flex-1 flex flex-col gap-6 min-h-0">
                   {/* Image Display Area */}
-                  <div className="flex-1 flex items-center justify-center rounded-xl border bg-token-surface-1 p-8 relative overflow-hidden min-h-0" style={{ borderColor: 'var(--border)' }}>
+                  <div className="flex-1 flex items-center justify-center rounded-xl border bg-white p-8 relative overflow-hidden min-h-0 shadow-sm" style={{ borderColor: '#e5e7eb' }}>
                     {selectedItem.editedUrl ? (
                       // Show edited or original image (large, full size)
                       <img
@@ -747,11 +759,11 @@ export default function ImageEditorV2() {
                       />
                     ) : selectedItem.status === 'idle' ? (
                       // Show empty state when idle (before running)
-                      <div className="flex items-center justify-center h-full text-center text-token-text-mute">
+                      <div className="flex items-center justify-center h-full text-center text-gray-400">
                         <div>
-                          <Wand2 className="mx-auto h-12 w-12 mb-3" />
-                          <p>Ready to edit</p>
-                          <p className="text-xs mt-1">Click "Run Edit" to process</p>
+                          <Wand2 className="mx-auto h-16 w-16 mb-4 text-gray-300" />
+                          <p className="text-lg font-medium text-gray-600">Ready to edit</p>
+                          <p className="text-sm mt-2">Click "Run Edit" to process</p>
                         </div>
                       </div>
                     ) : (
@@ -763,18 +775,18 @@ export default function ImageEditorV2() {
                           className="max-w-full max-h-full object-contain rounded-lg opacity-60"
                         />
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="bg-token-surface-0/90 backdrop-blur rounded-xl px-6 py-4 border" style={{ borderColor: 'var(--border)' }}>
+                          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-8 py-6 border shadow-lg" style={{ borderColor: '#e5e7eb' }}>
                             {selectedItem.status === 'uploading' && (
-                              <div className="flex items-center gap-2">
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                                <p className="text-sm text-token-text-hi">Uploading...</p>
+                              <div className="flex items-center gap-3">
+                                <Loader2 className="h-5 w-5 animate-spin text-[#E76A3C]" />
+                                <p className="text-base text-gray-900 font-medium">Uploading...</p>
                               </div>
                             )}
                             {selectedItem.status === 'processing' && (
-                              <div className="flex flex-col items-center gap-2">
-                                <Loader2 className="h-6 w-6 animate-spin" style={{ color: '#E76A3C' }} />
-                                <p className="text-sm text-token-text-hi font-medium">Processing with AI...</p>
-                                <div className="w-48 h-2 bg-token-surface-2 rounded-full overflow-hidden mt-2">
+                              <div className="flex flex-col items-center gap-3">
+                                <Loader2 className="h-8 w-8 animate-spin" style={{ color: '#E76A3C' }} />
+                                <p className="text-base text-gray-900 font-semibold">Processing with AI...</p>
+                                <div className="w-56 h-2 bg-gray-200 rounded-full overflow-hidden mt-2">
                                   <div
                                     className="h-full transition-all duration-300 rounded-full"
                                     style={{ backgroundColor: '#E76A3C', width: `${selectedItem.progress}%` }}
@@ -784,8 +796,8 @@ export default function ImageEditorV2() {
                             )}
                             {selectedItem.status === 'error' && (
                               <div className="text-center">
-                                <p className="text-sm text-red-500 font-medium mb-2">Error</p>
-                                <p className="text-xs text-token-text-mute max-w-xs">{selectedItem.error}</p>
+                                <p className="text-base text-red-500 font-semibold mb-2">Error</p>
+                                <p className="text-sm text-gray-600 max-w-xs">{selectedItem.error}</p>
                               </div>
                             )}
                           </div>
@@ -795,12 +807,12 @@ export default function ImageEditorV2() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
                     {/* Before/After toggle if edited */}
                     {selectedItem.editedUrl && (
-                      <div className="flex items-center gap-2 flex-1">
-                        <div className="text-xs text-token-text-mute">Edited</div>
-                        <div className="flex-1 h-px bg-token-border" />
+                      <div className="flex items-center gap-3 flex-1">
+                        <div className="text-sm text-gray-600 font-medium">Edited Result</div>
+                        <div className="flex-1 h-px bg-gray-200" />
                       </div>
                     )}
 
@@ -808,7 +820,7 @@ export default function ImageEditorV2() {
                     {selectedItem.editedUrl && (
                       <button
                         onClick={() => downloadSingleImage(selectedItem)}
-                        className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition hover:brightness-110"
+                        className="flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 shadow-sm"
                         style={{ backgroundColor: '#E76A3C' }}
                       >
                         <Download className="h-4 w-4" />
@@ -820,8 +832,8 @@ export default function ImageEditorV2() {
                     {items.some(i => i.editedUrl) && items.length > 1 && (
                       <button
                         onClick={downloadAllImages}
-                        className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium border transition hover:bg-token-surface-2"
-                        style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
+                        className="flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium border transition hover:bg-gray-50 text-gray-700"
+                        style={{ borderColor: '#d1d5db' }}
                       >
                         <Download className="h-4 w-4" />
                         Download All ({items.filter(i => i.editedUrl).length})
@@ -835,20 +847,20 @@ export default function ImageEditorV2() {
         </div>
 
         {/* Logs */}
-        <div className="h-48 border-t bg-token-surface-1" style={{ borderColor: 'var(--border)' }}>
-          <div className="px-4 py-2 border-b text-xs font-medium text-token-text-mute" style={{ borderColor: 'var(--border)' }}>
+        <div className="h-48 border-t bg-gray-50" style={{ borderColor: '#e5e7eb' }}>
+          <div className="px-6 py-3 border-b text-sm font-semibold text-gray-700" style={{ borderColor: '#e5e7eb' }}>
             Logs
           </div>
-          <div className="h-[calc(100%-2.5rem)] overflow-y-auto p-4 font-mono text-xs space-y-1">
+          <div className="h-[calc(100%-3rem)] overflow-y-auto px-6 py-4 font-mono text-xs space-y-1">
             {logs.map((log, i) => (
               <div
                 key={i}
                 className={`${
                   log.level === 'error'
-                    ? 'text-rose-500'
+                    ? 'text-rose-600'
                     : log.level === 'success'
-                    ? 'text-emerald-500'
-                    : 'text-token-text-mute'
+                    ? 'text-emerald-600'
+                    : 'text-gray-500'
                 }`}
               >
                 <span className="opacity-60">[{log.timestamp}]</span> {log.message}
