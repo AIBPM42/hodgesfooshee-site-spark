@@ -15,7 +15,7 @@ export default function SellYourHomePage() {
               Sell Your Home
             </h1>
             <p className="text-xl text-charcoal-700 mb-8">
-              Get top dollar for your property with expert guidance and proven marketing strategies
+              Trust the sale of your home to a trusted partner. We're here to help guide you through every step of the process with expert advice and representation.
             </p>
             <Link
               href="/#contact"

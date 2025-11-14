@@ -15,7 +15,7 @@ export default function BuyAHomePage() {
               Buy A Home
             </h1>
             <p className="text-xl text-charcoal-700 mb-8">
-              Find your dream home in Nashville & Middle Tennessee with expert guidance every step of the way
+              Let us work with you to find and purchase the home of your dreams. We know the area and opportunities for buyers in today's market.
             </p>
             <Link
               href="/search/properties"
